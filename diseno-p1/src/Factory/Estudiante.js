@@ -9,6 +9,15 @@ class Estudiante {
         this.celular = celular;
         this.sede = sede;
     }
+
+    modificarInformacion(estudiante){
+        const indice = this.estudiantes.findIndex(estudiante => estudiante.carnet === carnet);
+        if(indice != -1){
+            this.estudiantes[indice] = estudiante;
+        } else {
+            alert("No se encontró el estudiante");
+        }
+    }
 }
 
 module.exports = Estudiante;

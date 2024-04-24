@@ -8,7 +8,37 @@ class PlanDeActividades {
     }
 
     eliminarActividad(actividad) {
-        this.actividades = this.actividades.filter(actividad => actividad.nombre !== nombre);
+        this.actividades = this.actividades.filter(act => act.nombre !== actividad.nombre);
+    }
+
+    publicarActividad(actividad) {
+        const index = this.actividades.findIndex(act => act.nombre === actividad.nombre);
+
+        if(index != -1){
+            this.actividades[index].estado = "Publicada";
+        } else {
+            alert("No se encontró la actividad");
+        }
+    }
+
+    marcarActividadRealizada(actividad){
+        const index = this.actividades.findIndex(act => act.nombre === actividad.nombre);
+
+        if(index != -1){
+            this.actividades[index].estado = "Realizada";
+        } else {
+            alert("No se encontró la actividad");
+        }
+    }
+
+    cancelarActividad(actividad){
+        const index = this.actividades.findIndex(act => act.nombre === actividad.nombre);
+
+        if(index != -1){
+            this.actividades[index].estado = "Cancelada";
+        } else {
+            alert("No se encontró la actividad");
+        }
     }
 
     obtenerPlan() {
