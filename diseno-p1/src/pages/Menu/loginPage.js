@@ -26,7 +26,7 @@ function LoginPage() {
       {/* Contenedor de la caja */}
       <div
         style={{
-          width: '400px', // Ancho del contenedor
+          width: '30%', // Ancho del contenedor
           padding: '20px', // Espaciado interno
           borderRadius: '5px', // Bordes redondeados
           backgroundColor: '#FFFCA4', //Color de la caja 
@@ -38,7 +38,6 @@ function LoginPage() {
             marginBottom: '30px',
             color: '#333', // Color del texto
             fontSize: '32px', // Tamaño de la fuente
-            fontFamily: 'Arial', // Tipo de fuente
             textAlign: 'center' // Alineación del texto
           }}
         >
