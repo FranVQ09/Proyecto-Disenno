@@ -20,8 +20,9 @@ function registerPage() {
                 padding: '20px', // Espaciado interno
                 border: '1px solid #ccc', // Borde
                 borderRadius: '5px', // Bordes redondeados
-                backgroundColor: '#fff', 
-            }}
+                backgroundColor: '#fff',
+                margin: 'auto' // Centrar horizontalmente
+              }}
         > 
         <h2 style={{ 
             marginBottom: '20px',
