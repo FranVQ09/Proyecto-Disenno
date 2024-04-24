@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 function Menu() {
@@ -17,7 +18,7 @@ function Menu() {
     >
         <div
             style={{
-                width: '800px', // Ancho del contenedor
+                width: '1000px', // Ancho del contenedor
                 padding: '20px', // Espaciado interno
                 border: '1px solid #ccc', // Borde
                 borderRadius: '5px', // Bordes redondeados
@@ -41,7 +42,9 @@ function Menu() {
                 justifyContent: 'center',
                 marginTop: '20px'
             }}>
-                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'300px'}}>Asistente Administrativo</Button>
+                <Link to='/asistente'>
+                    <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'300px'}}>Asistente Administrativo</Button>
+                </Link>
                 <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px'}}>Profesor</Button>
                 <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px'}}>Profesor Guía</Button>
                 <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px'}}>Estudiante</Button>
