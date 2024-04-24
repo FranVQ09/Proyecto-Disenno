@@ -12,6 +12,9 @@ import Menu from "./pages/Menu/Menu";
 //Import de Asistnete Administrativo
 import AsistenteAdministrativo from "./pages/AsistenteAdministrativo/menuAsistente";
 
+// Import Profesor Coordinador
+import MenuProfesorCoordinador from './pages/ProfesorCoordinador/MenuProfesor';
+
 function App() {
   return (
     <div>
@@ -21,6 +24,7 @@ function App() {
           <Route path="/register" element={<Register />} /> {/* Esta creado el archivo pero no se sabe si hay que hacerlo */}
           <Route path="/menu" element={<Menu />} />
           <Route path="/asistente" element={<AsistenteAdministrativo />} />
+          <Route path="/profesorCoordinador" element={<MenuProfesorCoordinador />} />
         </Routes>
       </Router>
     </div>
