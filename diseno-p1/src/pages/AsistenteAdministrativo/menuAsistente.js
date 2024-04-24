@@ -1,4 +1,5 @@
 import React from 'react';
+import AsistenteAdministrativo from '../../fotos/AsistenteAdministrativo.png';
 
 const MenuAsistente = () => {
   return (
@@ -111,7 +112,14 @@ const MenuAsistente = () => {
                 <div>Asistente</div> {/* Espaciado entre palabras */}
                 <div>Administrativo</div> {/* No se agrega margen inferior al último */}
         </h1>
-        
+        <img
+            src={AsistenteAdministrativo}
+            alt="Asistente Administrativo"
+            style={{
+                width: '50vw', // Ancho de la imagen con unidades de viewport
+                margin: '-30vh 0 0 40vw' // Margen superior e izquierdo con unidades de viewport
+            }}
+        />
     </div>
 );
 };
