@@ -1,4 +1,5 @@
 import React from 'react';
+import ProfesorCoordinadorImage from '../../fotos/ProfesorCoordinador.webp';
 
 function MenuProfesorCoordinador() {
     return (
@@ -82,6 +83,7 @@ function MenuProfesorCoordinador() {
                     Cerrar Sesión
                 </a>
             </div>
+            
             {/* Encabezado */}
             <h1
                 style={{
@@ -96,6 +98,16 @@ function MenuProfesorCoordinador() {
                 <div>Profesor</div> {/* Espaciado entre palabras */}
                 <div>Coordinador</div> {/* No se agrega margen inferior al último */}
             </h1>
+            <img
+                src={ProfesorCoordinadorImage}
+                alt="Profesor Coordinador"
+                style={{
+                    width: '33vw', // Ancho de la imagen en relación al viewport
+                    objectFit: 'cover', // Ajustar la imagen para que se ajuste al contenedor sin cambiar sus proporciones
+                    marginLeft: '40vw', // Margen izquierdo en relación al viewport
+                    marginTop: '-44vh' // Margen superior en relación al viewport
+                }}
+            />
         </div>
     );
 }
