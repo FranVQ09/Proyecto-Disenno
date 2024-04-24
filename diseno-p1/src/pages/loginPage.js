@@ -65,8 +65,6 @@ function LoginPage() {
             <Button variant="contained" color="primary" style={{ marginRight: '50px'}}>Registrarse</Button>
             </Link>
             */}
-            
-            
         </div>
         </form>
       </div>
