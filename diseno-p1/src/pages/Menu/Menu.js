@@ -8,21 +8,19 @@ function Menu() {
         style={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'flex-start', //Alinear la caja mas arriba
-        height: '70vh', // Hace que el contenedor ocupe toda la altura de la ventana
-        backgroundColor: '#E2CE1A',
-        paddingTop: '250px', // Espaciado superior
+        alignItems: 'center', // Centrar verticalmente
+        height: '100vh', // Hace que el contenedor ocupe toda la altura de la ventana
+        backgroundColor: '#E2CE1A', // Color de fondo
         overflow: 'hidden' // Ocultar el desbordamiento
-        
         }}
     >
         <div
             style={{
-                width: '1000px', // Ancho del contenedor
-                padding: '20px', // Espaciado interno
-                border: '1px solid #ccc', // Borde
-                borderRadius: '5px', // Bordes redondeados
-                backgroundColor: '#fff',
+            width: '1000px', // Ancho del contenedor
+            padding: '20px', // Espaciado interno
+            borderRadius: '5px', // Bordes redondeados
+            backgroundColor: '#FFFCA4', //Color de la caja 
+            margin: 'auto' // Centrar horizontalmente
             }}
         >
             <h2
@@ -43,11 +41,12 @@ function Menu() {
                 marginTop: '20px'
             }}>
                 <Link to='/asistente'>
-                    <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'300px'}}>Asistente Administrativo</Button>
+                    <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'300px', backgroundColor: "#38340C"}}>Asistente Administrativo</Button>
                 </Link>
-                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px'}}>Profesor</Button>
-                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px'}}>Profesor Guía</Button>
-                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px'}}>Estudiante</Button>
+                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Profesor</Button>
+                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Profesor Guía</Button>
+                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Estudiante</Button>
+                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Salir</Button>
             </div>
         </div>
     </div>
