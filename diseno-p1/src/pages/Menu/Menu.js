@@ -16,7 +16,7 @@ function Menu() {
     >
         <div
             style={{
-            width: '1000px', // Ancho del contenedor
+            width: '70%', // Ancho del contenedor
             padding: '20px', // Espaciado interno
             borderRadius: '5px', // Bordes redondeados
             backgroundColor: '#FFFCA4', //Color de la caja 

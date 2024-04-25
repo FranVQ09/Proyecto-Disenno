@@ -11,9 +11,13 @@ import Menu from "./pages/Menu/Menu";
 
 //Import de Asistnete Administrativo
 import AsistenteAdministrativo from "./pages/AsistenteAdministrativo/menuAsistente";
+import ConsultasDetalleEquipo from './pages/AsistenteAdministrativo/consultasDetalleEquipo';
+import ConsultasEstudiantes from './pages/AsistenteAdministrativo/consultasEstudiantes';
+import ConsultasPlanActividades from './pages/AsistenteAdministrativo/consultasPlanActividades';
 
 // Import Profesor Coordinador
 import MenuProfesorCoordinador from './pages/ProfesorCoordinador/MenuProfesor';
+
 
 function App() {
   return (
@@ -25,6 +29,9 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/asistente" element={<AsistenteAdministrativo />} />
           <Route path="/profesorCoordinador" element={<MenuProfesorCoordinador />} />
+          <Route path="/consultasDetalleEquipo" element={<ConsultasDetalleEquipo />} />
+          <Route path="/consultasEstudiantes" element={<ConsultasEstudiantes />} />
+          <Route path="/consultasPlanActividades" element={<ConsultasPlanActividades />} />
         </Routes>
       </Router>
     </div>

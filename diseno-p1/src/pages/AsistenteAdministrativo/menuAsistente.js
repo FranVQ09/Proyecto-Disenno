@@ -45,7 +45,7 @@ const MenuAsistente = () => {
                    Gestionar Equipo
                 </a>
                 <a
-                    href="#"
+                    href="/consultasDetalleEquipo"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
@@ -85,7 +85,7 @@ const MenuAsistente = () => {
                 </a>
             </div>
             <a
-                href="#"
+                href="/"
                 style={{
                     color: 'white',
                     fontWeight: 'bold',
