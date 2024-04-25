@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@mui/material/Button';
+import { Table, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
 
 function consultasDetalleEquipo() {
   return (
@@ -115,6 +116,26 @@ function consultasDetalleEquipo() {
           Salir
         </a>
       </div>
+       {/* Tabla dentro del primer div */}
+       <Paper style={{ marginTop: '20px', width: '50%' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Encabezado 1</TableCell>
+              <TableCell>Encabezado 2</TableCell>
+              <TableCell>Encabezado 3</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>Dato 1</TableCell>
+              <TableCell>Dato 2</TableCell>
+              <TableCell>Dato 3</TableCell>
+            </TableRow>
+            {/* Agrega más filas según sea necesario */}
+          </TableBody>
+        </Table>
+      </Paper>
     </div>
   );
 }

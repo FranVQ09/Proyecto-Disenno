@@ -70,7 +70,7 @@ function MenuProfesorCoordinador() {
                     </a>
                 </div>
                 <a
-                    href="#"
+                    href="/menu"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
