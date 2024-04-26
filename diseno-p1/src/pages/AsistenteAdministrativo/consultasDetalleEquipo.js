@@ -1,8 +1,13 @@
 import React from 'react';
-import Button from '@mui/material/Button';
-import { Table, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
+import TableBody from '@mui/material/TableBody';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import Link from '@mui/material/Link';
 
-function consultasDetalleEquipo() {
+function ConsultasDetalleEquipo() {
   return (
     <div
       style={{
@@ -10,9 +15,9 @@ function consultasDetalleEquipo() {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#E2CE1A', // Color de fondo
-        overflow: 'hidden', // Ocultar el desbordamiento
-        minHeight: '100vh', // Altura mínima de la ventana
+        backgroundColor: '#E2CE1A',
+        overflow: 'hidden',
+        minHeight: '100vh',
       }}
     >
       <div
@@ -30,107 +35,31 @@ function consultasDetalleEquipo() {
           alignItems: 'flex-start',
         }}
       >
-        <div
-          style={{
-            width: '2%',
-            height: '5vh',
-            backgroundColor: '#E2CE1A',
-            marginLeft: '2vh',
-            marginTop: '1.5vh',
-          }}
-        ></div>
-        <a
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '3vw', // Utilizando unidades de medida relativas
-            textDecoration: 'none',
-            marginLeft: '4vh',
-            marginTop: '-6vh',
-          }}
-        >
-          Consultas
-        </a>
-        <a
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '1.5vw', // Utilizando unidades de medida relativas
-            textDecoration: 'none',
-            marginTop: '25vh', // Ajustado según tus indicaciones
-            marginLeft: '3vh', // Ajustado según tus indicaciones
-            backgroundColor: '#E2CE1A',
-            padding: '0.7vh', // Añadido para un mejor aspecto
-            display: 'inline-block', // Para que los elementos se comporten como bloques en línea
-            borderRadius: '1vh', // Bordes redondeados
-          }}
-        >
-          Detalles del Equipo
-        </a>
-        <a
-          href="/consultasEstudiantes"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '1.5vw', // Utilizando unidades de medida relativas
-            textDecoration: 'none',
-            marginTop: '4vh', // Ajustado según tus indicaciones
-            marginLeft: '6vh', // Ajustado según tus indicaciones
-            backgroundColor: '#38340C',
-            padding: '1vh', // Añadido para un mejor aspecto
-            display: 'inline-block', // Para que los elementos se comporten como bloques en línea
-          }}
-        >
-          Estudiantes
-        </a>
-        <a
-          href="/consultasPlanActividades"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '1.5vw', // Utilizando unidades de medida relativas
-            textDecoration: 'none',
-            marginTop: '4vh', // Ajustado según tus indicaciones
-            marginLeft: '3vh', // Ajustado según tus indicaciones
-            padding: '0.2vh', // Añadido para un mejor aspecto
-            backgroundColor: '#38340C',
-            display: 'inline-block', // Para que los elementos se comporten como bloques en línea
-          }}
-        >
-          Plan de Actividades
-        </a>
-        <a
-          href="/asistente"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '1.5vw', // Utilizando unidades de medida relativas
-            textDecoration: 'none',
-            marginTop: '35vh', // Ajustado según tus indicaciones
-            marginLeft: '12vh', // Ajustado según tus indicaciones
-            padding: '1vh', // Añadido para un mejor aspecto
-            backgroundColor: '#38340C',
-            display: 'inline-block', // Para que los elementos se comporten como bloques en línea
-          }}
-        >
-          Salir
-        </a>
+        <div style={{ width: '2%', height: '5vh', backgroundColor: '#E2CE1A', marginLeft: '2vh', marginTop: '1.5vh' }}></div>
+        <a style={{ color: 'white', fontWeight: 'bold', fontSize: '3vw', textDecoration: 'none', padding: '0.7vh', display: 'inline-block', borderRadius: '1vh', backgroundColor: '#38340C', marginTop: '-6.5vh', marginLeft:"2vw" }}>Consultas</a>
+        <Link href="/consultasEstudiantes" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#E2CE1A', marginTop: '30vh', marginLeft: "1.2vw", borderRadius:'1vw'}}>Detalles del Equipo</Link>
+        <Link href="/consultasEstudiantes" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#38340C', marginTop: '2vh', marginLeft: "3.5vw" }}>Estudiantes</Link>
+        <Link href="/consultasPlanActividades" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: '#38340C', marginTop: '2vh', marginLeft: "1.2vw"}}>Plan de Actividades</Link>
+        <Link href="/asistente" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"30vh", marginLeft:"6vw" }}>Salir</Link>
       </div>
-       {/* Tabla dentro del primer div */}
-       <Paper style={{ marginTop: '20px', width: '50%' }}>
+      <Paper style={{ marginTop: '4vh', width: '60vw', marginLeft: "15vw" }}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Encabezado 1</TableCell>
-              <TableCell>Encabezado 2</TableCell>
-              <TableCell>Encabezado 3</TableCell>
-            </TableRow>
-          </TableHead>
+        <TableHead>
+              <TableRow>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Nombre</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Correo</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Sede</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Código</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Año</TableCell>
+              </TableRow>
+            </TableHead>
           <TableBody>
             <TableRow>
               <TableCell>Dato 1</TableCell>
               <TableCell>Dato 2</TableCell>
               <TableCell>Dato 3</TableCell>
+              <TableCell>Dato 4</TableCell>
+              <TableCell>Dato 5</TableCell>
             </TableRow>
             {/* Agrega más filas según sea necesario */}
           </TableBody>
@@ -140,4 +69,4 @@ function consultasDetalleEquipo() {
   );
 }
 
-export default consultasDetalleEquipo;
+export default ConsultasDetalleEquipo;
