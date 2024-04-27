@@ -32,7 +32,7 @@ const MenuAsistente = () => {
             {/* Enlaces del menú */}
             <div style={{ display: 'flex' }}>
                 <a
-                    href="#"
+                    href="/gestionarEquipo"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
@@ -58,7 +58,7 @@ const MenuAsistente = () => {
                     Consultas
                 </a>
                 <a
-                    href="#"
+                    href="/registrarProfesor"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
