@@ -46,7 +46,9 @@ function Menu() {
                 <Link to='/profesorCoordinador'>
                     <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Profesor Coordinador</Button>    
                 </Link>
-                <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Profesor</Button>
+                <Link to='/profesor'>
+                    <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Profesor</Button>
+                </Link>
                 <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Estudiante</Button>
                 <Button variant='contained' color='primary' style={{ marginRight:'10px', width:'200px', backgroundColor: "#38340C"}}>Salir</Button>
             </div>

@@ -20,6 +20,14 @@ import RegistrarProfesor from './pages/AsistenteAdministrativo/registrarProfesor
 // Import Profesor Coordinador
 import MenuProfesorCoordinador from './pages/ProfesorCoordinador/MenuProfesor';
 
+//Import Profesor
+import MenuProfesor from './pages/Profesor/menuProfesor';
+import ConsultasProfesor from './pages/Profesor/consultasProfesor';
+import ConsultarEstudiantesProfesor from './pages/Profesor/consultarEstudiantesProfesor';
+import ModificarProfesor from './pages/Profesor/modificarProfesor';
+import ModificarEstudiante from './pages/Profesor/modificarEstudiante';
+import PlanActividadesProfesor from './pages/Profesor/planActividaesProfesor';
+
 
 function App() {
   return (
@@ -36,6 +44,12 @@ function App() {
           <Route path="/consultasPlanActividades" element={<ConsultasPlanActividades />} />
           <Route path="/gestionarEquipo" element={<GestionarEquipo />} />
           <Route path="/registrarProfesor" element={<RegistrarProfesor />} />
+          <Route path="/profesor" element={<MenuProfesor />} />
+          <Route path="/consultasProfesor" element={<ConsultasProfesor />} />
+          <Route path="/consultarEstudiantesProfesor" element={<ConsultarEstudiantesProfesor />} />
+          <Route path="/modificarProfesor" element={<ModificarProfesor />} />
+          <Route path="/modificarEstudiante" element={<ModificarEstudiante />} />
+          <Route path="/planActividadesProfesor" element={<PlanActividadesProfesor />} />
         </Routes>
       </Router>
     </div>
