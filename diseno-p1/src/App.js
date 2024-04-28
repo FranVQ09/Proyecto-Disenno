@@ -25,6 +25,7 @@ import ModificarCoordinador from './pages/ProfesorCoordinador/ModificarCoordinad
 import ModificarEstudianteCoordinador from './pages/ProfesorCoordinador/ModificarEstudianteCoordinador';
 import CrearPlan from './pages/ProfesorCoordinador/CrearPlan';
 import ActualizarPlan from './pages/ProfesorCoordinador/ActualizarPlan';
+import VisualizarPlan from './pages/ProfesorCoordinador/VisualizarPlan';
 
 //Import Profesor
 import MenuProfesor from './pages/Profesor/menuProfesor';
@@ -62,6 +63,7 @@ function App() {
           <Route path="/modificarEstudianteCoordinador" element={<ModificarEstudianteCoordinador />} />
           <Route path="/crearPlan" element={<CrearPlan />} />
           <Route path="/actualizarPlan" element={<ActualizarPlan />} />
+          <Route path="/visualizarPlan" element={<VisualizarPlan />} />
         </Routes>
       </Router>
     </div>
