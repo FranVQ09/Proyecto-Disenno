@@ -53,7 +53,7 @@ function menuProfesor() {
                         marginRight: '10px' // Margen derecho entre enlaces
                     }}
                 >
-                    Modificar Infomración
+                    Modificar Información
                 </a>
                 <a
                     href="/planActividadesProfesor"
