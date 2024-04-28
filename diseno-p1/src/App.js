@@ -19,6 +19,10 @@ import RegistrarProfesor from './pages/AsistenteAdministrativo/registrarProfesor
 
 // Import Profesor Coordinador
 import MenuProfesorCoordinador from './pages/ProfesorCoordinador/MenuProfesor';
+import ConsultasProfesorCoordinador from './pages/ProfesorCoordinador/ConsultasProfesorCoordinador';
+import ConsultasEstudiantesCoordinador from './pages/ProfesorCoordinador/ConsultasEstudianteCoordinador';
+import ModificarCoordinador from './pages/ProfesorCoordinador/ModificarCoordinador';
+import ModificarEstudianteCoordinador from './pages/ProfesorCoordinador/ModificarEstudianteCoordinador';
 
 //Import Profesor
 import MenuProfesor from './pages/Profesor/menuProfesor';
@@ -50,6 +54,10 @@ function App() {
           <Route path="/modificarProfesor" element={<ModificarProfesor />} />
           <Route path="/modificarEstudiante" element={<ModificarEstudiante />} />
           <Route path="/planActividadesProfesor" element={<PlanActividadesProfesor />} />
+          <Route path="/consultasProfesorCoordinador" element={<ConsultasProfesorCoordinador />} />
+          <Route path="/consultasEstudianteCoordinador" element={<ConsultasEstudiantesCoordinador />} />
+          <Route path="/modificarCoordinador" element={<ModificarCoordinador />} />
+          <Route path="/modificarEstudianteCoordinador" element={<ModificarEstudianteCoordinador />} />
         </Routes>
       </Router>
     </div>

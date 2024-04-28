@@ -43,7 +43,7 @@ function MenuProfesorCoordinador() {
                         Plan Actividades
                     </a>
                     <a
-                        href="#"
+                        href="/consultasProfesorCoordinador"
                         style={{
                             color: 'white',
                             fontWeight: 'bold',
@@ -56,7 +56,7 @@ function MenuProfesorCoordinador() {
                         Consultas
                     </a>
                     <a
-                        href="#"
+                        href="/modificarCoordinador"
                         style={{
                             color: 'white',
                             fontWeight: 'bold',
