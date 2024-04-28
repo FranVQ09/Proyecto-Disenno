@@ -30,7 +30,7 @@ function MenuProfesorCoordinador() {
                 {/* Enlaces del menú */}
                 <div style={{ display: 'flex' }}>
                     <a
-                        href="#"
+                        href="/crearPlan"
                         style={{
                             color: 'white',
                             fontWeight: 'bold',
