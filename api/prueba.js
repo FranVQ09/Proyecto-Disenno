@@ -412,7 +412,10 @@ app.post("/registrarPlan", async (req, res) => {
   }
 });
 //Actividad Realizada
-app.post("/actividadRealiza",upload.single("justificacion"),async (req, res) => {
+app.post(
+  "/actividadRealiza",
+  upload.single("justificacion"),
+  async (req, res) => {
     try {
       await poolConnect;
       var request = pool.request();
@@ -433,7 +436,10 @@ app.post("/actividadRealiza",upload.single("justificacion"),async (req, res) => 
   }
 );
 //Actividad Cancelada
-app.post("/actividadCancelada",upload.single("justificacion"),async (req, res) => {
+app.post(
+  "/actividadCancelada",
+  upload.single("justificacion"),
+  async (req, res) => {
     try {
       await poolConnect;
       var request = pool.request();
@@ -453,6 +459,7 @@ app.post("/actividadCancelada",upload.single("justificacion"),async (req, res) =
     }
   }
 );
+
 //Cambiar Estado de actividad
 app.put("/cambiarEstado", upload.single("justificacion"), async (req, res) => {
   try {
@@ -461,6 +468,151 @@ app.put("/cambiarEstado", upload.single("justificacion"), async (req, res) => {
     request.input("inIdActividad", sql.Int, req.body.IdActiv);
     request.input("inEstado", sql.VarChar(32), req.body.estado);
     result = await request.execute("dbo.ActualizarEstado");
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Actualizar info estudiante testing
+app.put("/actualizarEstudiante", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdUsEnc", sql.Int, req.body.idUsEnc);
+    request.input("inIdEstudian", sql.Int, req.body.idEstudiante);
+    request.input("inNombre", sql.VarChar(32), req.body.nombre);
+    request.input("inApellido1", sql.VarChar(32), req.body.apellido1);
+    request.input("inApellido2", sql.VarChar(32), req.body.apellido2);
+    request.input("inCelular", sql.VarChar(32), req.body.celular);
+    request.input("inCorreo", sql.VarChar(64), req.body.correo);
+
+    var result = await request.execute("dbo.ActualizarEstudiante");
+
+    if (result.returnValue !== 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el ID.";
+          break;
+        case -2:
+          errorMessage = "Sede erronea.";
+          break;
+        case -3:
+          errorMessage = "Correo duplicado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Agregar profe testing
+app.post("/agregarProfeEquipo", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdEquipo", sql.Int, req.body.idEquipo);
+    request.input("inidProfesor", sql.Int, req.body.idProfesor);
+    request.input("inidUsuario", sql.Int, req.body.idUsuario);
+
+    var result = await request.execute("dbo.AgregarProfesorEquipo");
+
+    if (result.returnValue !== 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el ID.";
+          break;
+        case -2:
+          errorMessage = "Ya existe profesor.";
+          break;
+        case -4:
+          errorMessage = "Sede erronea.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Cambiar contraseña testing
+app.put("/cambiarPassword", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inCorreo", sql.VarChar(64), req.body.correo);
+    request.input("inNewPassword", sql.VarChar(32), req.body.newPassword);
+
+    var result = await request.execute("dbo.CambiarPassword");
+
+    if (result.returnValue !== 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el usuario.";
+          break;
+        case -2:
+          errorMessage = "Tiene que tener al menos 8 caracteres.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Dar de baja profesor testing
+app.delete("/darDeBajaProfeEq", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdProfesor", sql.Int, req.body.idProfesor);
+    request.input("inIdEquipo", sql.Int, req.body.idEquipo);
+    request.input("inIdAsisAdminis", sql.Int, req.body.idAsisAdminis);
+
+    var result = await request.execute("dbo.darDeBajaProfeEq");
+
+    if (result.returnValue !== 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el ID.";
+          break;
+        case -2:
+          errorMessage = "Sede erronea.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
     res.json({ Result: result.returnValue });
   } catch {
     res.status(400).json({ Result: -30 });
