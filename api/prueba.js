@@ -619,6 +619,165 @@ app.delete("/darDeBajaProfeEq", async (req, res) => {
   }
 });
 
+//Definir coordinador testing
+app.put("/definirCoordinador", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdEquipo", sql.Int, req.body.idEquipo);
+    request.input("inIdProfe", sql.Int, req.body.idProfe);
+    request.input("inIdAsisAdmin", sql.Int, req.body.idAsisAdmin);
+
+    var result = await request.execute("dbo.definirCoordinador");
+
+    if (result.returnValue !== 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el ID.";
+          break;
+        case -2:
+          errorMessage = "No se encuentra asociado con la sede.";
+          break;
+        case -3:
+          errorMessage = "Ya existe un coordinador.";
+          break;
+        case -4:
+          errorMessage = "No se encuentra el profesor.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Iniciar sesion testing
+app.post("/iniciarSesion", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inCorreo", sql.VarChar(64), req.body.correo);
+    request.input("inPassword", sql.VarChar(32), req.body.password);
+
+    var result = await request.execute("dbo.iniciarSesion");
+
+    if (result.returnValue < 1) {
+      //ID < 1 Se asume error.
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "Correo o contraseña invalido.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Obtener comentarios testing
+app.get("/obtenerComentarios", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdActividad", sql.Int, req.query.idActividad);
+
+    var result = await request.execute("dbo.obtenerComentarios");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontraron los comentarios.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Obtener datos de actvidad testing
+app.get("/obtenerDatosActividad", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdActividad", sql.Int, req.query.idActividad);
+
+    var result = await request.execute("dbo.obtenerDatosActividad");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la actividad.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Obtener datos equipo testing
+app.get("/obtenerDatosEquipo", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdEquipo", sql.Int, req.query.idEquipo);
+
+    var result = await request.execute("dbo.obtenerDatosEquipo");
+
+    if (result.returnValue < 0) {
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: "Error." });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
 //Elementos de prueba
 /*
 app.get("/pruebaExcel", (req, res) => {
