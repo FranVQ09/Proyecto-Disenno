@@ -778,6 +778,123 @@ app.get("/obtenerDatosEquipo", async (req, res) => {
   }
 });
 
+//Obtener datos estudiante testing
+app.get("/obtenerDatosEstudiante", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdUsuario", sql.Int, req.query.idUsuario);
+
+    var result = await request.execute("dbo.obtenerDatosEstudiante");
+
+    if (result.returnValue < 1) {
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: "Error." });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Obtener datos est carnet testing
+app.get("/obtenerDatosEstudianteCarnet", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdUsuario", sql.Int, req.query.idUsuario);
+
+    var result = await request.execute("dbo.obtenerDatosEstudianteCarnet");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el usuario.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Obtener datos profesor testing
+app.get("/obtenerDatosProfeso", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdProfesor", sql.Int, req.query.idProfesor);
+
+    var result = await request.execute("dbo.obtenerDatosProfeso");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el profesor.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
+//Obtener plan de trabajo testing
+app.get("/obtenerPlanTrabajo", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdEquipo", sql.Int, req.query.idEquipo);
+
+    var result = await request.execute("dbo.obtenerPlanTrabajo");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el equipo.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+
 //Elementos de prueba
 /*
 app.get("/pruebaExcel", (req, res) => {
