@@ -117,7 +117,7 @@ function RegistrarProfesor() {
                             <div {...getRootProps()} style={{ border: '2px dashed #38340C', borderRadius: '1vw', padding: '2vw' }}>
                                 <input {...getInputProps()} />
                                 <p>Arrastra y suelta una imagen aquí, o haz clic para seleccionar una imagen.</p>
-                                <p>NOTA: La Imagen debe ser formatp PNG</p>
+                                <p>NOTA: La Imagen debe ser formato PNG</p>
                             </div>
                         )}
                     </Grid>
