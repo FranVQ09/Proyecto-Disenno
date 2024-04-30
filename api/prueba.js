@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.raw());
 app.use(express.text());
 app.use(express.static("uploads"));
-/*
+
 var dbConfig = {
   user: "admin",
   password: "PnGJpG124",
@@ -32,8 +32,8 @@ var dbConfig = {
     trustServerCertificate: true,
   },
 };
-*/
 
+/*
 var dbConfig = {
   user: "sa",
   password: "1234",
@@ -47,7 +47,7 @@ var dbConfig = {
   },
   port: 1433,
 };
-
+*/
 const pool = new sql.ConnectionPool(dbConfig);
 const poolConnect = pool.connect();
 
