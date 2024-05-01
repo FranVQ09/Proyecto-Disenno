@@ -71,7 +71,7 @@ const MenuAsistente = () => {
                     Registrar Profesor
                 </a>
                 <a
-                    href="#"
+                    href="/informesExcel"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
@@ -81,7 +81,7 @@ const MenuAsistente = () => {
                         marginLeft: '10px' // Margen derecho entre enlaces
                     }}
                 >
-                    Informe Matriculados
+                    Informes
                 </a>
             </div>
             <a
