@@ -32,22 +32,6 @@ var dbConfig = {
     trustServerCertificate: true,
   },
 };
-
-/*
-var dbConfig = {
-  user: "sa",
-  password: "1234",
-  server: "ERRON",
-  database: "GETG",
-  options: {
-    trustServerCertificate: true,
-    trustedConnection: true,
-    enableArithAbort: true,
-    instancename: "MSSQLSERVER",
-  },
-  port: 1433,
-};
-*/
 const pool = new sql.ConnectionPool(dbConfig);
 const poolConnect = pool.connect();
 
@@ -93,35 +77,6 @@ app.post("/insertEstudiantes", upload.single("archivo"), async (req, res) => {
     res.status.json({ Result: -30 });
   }
 });
-
-/*
-app.post("/archivo", upload.single("archivo"), (req, res) => {
-  const archivoexcel = req.file.path;
-  if (!archivoexcel) {
-    return res.send("No se cargo los datos");
-  }
-  const workbook = xlsx.readFile(archivoexcel);
-
-  const sheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[sheetName];
-
-  const data = [];
-
-  const rango = xlsx.utils.decode_range(worksheet["!ref"]);
-  for (let rowNum = rango.s.r + 2; rowNum <= rango.e.r; rowNum++) {
-    const row = [];
-    for (let colNum = rango.s.c; colNum <= rango.e.c; colNum++) {
-      const cellAdress = xlsx.utils.encode_cell({ r: rowNum, c: colNum });
-      const cell = worksheet[cellAdress];
-      if (cell) {
-        console.log(cell["v"]);
-      }
-    }
-    data.push(row);
-  }
-  res.send(data);
-});
-*/
 //Obtener excel de todos los estudiantes
 app.get("/archivoAll", async (req, res) => {
   try {
@@ -459,7 +414,6 @@ app.post(
     }
   }
 );
-
 //Cambiar Estado de actividad
 app.put("/cambiarEstado", upload.single("justificacion"), async (req, res) => {
   try {
@@ -473,7 +427,6 @@ app.put("/cambiarEstado", upload.single("justificacion"), async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Actualizar info estudiante testing
 app.put("/actualizarEstudiante", async (req, res) => {
   try {
@@ -514,7 +467,6 @@ app.put("/actualizarEstudiante", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Agregar profe testing
 app.post("/agregarProfeEquipo", async (req, res) => {
   try {
@@ -551,7 +503,6 @@ app.post("/agregarProfeEquipo", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Cambiar contraseña testing
 app.put("/cambiarPassword", async (req, res) => {
   try {
@@ -584,7 +535,6 @@ app.put("/cambiarPassword", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Dar de baja profesor testing
 app.delete("/darDeBajaProfeEq", async (req, res) => {
   try {
@@ -618,7 +568,6 @@ app.delete("/darDeBajaProfeEq", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Definir coordinador testing
 app.put("/definirCoordinador", async (req, res) => {
   try {
@@ -658,7 +607,6 @@ app.put("/definirCoordinador", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Iniciar sesion testing
 app.post("/iniciarSesion", async (req, res) => {
   try {
@@ -692,7 +640,6 @@ app.post("/iniciarSesion", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Obtener comentarios testing
 app.get("/obtenerComentarios", async (req, res) => {
   try {
@@ -724,7 +671,6 @@ app.get("/obtenerComentarios", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Obtener datos de actvidad testing
 app.get("/obtenerDatosActividad", async (req, res) => {
   try {
@@ -756,7 +702,6 @@ app.get("/obtenerDatosActividad", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Obtener datos equipo testing
 app.get("/obtenerDatosEquipo", async (req, res) => {
   try {
@@ -777,7 +722,6 @@ app.get("/obtenerDatosEquipo", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Obtener datos estudiante testing
 app.get("/obtenerDatosEstudiante", async (req, res) => {
   try {
@@ -798,7 +742,6 @@ app.get("/obtenerDatosEstudiante", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Obtener datos est carnet testing
 app.get("/obtenerDatosEstudianteCarnet", async (req, res) => {
   try {
@@ -830,7 +773,6 @@ app.get("/obtenerDatosEstudianteCarnet", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Obtener datos profesor testing
 app.get("/obtenerDatosProfeso", async (req, res) => {
   try {
@@ -862,7 +804,6 @@ app.get("/obtenerDatosProfeso", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
-
 //Obtener plan de trabajo testing
 app.get("/obtenerPlanTrabajo", async (req, res) => {
   try {
@@ -894,9 +835,380 @@ app.get("/obtenerPlanTrabajo", async (req, res) => {
     res.status(400).json({ Result: -30 });
   }
 });
+//Obtener estudiante testing
+app.get("/obtenerEstudiante", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inSede", sql.VarChar(32), req.query.sede);
+    request.input("inCarnet", sql.VarChar(64), req.query.carnet);
 
-//Elementos de prueba
-/*
+    var result = await request.execute("dbo.obtenerEstudiante");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la sede o el estudiante.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Obtener pland de trabajo por año testing
+app.get("/obtenerPlanTrabajoPorAnno", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inAnno", sql.Int, req.query.anno);
+
+    var result = await request.execute("dbo.obtenerPlanTrabajoPorAnno");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el equipo para el año dado.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Obtener profes de sede testing
+app.get("/obtenerProfesCedes", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inSede", sql.VarChar(32), req.query.sede);
+
+    var result = await request.execute("dbo.obtenerProfesCedes");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la sede.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Obtener profes Enc testing
+app.get("/obtenerProfesEnc", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdActividad", sql.Int, req.query.idActividad);
+
+    var result = await request.execute("dbo.obtenerProfesEnc");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la actividad asociada.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Obtener proxima actividad testing
+app.get("/obtenerProxActividad", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inFechaAct", sql.Date, req.query.fechaAct);
+    request.input("inIdPlanTraba", sql.Int, req.query.idPlanTraba);
+
+    var result = await request.execute("dbo.obtenerProxActividad");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el plan de trabajo.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Obtener todo los equipos testing
+app.get("/obtTodoEquipos", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+
+    var result = await request.execute("dbo.obtTodoEquipos");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Insertar comentario testing
+app.post("/insertarComentario", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdActividad", sql.Int, req.body.idActividad);
+    request.input("inComentario", sql.VarChar(256), req.body.comentario);
+    request.input("InFecha", sql.Date, req.body.fecha);
+    request.input("inIdProfesor", sql.Int, req.body.idProfesor);
+
+    var result = await request.execute("dbo.spInsertarComentario");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la actividad asociada.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Insertar replica testing
+app.post("/insertarReplica", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdActividad", sql.Int, req.body.idActividad);
+    request.input("inComentario", sql.VarChar(256), req.body.comentario);
+    request.input("InFecha", sql.Date, req.body.fecha);
+    request.input("inIdProfesor", sql.Int, req.body.idProfesor);
+    request.input("inIdComentario", sql.Int, req.body.idComentario);
+
+    var result = await request.execute("dbo.spInsertarReplica");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la actividad asociada.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Modificar datos profesor testing
+app.put("/modificarDatoProfesor", upload.single("imagen"), async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdProfesor", sql.Int, req.body.idProfesor);
+    request.input("inNombre", sql.VarChar(32), req.body.nombre);
+    request.input("inCorreo", sql.VarChar(64), req.body.correo);
+    request.input("inApellido1", sql.VarChar(32), req.body.ap1);
+    request.input("inApellido2", sql.VarChar(32), req.body.ap2);
+    request.input("inCelular", sql.Int, req.body.celular.toString());
+    request.input("inNumOficina", sql.Int, req.body.numOfi.toString());
+    request.input("inExtension", sql.Int, req.body.exten.toString());
+    request.input("inImagen", sql.VarChar(128), req.file.path);
+    request.input("inIdUsEnc", sql.Int, req.body.idUsEnc);
+
+    var result = await request.execute("dbo.spModificarDatoProfesor");
+
+    if (result.returnValue !== 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el ID.";
+          break;
+        case -2:
+          errorMessage = "Las sedes no coinciden.";
+          break;
+        case -3:
+          errorMessage = "Email duplicado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json({ Result: result.returnValue });
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+//Obtener actividades testing
+app.get("/spObtenerActivi", async (req, res) => {
+  try {
+    await poolConnect;
+    var request = pool.request();
+    request.input("inIdPlanTrab", sql.Int, req.query.idPlanTrab);
+
+    const result = await request.execute("dbo.spObtenerActivi");
+
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se enccontro el plan de trabajo.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+
+    res.json(result.recordset);
+  } catch {
+    res.status(400).json({ Result: -30 });
+  }
+});
+app.listen(3000);
+console.log(`Server on port ${3000}`);
+
+/*                    Conexion local
+var dbConfig = {
+  user: "sa",
+  password: "1234",
+  server: "ERRON",
+  database: "GETG",
+  options: {
+    trustServerCertificate: true,
+    trustedConnection: true,
+    enableArithAbort: true,
+    instancename: "MSSQLSERVER",
+  },
+  port: 1433,
+};
+*/
+/*                    Elemento de prueba
+app.post("/archivo", upload.single("archivo"), (req, res) => {
+  const archivoexcel = req.file.path;
+  if (!archivoexcel) {
+    return res.send("No se cargo los datos");
+  }
+  const workbook = xlsx.readFile(archivoexcel);
+
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+
+  const data = [];
+
+  const rango = xlsx.utils.decode_range(worksheet["!ref"]);
+  for (let rowNum = rango.s.r + 2; rowNum <= rango.e.r; rowNum++) {
+    const row = [];
+    for (let colNum = rango.s.c; colNum <= rango.e.c; colNum++) {
+      const cellAdress = xlsx.utils.encode_cell({ r: rowNum, c: colNum });
+      const cell = worksheet[cellAdress];
+      if (cell) {
+        console.log(cell["v"]);
+      }
+    }
+    data.push(row);
+  }
+  res.send(data);
+});
+*/
+/*                      Elementos de prueba
 app.get("/pruebaExcel", (req, res) => {
   const data = [
     ["", "Estudiantes"],
@@ -929,6 +1241,3 @@ app.get("/", async (req, res) => {
   res.json(result.recordset)
 });
 */
-
-app.listen(3000);
-console.log(`Server on port ${3000}`);
