@@ -44,12 +44,6 @@ function CrearPlan() {
                     <h1 style={{ color: '#38340C', fontSize: '1.5vw', textAlign: 'left', marginBottom: '3vh' }}>Crear Plan</h1>
                     <form>
                         <TextField
-                            label="Nombre de la actividad"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                        />
-                        <TextField
                             label="Período lectivo"
                             variant="outlined"
                             fullWidth
