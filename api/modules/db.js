@@ -16,7 +16,7 @@ const pool = new sql.ConnectionPool(dbConfig);
 const poolConnect = pool.connect();
 
 async function getPool() {
-  await poolConnect; // Ensure the pool is connected
+  await poolConnect;
   return pool;
 }
 

@@ -13,7 +13,6 @@ app.use(express.raw());
 app.use(express.text());
 app.use(express.static("uploads"));
 
-// Attach routers
 app.use("/students", studentsRouter);
 app.use("/professors", professorsRouter);
 app.use("/activities", activitiesRouter);
