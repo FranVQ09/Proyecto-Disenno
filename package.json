@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@mui/x-data-grid": "^7.3.0"
+    "@mui/x-data-grid": "^7.3.0",
+    "cors": "^2.8.5"
   }
 }

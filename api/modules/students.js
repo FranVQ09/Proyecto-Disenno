@@ -15,7 +15,12 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20 MB (en bytes)
+  },
+});
 
 studentsRouter.post(
   "/insertEstudiantes",

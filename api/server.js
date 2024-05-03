@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const cors = requiere("cors");
 const { studentsRouter } = require("./modules/students");
 const { professorsRouter } = require("./modules/professors");
 const { activitiesRouter } = require("./modules/activities");
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(express.raw());
 app.use(express.text());
 app.use(express.static("uploads"));
+app.use(cors());
 
 app.use("/students", studentsRouter);
 app.use("/professors", professorsRouter);
