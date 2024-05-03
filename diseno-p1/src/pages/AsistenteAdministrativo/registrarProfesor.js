@@ -5,17 +5,24 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { useDropzone } from 'react-dropzone';
 import { Link } from 'react-router-dom';
+import { InputLabel, Select } from '@mui/material';
+import { MenuItem } from '@mui/material';
+import { FormControl } from '@mui/material';
+import axios from 'axios';  
+
 
 function RegistrarProfesor() {
     const [image, setImage] = useState(null);
     const [formValues, setFormValues] = useState({
         nombre: '',
-        apellido1: '',
-        apellido2: '',
+        ap1: '',
+        ap2: '',
         correo: '',
-        telefonoOficina: '',
-        telefonoCelular: ''
+        numOfi: '',
+        celular: '',
+        exten: '',
     });
+    const [selectedSede, setSelectedSede] = useState('');
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -29,39 +36,53 @@ function RegistrarProfesor() {
         setImage(null);
     };
 
-    const handleRegistrar = () => {
-        // Aquí puedes enviar los valores del formulario a tu backend para guardar en la base de datos
-        console.log('Valores del formulario:', formValues);
-        // Aquí podrías resetear el formulario si lo deseas
-        setFormValues({
-            nombre: '',
-            apellido1: '',
-            apellido2: '',
-            correo: '',
-            telefonoOficina: '',
-            telefonoCelular: ''
-        });
-        handleDeleteImage();
-        alert('Profesor registrado correctamente');
+    const handleRegistrar = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('nombre', formValues.nombre);
+            formData.append('ap1', formValues.ap1);
+            formData.append('ap2', formValues.ap2);
+            formData.append('correo', formValues.correo);
+            formData.append('numOfi', formValues.numOfi);
+            formData.append('celular', formValues.celular);
+            formData.append('sede', selectedSede);
+            formData.append('exten', formValues.exten);
+            formData.append('imagen', image);
+
+            const response = await axios.post('http://3.14.65.142:3000/registrarProfe', formData);
+
+            alert('Profesor registrado exitosamente');
+
+        } catch (error) {
+            console.error('Error al registrar profesor: ', error);
+            alert('Error al registrar profesor');
+
+            console.log(formValues.nombre)
+            console.log(formValues.ap1)
+            console.log(formValues.ap2)
+            console.log(formValues.correo)
+            console.log(formValues.numOfi)
+            console.log(formValues.celular)
+            console.log(selectedSede)
+            console.log(formValues.exten)
+            console.log(image)
+
+        }
     };
 
     const onDrop = (acceptedFiles) => {
         const file = acceptedFiles[0];
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setImage(reader.result);
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+        setImage(file); 
     };
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: 'image/*',
+        accept: 'image/png, image/jpeg, image/jpg', // Solo aceptar archivos PNG, JPEG y JPG
         onDrop,
     });
+
+    const handleSede = (event) => {
+        setSelectedSede(event.target.value);
+    };
 
     return (
         <div
@@ -91,19 +112,39 @@ function RegistrarProfesor() {
                         <TextField name="nombre" label="Nombre" variant="outlined" fullWidth value={formValues.nombre} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="apellido1" label="Apellido 1" variant="outlined" fullWidth value={formValues.apellido1} onChange={handleChange} />
+                        <TextField name="ap1" label="Apellido 1" variant="outlined" fullWidth value={formValues.ap1} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="apellido2" label="Apellido 2" variant="outlined" fullWidth value={formValues.apellido2} onChange={handleChange} />
+                        <TextField name="ap2" label="Apellido 2" variant="outlined" fullWidth value={formValues.ap2} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField name="correo" label="Correo" type="email" variant="outlined" fullWidth value={formValues.correo} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="telefonoOficina" label="Teléfono de Oficina" variant="outlined" fullWidth value={formValues.telefonoOficina} onChange={handleChange} />
+                        <TextField name="numOfi" label="Teléfono de Oficina" variant="outlined" fullWidth value={formValues.numOfi} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="telefonoCelular" label="Teléfono Celular" variant="outlined" fullWidth value={formValues.telefonoCelular} onChange={handleChange} />
+                        <TextField name="celular" label="Teléfono Celular" variant="outlined" fullWidth value={formValues.celular} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel id="sede-label">Seleccione una sede</InputLabel>
+                            <Select
+                            labelId="sede-label"
+                            value={selectedSede}
+                            onChange={handleSede}
+                            displayEmpty
+                            >
+                                <MenuItem value='CA'>Cartago</MenuItem>
+                                <MenuItem value='SJ'>San José</MenuItem>
+                                <MenuItem value='AL'>Alajuela</MenuItem>
+                                <MenuItem value='SC'>San Carlos</MenuItem>
+                                <MenuItem value='LI'>Limón</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField name="exten" label="Extensión" variant="outlined" fullWidth value={formValues.exten} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={5} style={{ marginLeft:"24vw"}}>
                         {image ? (
@@ -117,7 +158,7 @@ function RegistrarProfesor() {
                             <div {...getRootProps()} style={{ border: '2px dashed #38340C', borderRadius: '1vw', padding: '2vw' }}>
                                 <input {...getInputProps()} />
                                 <p>Arrastra y suelta una imagen aquí, o haz clic para seleccionar una imagen.</p>
-                                <p>NOTA: La Imagen debe ser formato PNG</p>
+                                <p>NOTA: La Imagen debe ser formato PNG o JPEG</p>
                             </div>
                         )}
                     </Grid>
