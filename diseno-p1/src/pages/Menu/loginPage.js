@@ -1,18 +1,48 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Importa useNavigate en lugar de useHistory
+import axios from 'axios';
 
 function LoginPage() {
   const [correo, setCorreo] = useState('');
-  const [contraseña, setContraseña] = useState('');
+  const [password, setPassword] = useState('');
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // Estado para controlar la visibilidad del formulario
+  const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory
 
   const handleLogin = async () => {
-    // Lógica para manejar el inicio de sesión...
+    try {
+      const response = await axios.post('http://3.14.65.142:3000/iniciarSesion', {
+        correo: correo, 
+        password: password
+      });
+  
+      if (response.data.Result === 1) {
+        navigate('/profesor'); // Utiliza navigate para redirigir
+      } else {
+        alert('Correo o contraseña incorrectos');
+      }
+  
+    } catch (error) {
+      console.error('Error al iniciar sesión: ', error);
+      alert('Error al iniciar sesión');
+    }
+  };
+
+  const handleCambiarPassword = () => {
+    setShowChangePasswordForm(true); // Cuando se hace clic en el botón, muestra el formulario
+  };
+
+  const handleCancelarCambiarContraseña = () => {
+    setShowChangePasswordForm(false);
+  }
+
+  const handleSubmitChangePassword = async () => {
+    // Lógica para enviar el formulario de cambio de contraseña...
   };
 
   return (
-    //Contenedor principa, ventana de fondo
+    // Contenedor principal, ventana de fondo
     <div
       style={{
         display: 'flex',
@@ -29,7 +59,7 @@ function LoginPage() {
           width: '30%', // Ancho del contenedor
           padding: '20px', // Espaciado interno
           borderRadius: '5px', // Bordes redondeados
-          backgroundColor: '#FFFCA4', //Color de la caja 
+          backgroundColor: '#FFFCA4', // Color de la caja 
           margin: 'auto' // Centrar horizontalmente
         }}
       >
@@ -49,6 +79,8 @@ function LoginPage() {
             label="Correo Electrónico"
             variant="outlined"
             fullWidth
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
             sx={{
               marginBottom: '20px', // Espaciado
               width: '100%', // Ancho del campo de texto
@@ -56,11 +88,13 @@ function LoginPage() {
             }}
           />
           <TextField
-            id="contraseña"
+            id="password"
             label="Contraseña"
             type="password"
             variant="outlined"
             fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             sx={{
               marginBottom: '20px',
               width: '100%',
@@ -74,16 +108,62 @@ function LoginPage() {
               marginTop: '20px'
             }}
           >
-            <Link to="/menu" style={{ textDecoration: 'none' }}>
-              <Button variant="contained" onClick={handleLogin} style={{
-                backgroundColor: "#38340C",
-              }}>
-                Iniciar Sesión
-              </Button>
-            </Link>
+            <Button variant="contained" onClick={handleLogin} style={{
+              backgroundColor: "#38340C",
+              border:" 0.2vw solid #38340C",
+              marginRight: "1rem"
+            }}>
+              Iniciar Sesión
+            </Button>
+            {/* Botón para cambiar contraseña */}
+            <Button onClick={handleCambiarPassword}  style={{ color:"#38340C", border:" 0.2vw solid #38340C" }}>
+              Cambiar Contraseña
+            </Button>
           </div>
         </form>
       </div>
+      {/* Formulario de cambio de contraseña */}
+      {showChangePasswordForm && (
+        <div
+          style={{
+            position: 'absolute',
+            width:"30vw",
+            height:"27vh",
+            top: '50%', // Centra verticalmente
+            left: '50%', // Centra horizontalmente
+            transform: 'translate(-50%, -50%)', // Centra el formulario
+            padding: '20px',
+            borderRadius: '5px',
+            backgroundColor: '#FFFCA4',
+            zIndex: 9999
+          }}
+        >
+          <h1 style={{ textAlign: 'center' }}>Cambiar Contraseña</h1>
+          <form onSubmit={handleSubmitChangePassword}>
+            <TextField
+              id="correo"
+              label="Correo Electrónico"
+              variant="outlined"
+              fullWidth
+              sx={{ marginBottom: '20px' }}
+            />
+            <TextField
+              id="password"
+              label="Cambiar Contraseña"
+              type="password"
+              variant="outlined"
+              fullWidth
+              sx={{ marginBottom: '20px' }}
+            />
+            <Button type="submit" variant="contained" style={{ backgroundColor: "#38340C", color: "#FFF", border:" 0.2vw solid #38340C" }}>
+              Cambiar
+            </Button>
+            <Button onClick={handleCancelarCambiarContraseña} style={{ marginLeft: "1vw", color:"#38340C",  border:" 0.2vw solid #38340C" }}>
+              Cancelar
+            </Button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

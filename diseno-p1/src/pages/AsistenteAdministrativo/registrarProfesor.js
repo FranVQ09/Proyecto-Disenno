@@ -18,6 +18,7 @@ function RegistrarProfesor() {
         ap1: '',
         ap2: '',
         correo: '',
+        password: '',
         numOfi: '',
         celular: '',
         exten: '',
@@ -43,13 +44,14 @@ function RegistrarProfesor() {
             formData.append('ap1', formValues.ap1);
             formData.append('ap2', formValues.ap2);
             formData.append('correo', formValues.correo);
+            formData.append('password', formValues.password);
             formData.append('numOfi', formValues.numOfi);
             formData.append('celular', formValues.celular);
             formData.append('sede', selectedSede);
             formData.append('exten', formValues.exten);
             formData.append('imagen', image);
 
-            const response = await axios.post('http://3.14.65.142:3000/registrarProfe', formData);
+            const response = await axios.post('http://3.14.65.142:3000/professors/registrarProfe', formData);
 
             alert('Profesor registrado exitosamente');
 
@@ -61,6 +63,7 @@ function RegistrarProfesor() {
             console.log(formValues.ap1)
             console.log(formValues.ap2)
             console.log(formValues.correo)
+            console.log(formValues.password)
             console.log(formValues.numOfi)
             console.log(formValues.celular)
             console.log(selectedSede)
@@ -119,6 +122,9 @@ function RegistrarProfesor() {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField name="correo" label="Correo" type="email" variant="outlined" fullWidth value={formValues.correo} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField name="password" label="Contraseña" type="password" variant="outlined" fullWidth value={formValues.password} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField name="numOfi" label="Teléfono de Oficina" variant="outlined" fullWidth value={formValues.numOfi} onChange={handleChange} />
