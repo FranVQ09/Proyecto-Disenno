@@ -7,8 +7,10 @@ import axios from 'axios';
 function LoginPage() {
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // Estado para controlar la visibilidad del formulario
   const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory
+  const añoActual = new Date().getFullYear();
 
   const handleLogin = async () => {
     try {
@@ -16,13 +18,30 @@ function LoginPage() {
         correo: correo, 
         password: password
       });
-  
-      if (response.data.Result === 1) {
-        navigate('/profesor'); // Utiliza navigate para redirigir
-      } else {
-        alert('Correo o contraseña incorrectos');
-      }
-  
+
+      if (response.data.body[0].Tipo === 1) {
+        const result = await axios.get('http://3.14.65.142:3000/professors/esCoordinador', {
+          params: {
+            idAnno: añoActual,
+            idProfesor: response.data.body[0].Id
+          }
+        });
+
+        console.log(result.data);
+        if (result.data.Result === -1 || result.data.body[0].isCoordinador === -2 || result.data.body[0].isCoordinador === 0) { 
+          navigate('/profesor');
+        } else {
+          navigate('/profesorCoordinador');
+        }
+
+        } else if (response.data.body[0].Tipo === 3) {
+          navigate('/asistente');
+        } else {
+          alert('Profesor no registrado');
+        }
+      setCorreo('');
+      setPassword('');
+      
     } catch (error) {
       console.error('Error al iniciar sesión: ', error);
       alert('Error al iniciar sesión');
@@ -30,15 +49,32 @@ function LoginPage() {
   };
 
   const handleCambiarPassword = () => {
-    setShowChangePasswordForm(true); // Cuando se hace clic en el botón, muestra el formulario
+    setShowChangePasswordForm(true); // Muestra el formulario de cambio de contraseña
   };
 
   const handleCancelarCambiarContraseña = () => {
     setShowChangePasswordForm(false);
   }
 
-  const handleSubmitChangePassword = async () => {
-    // Lógica para enviar el formulario de cambio de contraseña...
+  const handleSubmitChangePassword = async (e) => {
+    e.preventDefault();
+    try {
+      // Actualiza el estado 'password' con el valor del campo de contraseña
+      setPassword(newPassword);
+      const response = await axios.put('http://3.14.65.142:3000/cambiarPassword', {
+        correo: correo,
+        newPassword: newPassword
+      });
+      alert('Contraseña cambiada correctamente');
+      setCorreo('');
+      setNewPassword('');
+      setPassword('');
+      setShowChangePasswordForm(false);
+      
+    } catch (error) {
+      console.error('Error al cambiar la contraseña: ', error);
+      alert('Error al cambiar la contraseña');
+    }
   };
 
   return (
@@ -129,11 +165,11 @@ function LoginPage() {
             position: 'absolute',
             width:"30vw",
             height:"27vh",
-            top: '50%', // Centra verticalmente
-            left: '50%', // Centra horizontalmente
+            top: '50vh', // Centra verticalmente
+            left: '50vw', // Centra horizontalmente
             transform: 'translate(-50%, -50%)', // Centra el formulario
-            padding: '20px',
-            borderRadius: '5px',
+            padding: '2vh',
+            borderRadius: '0.5vw',
             backgroundColor: '#FFFCA4',
             zIndex: 9999
           }}
@@ -145,15 +181,19 @@ function LoginPage() {
               label="Correo Electrónico"
               variant="outlined"
               fullWidth
-              sx={{ marginBottom: '20px' }}
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              sx={{ marginBottom: '2vh' }}
             />
             <TextField
-              id="password"
+              id="newPassword"
               label="Cambiar Contraseña"
               type="password"
               variant="outlined"
               fullWidth
-              sx={{ marginBottom: '20px' }}
+              value={newPassword} // Establece el valor del campo de contraseña como el estado 'newPassword'
+              onChange={(e) => setNewPassword(e.target.value)} // Actualiza el estado 'newPassword' al cambiar el valor del campo
+              sx={{ marginBottom: '2vh' }}
             />
             <Button type="submit" variant="contained" style={{ backgroundColor: "#38340C", color: "#FFF", border:" 0.2vw solid #38340C" }}>
               Cambiar
