@@ -58,18 +58,6 @@ function RegistrarProfesor() {
         } catch (error) {
             console.error('Error al registrar profesor: ', error);
             alert('Error al registrar profesor');
-
-            console.log(formValues.nombre)
-            console.log(formValues.ap1)
-            console.log(formValues.ap2)
-            console.log(formValues.correo)
-            console.log(formValues.password)
-            console.log(formValues.numOfi)
-            console.log(formValues.celular)
-            console.log(selectedSede)
-            console.log(formValues.exten)
-            console.log(image)
-
         }
     };
 

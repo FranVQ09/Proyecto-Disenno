@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Link, useNavigate } from 'react-router-dom'; // Importa useNavigate en lugar de useHistory
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate en lugar de useHistory
 import axios from 'axios';
 
 function LoginPage() {
