@@ -51,6 +51,10 @@ function RegistrarProfesor() {
             formValues.exten, 
             image);
         profesor.almacenarBaseDatos();
+
+        setFormValues({nombre: '', ap1: '', ap2: '', correo: '', password: '', numOfi: '', celular: '', exten: ''});
+        setSelectedSede('');
+        setImage(null);
     };
 
     const onDrop = (acceptedFiles) => {
