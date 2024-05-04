@@ -1,5 +1,6 @@
-class Estudiante {
+class Estudiante extends Persistible{
     constructor(nombre, apellido1, apellido2, carnet, correo, password, celular, sede) {
+        super();
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
@@ -17,6 +18,10 @@ class Estudiante {
         } else {
             alert("No se encontró el estudiante");
         }
+    }
+
+    almacenarBaseDatos() {
+        
     }
 }
 

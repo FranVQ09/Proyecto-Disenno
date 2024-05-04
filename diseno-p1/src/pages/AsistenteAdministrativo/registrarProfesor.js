@@ -9,6 +9,7 @@ import { InputLabel, Select } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { FormControl } from '@mui/material';
 import axios from 'axios';  
+import Profesor from '../../Factory/Profesor';
 
 
 function RegistrarProfesor() {
@@ -38,27 +39,18 @@ function RegistrarProfesor() {
     };
 
     const handleRegistrar = async () => {
-        try {
-            const formData = new FormData();
-            formData.append('nombre', formValues.nombre);
-            formData.append('ap1', formValues.ap1);
-            formData.append('ap2', formValues.ap2);
-            formData.append('correo', formValues.correo);
-            formData.append('password', formValues.password);
-            formData.append('numOfi', formValues.numOfi);
-            formData.append('celular', formValues.celular);
-            formData.append('sede', selectedSede);
-            formData.append('exten', formValues.exten);
-            formData.append('imagen', image);
-
-            const response = await axios.post('http://3.14.65.142:3000/professors/registrarProfe', formData);
-
-            alert('Profesor registrado exitosamente');
-
-        } catch (error) {
-            console.error('Error al registrar profesor: ', error);
-            alert('Error al registrar profesor');
-        }
+        const profesor = new Profesor(
+            formValues.nombre, 
+            formValues.ap1, 
+            formValues.ap2, 
+            formValues.correo, 
+            formValues.password,
+            selectedSede, 
+            formValues.celular,
+            formValues.numOfi, 
+            formValues.exten, 
+            image);
+        profesor.almacenarBaseDatos();
     };
 
     const onDrop = (acceptedFiles) => {

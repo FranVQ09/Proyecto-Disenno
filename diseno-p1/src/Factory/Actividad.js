@@ -1,5 +1,6 @@
-class Actividad {
+class Actividad extends Persistible{
     constructor(nombre, tipo, fecha, semana, modalidad, enlance, afiche, estado, planTrabajo, recordatorios, responsables){
+        super();
         this.nombre = nombre;
         this.tipo = tipo;
         this.fecha = fecha;
@@ -11,6 +12,10 @@ class Actividad {
         this.planTrabajo = planTrabajo;
         this.recordatorios = recordatorios;
         this.responsables = responsables;
+    }
+
+    almacenarBaseDatos() {
+        
     }
 }
 

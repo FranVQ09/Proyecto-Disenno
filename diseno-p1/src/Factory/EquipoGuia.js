@@ -1,5 +1,6 @@
-class EquipoGuia {
+class EquipoGuia extends Persistible{
     constructor(){
+        super();
         this.profesores = []; 
     }
 
@@ -13,6 +14,10 @@ class EquipoGuia {
 
     obtenerProfesores(){
         return this.profesores;
+    }
+
+    almacenarBaseDatos() {
+        
     }
 }
 

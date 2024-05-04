@@ -1,5 +1,6 @@
-class PlanDeActividades {
+class PlanDeActividades extends Persistible{
     constructor() {
+        super()
         this.actividades = [];
     }
 
@@ -43,6 +44,10 @@ class PlanDeActividades {
 
     obtenerPlan() {
         return this.actividades;
+    }
+
+    almacenarBaseDatos() {
+        
     }
 }
 
