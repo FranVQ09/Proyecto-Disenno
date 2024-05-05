@@ -19,7 +19,8 @@ function GestionarEquipo() {
     const [ selectedProfesor, setSelectedProfesor ] = useState('')
     const { userId } = useUser();
 
-    console.log("UserId: ", userId);
+    console.log(userId);
+
     useEffect(() => {
         const equiposData = [
             {

@@ -3,6 +3,11 @@ import AsistenteAdministrativo from '../../fotos/AsistenteAdministrativo.png';
 
 
 const MenuAsistente = () => {
+    const userId = sessionStorage.getItem('userId');
+
+    console.log(userId);
+
+    
   return (
     // Contenedor principal
     <div

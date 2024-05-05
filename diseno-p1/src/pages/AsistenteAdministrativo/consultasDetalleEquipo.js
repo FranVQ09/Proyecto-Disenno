@@ -10,12 +10,15 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+
 function ConsultasDetalleEquipo() {
   const [año, setAño] = useState('');
   const [buscarEquipo, setBuscarEquipo] = useState(true);
   const [mostrarDetalles, setMostrarDetalles] = useState(false);
   const [datosEquipo, setDatosEquipo] = useState([]);
+  const userId = sessionStorage.getItem('userId');
 
+  console.log(userId);
 
   const handleSubmit = (event) => {
     event.preventDefault();
