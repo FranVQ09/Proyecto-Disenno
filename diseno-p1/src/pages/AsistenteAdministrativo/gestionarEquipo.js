@@ -88,7 +88,8 @@ function GestionarEquipo() {
                 <a style={{ color: 'white', fontWeight: 'bold', fontSize: '3vw', textDecoration: 'none', display: 'inline-block', backgroundColor: '#38340C', marginLeft: '1vw' }}>Gestionar</a>
                 <a style={{ color: 'white', fontWeight: 'bold', fontSize: '3vw', textDecoration: 'none', display: 'inline-block', backgroundColor: '#38340C', marginLeft: '1vw' }}>Equipo</a>
             </div>
-            <Link href="/consultasProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#E2CE1A', marginTop: '30vh', marginLeft: "2vw", borderRadius:'1vw'}}>Detalles de Equipo</Link>
+            <Link href="/consultasProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#E2CE1A', marginTop: '25vh', marginLeft: "2vw", borderRadius:'1vw'}}>Detalles de Equipo</Link>
+            <Link href="/agregarProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"1vh", marginLeft:"2.5vw", borderRadius:'1vw'}}>Agregar Profesor</Link>
             <Link href="/asistente" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"35vh", marginLeft:"6vw" }}>Salir</Link>
         </div>
         <div style={{display:"flex", justifyContent:"center", width:"30vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw' }}>

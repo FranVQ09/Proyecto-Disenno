@@ -8,6 +8,7 @@ import TableCell from '@mui/material/TableCell';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function ConsultasDetalleEquipo() {
   const [año, setAño] = useState('');
@@ -36,6 +37,13 @@ function ConsultasDetalleEquipo() {
     setBuscarEquipo(true);
     setMostrarDetalles(false);
     setAño('');
+  }
+
+  const handleEliminar = (codigo) => {
+    const nuevosDatosEquipo = datosEquipo.filter((profesor) => profesor.codigo !== codigo);
+
+    setDatosEquipo(nuevosDatosEquipo);
+    alert('Profesor eliminado exitosamente');
   }
 
   return (
@@ -102,6 +110,7 @@ function ConsultasDetalleEquipo() {
                   <TableCell style={{ color:"#FFFF"}}>Apellido 1</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Apellido 2</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Coordinador</TableCell>
+                  <TableCell style={{ color:"#FFFF"}}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody style={{ backgroundColor:"#FFFF"}}>
@@ -112,6 +121,12 @@ function ConsultasDetalleEquipo() {
                     <TableCell>{profesor.apellido1}</TableCell>
                     <TableCell>{profesor.apellido2}</TableCell>
                     <TableCell>{profesor.coordinador}</TableCell>
+                    <TableCell>
+                    <DeleteIcon 
+                      onClick={() => handleEliminar(profesor.codigo)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

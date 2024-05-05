@@ -15,6 +15,7 @@ import ConsultasDetalleEquipo from './pages/AsistenteAdministrativo/consultasDet
 import ConsultasEstudiantes from './pages/AsistenteAdministrativo/consultasEstudiantes';
 import ConsultasPlanActividades from './pages/AsistenteAdministrativo/consultasPlanActividades';
 import GestionarEquipo from './pages/AsistenteAdministrativo/gestionarEquipo';
+import AgregarProfesor from './pages/AsistenteAdministrativo/agregarProfesor';
 import RegistrarProfesor from './pages/AsistenteAdministrativo/registrarProfesor';
 import InformesExcel from './pages/AsistenteAdministrativo/InformesExcel';
 import CargarInforme from './pages/AsistenteAdministrativo/CargarInforme';
@@ -52,6 +53,7 @@ function App() {
           <Route path="/consultasEstudiantes" element={<ConsultasEstudiantes />} />
           <Route path="/consultasPlanActividades" element={<ConsultasPlanActividades />} />
           <Route path="/gestionarEquipo" element={<GestionarEquipo />} />
+          <Route path="/agregarProfesor" element={<AgregarProfesor />} />
           <Route path="/registrarProfesor" element={<RegistrarProfesor />} />
           <Route path="/informesExcel" element={<InformesExcel />} />
           <Route path="/cargarInforme" element={<CargarInforme />} />
