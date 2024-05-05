@@ -1,6 +1,7 @@
 import React from 'react';
 import AsistenteAdministrativo from '../../fotos/AsistenteAdministrativo.png';
 
+
 const MenuAsistente = () => {
   return (
     // Contenedor principal
