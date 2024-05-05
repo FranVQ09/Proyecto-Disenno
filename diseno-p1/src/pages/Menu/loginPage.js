@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate en lugar de useHistory
 import axios from 'axios';
+import { useUser } from '../../UserContext';
 
 function LoginPage() {
   const [correo, setCorreo] = useState('');
@@ -11,6 +12,7 @@ function LoginPage() {
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // Estado para controlar la visibilidad del formulario
   const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory
   const añoActual = new Date().getFullYear();
+  const { setUserId } = useUser();
 
   const handleLogin = async () => {
     try {
@@ -18,6 +20,8 @@ function LoginPage() {
         correo: correo, 
         password: password
       });
+      
+      setUserId(response.data.body[0].id);
 
       if (response.data.body[0].Tipo === 1) {
         const result = await axios.get('http://3.14.65.142:3000/professors/esCoordinador', {

@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-
+import { useUser } from '../../UserContext';
 
 
 function GestionarEquipo() {
@@ -17,7 +17,9 @@ function GestionarEquipo() {
     const [ año, setAño ] = useState('')
     const [ profesores, setProfesores ] = useState([])
     const [ selectedProfesor, setSelectedProfesor ] = useState('')
+    const { userId } = useUser();
 
+    console.log("UserId: ", userId);
     useEffect(() => {
         const equiposData = [
             {
