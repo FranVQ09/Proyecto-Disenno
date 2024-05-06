@@ -11,6 +11,7 @@ import { CheckCircle, ConstructionOutlined, RadioButtonUnchecked } from '@mui/ic
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import { resolveBreakpointValues } from '@mui/system/breakpoints';
 
 
 function AgregarProfesor() {
@@ -19,8 +20,10 @@ function AgregarProfesor() {
     const [agregarForm, setAgregarForm] = useState(false);
     const [profesorSeleccionado, setProfesorSeleccionado] = useState('');
     const [esCoordinador, setEsCoordinador] = useState(false);
-
+    const [profesoresSede, setProfesoresSede] = useState([]);
     const [idEquipo, setIdEquipo] = useState(0);
+    const userSede = sessionStorage.getItem('userSede');
+    const userId = sessionStorage.getItem('userId');
   
 
     const handleSubmit = async (event) => {
@@ -28,16 +31,23 @@ function AgregarProfesor() {
         
         try{
             const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
-            params: {
-                anno: año
-            }
+                params: {
+                    anno: año
+                }
             })
             setIdEquipo(result.data[0].id);
 
             if ( idEquipo > 0) {
-            setBuscarEquipo(false);
-            setAgregarForm(true);
+                setBuscarEquipo(false);
+                setAgregarForm(true);
             }
+
+            const response = await axios.get('http://3.14.65.142:3000/obtenerProfesCedes', {
+                params: {
+                    sede: userSede
+                }
+            })
+            setProfesoresSede(response.data);
         } catch (error) {
             console.error(error);
             alert('No se encontro el equipo para el año dado.');
@@ -50,8 +60,23 @@ function AgregarProfesor() {
         setProfesorSeleccionado(event.target.value);
     };
 
-    const handleAgregar = (event) => {
+    const handleAgregar = async (event) => {
         event.preventDefault();
+        const idUsuarioEntero = parseInt(userId); 
+        console.log("UserId: ", idUsuarioEntero);
+        console.log("IdEquipo: ", idEquipo);
+        console.log("IdProfesor: ", profesorSeleccionado.id);
+        try {
+            const result = await axios.post('http://3.14.65.142:3000/professors/agregarProfeEquipo', {
+                idEquipo: idEquipo,
+                idProfesor: profesorSeleccionado.id,
+                idUsuario: idUsuarioEntero
+            })
+        } catch (error) {
+            console.error(error);
+            alert(error.response.data.Message);
+            setProfesorSeleccionado('');
+        }
         setAgregarForm(false);
         setProfesorSeleccionado('');
         setEsCoordinador(false);
@@ -125,7 +150,7 @@ function AgregarProfesor() {
             </Paper>
             )}
         {agregarForm && (
-            <Paper Paper elevation={3} style={{ width:"50vw", padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw" }}>
+            <Paper elevation={3} style={{ width:"50vw", padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw" }}>
                 <h1 style={{ color: '#38340C', fontSize: '2.5vw', textAlign: 'center', marginBottom: '3vh' }}>Agregar Profesor</h1>
                 <div style={{ display:"flex", justifyContent:"center" }}>
                     <form onSubmit={handleAgregar} style={{ display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center" }}>
@@ -136,19 +161,19 @@ function AgregarProfesor() {
                             id="profesores"
                             value={profesorSeleccionado}
                             onChange={handleChange}
-                            style={{ width:"10vw", backgroundColor:"#FFFF", borderRadius:"0.5vh"}}
+                            style={{ width:"30vw", backgroundColor:"#FFFF", borderRadius:"0.5vh"}}
                         >
                             <MenuItem value="" disabled>Seleccionar Profesor</MenuItem>
-                            <MenuItem value="profesor1">Profesor 1</MenuItem>
-                            <MenuItem value="profesor2">Profesor 2</MenuItem>
-                            <MenuItem value="profesor3">Profesor 3</MenuItem>
+                            {profesoresSede.map((profesor, index) => (
+                                <MenuItem key={index} value={profesor}>{profesor.Nombre}</MenuItem>
+                            ))}
                         </Select>
-                            <IconButton onClick={handleToggleCoordinador} style={{ marginTop: '1vh' }}>
-                                {esCoordinador ? <CheckCircle color="primary" /> : <RadioButtonUnchecked color="disabled" />}
-                            </IconButton>
-                            <Typography variant="body2" style={{ marginTop: '0.5vh' }}>
-                                {esCoordinador ? 'Coordinador' : 'No es Coordinador'}
-                            </Typography>
+                        <IconButton onClick={handleToggleCoordinador} style={{ marginTop: '1vh' }}>
+                            {esCoordinador ? <CheckCircle color="primary" /> : <RadioButtonUnchecked color="disabled" />}
+                        </IconButton>
+                        <Typography variant="body2" style={{ marginTop: '0.5vh' }}>
+                            {esCoordinador ? 'Coordinador' : 'No es Coordinador'}
+                        </Typography>
                         <Button type="submit" style={{ marginTop: '3vh', backgroundColor:"#38340C", color:"#FFFF" }}>Submit</Button>
                         <Button onClick={handleCancelar} style={{ marginTop: '3vh', backgroundColor:"#38340C", color:"#FFFF" }}>Cancelar</Button>
                     </form>
