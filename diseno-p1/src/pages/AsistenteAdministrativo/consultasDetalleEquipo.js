@@ -9,6 +9,7 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
 
 
 function ConsultasDetalleEquipo() {
@@ -16,22 +17,37 @@ function ConsultasDetalleEquipo() {
   const [buscarEquipo, setBuscarEquipo] = useState(true);
   const [mostrarDetalles, setMostrarDetalles] = useState(false);
   const [datosEquipo, setDatosEquipo] = useState([]);
+  const [idEquipo, setIdEquipo] = useState(0);
+  const [coordinador, setCoordinador] = useState('');
   const userId = sessionStorage.getItem('userId');
 
-  console.log(userId);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (año === '2024') {
-      const datosSimulados = [
-        { codigo: 'CA-001', nombre: 'Francisco Villanueva', apellido1: 'Apellido1', apellido2: 'Apellido2', coordinador: 'True' },
-        { codigo: 'SJ-001', nombre: 'José Gutiérrez', apellido1: 'Apellido1', apellido2: 'Apellido2', coordinador: 'False' },
-      ];
-      setBuscarEquipo(false);
-      setMostrarDetalles(true);
-      setDatosEquipo(datosSimulados);
-    } else {
-      alert('No se encontraron equipos con ese año');
+    try {
+      const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+        params: {
+          anno: año
+        }
+      })
+      setIdEquipo(result.data[0].id);
+      console.log("IdEquipo: ", idEquipo);
+      if (idEquipo > 0) {
+        setMostrarDetalles(true);
+        setBuscarEquipo(false);
+      }
+
+      const response = await axios.get('http://3.14.65.142:3000/obtenerDatosEquipo', {
+        params: {
+          idEquipo: idEquipo
+        }
+      })
+
+      setDatosEquipo(response.data);
+      console.log(datosEquipo)
+    } catch (error) {
+      console.error(error);
+      alert('No se encontro el equipo para el año dado.');
       setAño('');
     }
   }
@@ -42,11 +58,31 @@ function ConsultasDetalleEquipo() {
     setAño('');
   }
 
-  const handleEliminar = (codigo) => {
-    const nuevosDatosEquipo = datosEquipo.filter((profesor) => profesor.codigo !== codigo);
+  const handleEliminar = async (idBorrarProfesor) => {
+    console.log("Profesor Id: ", idBorrarProfesor);
+    console.log("IdEquipo: ", idEquipo);
+    console.log("UserId: ", userId);
+    const intUserId = parseInt(userId);
+    try {
+      const result = await axios.delete('http://3.14.65.142:3000/professors/darDeBajaProfeEq', {
+        data: {
+          idProfesor: idBorrarProfesor,
+          idEquipo: idEquipo,
+          idAsisAdminis: intUserId
+        }
+      })
+      const response = await axios.get('http://3.14.65.142:3000/obtenerDatosEquipo', {
+        params: {
+          idEquipo: idEquipo
+        }
+      })
 
-    setDatosEquipo(nuevosDatosEquipo);
-    alert('Profesor eliminado exitosamente');
+      setDatosEquipo(response.data);
+      alert('Profesor eliminado exitosamente');
+    } catch(error) {
+      console.error(error);
+      alert("No tiene los permisos para borrar este profesor");
+    }
   }
 
   return (
@@ -118,15 +154,15 @@ function ConsultasDetalleEquipo() {
               </TableHead>
               <TableBody style={{ backgroundColor:"#FFFF"}}>
                 {datosEquipo.map((profesor) => (
-                  <TableRow key={profesor.codigo}>
-                    <TableCell>{profesor.codigo}</TableCell>
-                    <TableCell>{profesor.nombre}</TableCell>
-                    <TableCell>{profesor.apellido1}</TableCell>
-                    <TableCell>{profesor.apellido2}</TableCell>
-                    <TableCell>{profesor.coordinador}</TableCell>
+                  <TableRow key={profesor.Codigo}>
+                    <TableCell>{profesor.Codigo}</TableCell>
+                    <TableCell>{profesor.Nombre}</TableCell>
+                    <TableCell>{profesor.Apellido1}</TableCell>
+                    <TableCell>{profesor.Apellido2}</TableCell>
+                    <TableCell>{profesor.isCoordinador ? 'Si' : 'No'}</TableCell>
                     <TableCell>
                     <DeleteIcon 
-                      onClick={() => handleEliminar(profesor.codigo)}
+                      onClick={() => handleEliminar(profesor.id)}
                       style={{ cursor: 'pointer' }}
                     />
                     </TableCell>
