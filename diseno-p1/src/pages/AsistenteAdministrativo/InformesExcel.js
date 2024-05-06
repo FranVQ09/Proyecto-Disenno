@@ -1,17 +1,43 @@
 import React, { useState }  from 'react'
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
-import { Select } from '@mui/material';
-import { MenuItem } from '@mui/material';
-import { FormControl } from '@mui/material';
+import { Button } from '@mui/material';
+import axios from 'axios';
 
 
 function InformesExcel() {
-    const [option, setOption] = useState("");
 
-    const handleChange = (event) => {
-        setOption(event.target.value);
+    const handleGenerar = async () => {
+        try {
+            const response = await axios.get('http://3.14.65.142:3000/students/archivoAll', {
+                responseType: 'blob' // Indica que esperamos un objeto blob como respuesta
+            });
+    
+            // Crear un objeto URL para el archivo blob
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+            // Crear un enlace <a> en el documento
+            const link = document.createElement('a');
+            link.href = url;
+    
+            // Establecer el nombre de archivo para el enlace
+            link.setAttribute('download', 'datos.xlsx');
+    
+            // Hacer clic en el enlace para iniciar la descarga
+            document.body.appendChild(link);
+            link.click();
+    
+            // Limpiar el objeto URL y eliminar el enlace
+            window.URL.revokeObjectURL(url);
+            link.parentNode.removeChild(link);
+    
+            alert("Archivo generado con éxito");
+        } catch (error) {
+            console.log(error);
+            alert("Error al generar el archivo");
+        }
     }
+
   return (
     <div
         style={{
@@ -51,27 +77,8 @@ function InformesExcel() {
                 <h1 style={{ color: '#38340C', fontSize: '2.5vw', textAlign: 'center', marginBottom: '3vh' }}>Generar Informe Excel</h1>
                 <div style={{ width:"40vw", backgroundColor:"white", margin:"auto", borderRadius:"1vw"}}>
                     <form style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <label style={{ color: '#38340C', fontSize: '1.5vw', marginBottom: '1vh', marginTop:"1vh" }}>Seleccione la sede:</label>
-                        <FormControl>
-                            <Select
-                                labelId="opciones-label"
-                                id="opciones"
-                                value={option}
-                                onChange={handleChange}
-                                style={{ width:"15vw", marginBottom:"2vh" }}
-                                >
-                                <MenuItem disabled value="">
-                                    <em>Seleccione una sede</em>
-                                </MenuItem>
-                                <MenuItem value="CA">Cartago</MenuItem>
-                                <MenuItem value="SJ">San José</MenuItem>
-                                <MenuItem value="AL">Alajuela</MenuItem>
-                                <MenuItem value="LI">Limón</MenuItem>
-                                <MenuItem value="SC">San Carlos</MenuItem>
-                                <MenuItem value="TO">Todas</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <button type="submit" style={{ width:"10vw", padding:"1vh", backgroundColor:"#38340C", color:"white", fontSize:"1.2vw", borderRadius:"1vw", marginBottom:"1vh" }}>Generar</button>
+                        <label style={{ color: '#38340C', fontSize: '1.5vw', marginBottom: '1vh', marginTop:"1vh" }}>Generar Excel de los Estudiantes:</label>
+                        <Button onClick={handleGenerar} style={{ width:"10vw", padding:"1vh", backgroundColor:"#38340C", color:"white", fontSize:"1vw", borderRadius:"1vw", marginBottom:"1vh" }}>Generar</Button>
                     </form>
                 </div>
             </Paper>
