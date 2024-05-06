@@ -7,9 +7,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { CheckCircle, RadioButtonUnchecked } from '@mui/icons-material';
+import { CheckCircle, ConstructionOutlined, RadioButtonUnchecked } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
 
 
 function AgregarProfesor() {
@@ -18,18 +19,31 @@ function AgregarProfesor() {
     const [agregarForm, setAgregarForm] = useState(false);
     const [profesorSeleccionado, setProfesorSeleccionado] = useState('');
     const [esCoordinador, setEsCoordinador] = useState(false);
-    const [estaDeBaja, setEstaDeBaja] = useState(false);
 
-    const handleSubmit = (event) => {
+    const [idEquipo, setIdEquipo] = useState(0);
+  
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        if (año === '2024') {
-            setAgregarForm(true);
-            setBuscarEquipo(false);
+        
+        try{
+            const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+            params: {
+                anno: año
+            }
+            })
+            setIdEquipo(result.data[0].id);
 
-        } else {
-            alert('No se encontraron equipos con ese año');
+            if ( idEquipo > 0) {
+            setBuscarEquipo(false);
+            setAgregarForm(true);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('No se encontro el equipo para el año dado.');
             setAño('');
-        }   
+        } 
+
     };
 
     const handleChange = (event) => {
@@ -41,7 +55,6 @@ function AgregarProfesor() {
         setAgregarForm(false);
         setProfesorSeleccionado('');
         setEsCoordinador(false);
-        setEstaDeBaja(false);
         setBuscarEquipo(true);
     };
 
@@ -49,8 +62,13 @@ function AgregarProfesor() {
         setEsCoordinador(!esCoordinador);
     }
 
-    const handleToggleBaja = () => {
-        setEstaDeBaja(!estaDeBaja);
+
+    const handleCancelar = () => {
+        setAgregarForm(false);
+        setProfesorSeleccionado('');
+        setEsCoordinador(false);
+        setBuscarEquipo(true);
+        setAño('');
     }
 
   return (
@@ -132,6 +150,7 @@ function AgregarProfesor() {
                                 {esCoordinador ? 'Coordinador' : 'No es Coordinador'}
                             </Typography>
                         <Button type="submit" style={{ marginTop: '3vh', backgroundColor:"#38340C", color:"#FFFF" }}>Submit</Button>
+                        <Button onClick={handleCancelar} style={{ marginTop: '3vh', backgroundColor:"#38340C", color:"#FFFF" }}>Cancelar</Button>
                     </form>
                 </div>
             </Paper>

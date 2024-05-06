@@ -20,6 +20,8 @@ function LoginPage() {
       });
       
       sessionStorage.setItem('userId', response.data.body[0].id);
+      sessionStorage.setItem('userSede', response.data.body[0].Sede);
+
       const userId = sessionStorage.getItem('userId');
 
       console.log(userId);  
