@@ -32,35 +32,37 @@ function ActualizarPlan() {
                     }
                 });
                 setIdEquipo(result.data[0].id);
-
             } catch (error) {
-                console.error(error);
-
+                console.error('Error al obtener el equipo:', error);
             }
         }
         fetchData();
     }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const idEquipoInt = parseInt(idEquipo);
-                const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
-                    params: {
-                        idEquipo: idEquipoInt
-                    }
-                })
-                setIdPlanTrabajo(response.data[0].id);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        fetchData();
-    }, []);
-
-    console.log("Id del Equipo: ")
-    console.log("Id plan de trabajo",idPlanTrabajo)
     
+    useEffect(() => {
+        if (idEquipo) { // Verificar si idEquipo tiene un valor válido
+            const fetchData = async () => {
+                try {
+                    const idEquipoInt = parseInt(idEquipo);
+                    if (!isNaN(idEquipoInt)) {
+                        const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
+                            params: {
+                                idEquipo: idEquipoInt
+                            }
+                        });
+                        setIdPlanTrabajo(response.data[0].id);
+                    } else {
+                        console.error('Id de equipo no válido:', idEquipo);
+                    }
+                } catch (error) {
+                    console.error('Error al obtener el plan de trabajo:', error);
+                }
+            }
+            fetchData();
+        }
+    }, [idEquipo]);
+
+    console.log(idPlanTrabajo)
 
     const handleChange = (event, id) => {
         const { name, value } = event.target;
@@ -101,23 +103,44 @@ function ActualizarPlan() {
         event.preventDefault();
         
         try {
-
             const formData = new FormData();
+            const fechaDate = new Date(formValues.fecha); // Convertir la cadena de fecha a un objeto Date
             formData.append('nombre', formValues.nombre);
             formData.append('tipo', formValues.tipo);
-            formData.append('fecha', formValues.fechaReal);
+            formData.append('fechaReal', fechaDate); // Usar el objeto Date aquí
             formData.append('semana', formValues.semana);
             formData.append('afiche', afiche);
             formData.append('modalidad', formValues.modalidad);
             formData.append('enlace', formValues.enlace);
-            formData.append('idPlanTrb', idPlanTrabajo);
+            formData.append('idPlTr', idPlanTrabajo);
             formData.append('cantRecord', 0);
-
-            //const response = await axios.post('http://3.14.65.142:3000/students/registrarAct', formData);
-
+    
+            const response = await axios.post('http://3.14.65.142:3000/activities/registrarAct', formData);
+    
+            alert('Actividad insertada exitosamente');
+            setFormValues({
+                nombre: '',
+                tipo: '',
+                fecha: '',
+                semana: '',
+                modalidad: '',
+                enlace: ''
+            });
+            setAfiche(null);
+            setShowForm(false);
+    
         } catch (error) {
             console.log(error);
             alert("Error al insertar actividad");
+            console.log(typeof formValues.nombre)
+            console.log(typeof formValues.tipo)
+            console.log(typeof fechaDate)
+            console.log(typeof formValues.semana)
+            console.log(typeof formValues.modalidad)
+            console.log(typeof formValues.enlace)
+            console.log(typeof afiche)
+            console.log(typeof idPlanTrabajo)
+    
         }
     }
 
@@ -209,7 +232,7 @@ function ActualizarPlan() {
                                     </div>
                                     <div style={{ marginRight: '1rem' }}>
                                         <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Fecha:</Typography>
-                                        <TextField name="fecha" variant="outlined" style={{ width: '10rem' }} placeholder="hh/dd/mm/aaaa" value={formValues.fecha} onChange={handleChange} />
+                                        <TextField name="fecha" variant="outlined" style={{ width: '10rem' }} placeholder="mm/dd/aaaa" value={formValues.fecha} onChange={handleChange} />
                                     </div>
                                     <div>
                                         <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Semana:</Typography>
@@ -221,7 +244,7 @@ function ActualizarPlan() {
                                     <input
                                         type="file"
                                         name="afiche"
-                                        accept=".pdf"
+                                        accept=".png, .jpg, .jpeg, .png"
                                         onChange={handleAficheChange}
                                     />
                                 </div>

@@ -27,6 +27,8 @@ function CrearPlan() {
         fetchData();
     }, []);
 
+    console.log(idEquipo);
+
     const handleCrear = async (e) => {
         e.preventDefault();
         try {
