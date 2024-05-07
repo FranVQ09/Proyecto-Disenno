@@ -114,8 +114,11 @@ function ActualizarPlan() {
             formData.append('enlace', formValues.enlace);
             formData.append('idPlTr', idPlanTrabajo);
             formData.append('cantRecord', 0);
+
     
             const response = await axios.post('http://3.14.65.142:3000/activities/registrarAct', formData);
+
+            console.log(response.data)
     
             alert('Actividad insertada exitosamente');
             setFormValues({
