@@ -3,8 +3,8 @@ import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Select, MenuItem } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
 
 function ActualizarPlan() {
     const [data, setData] = useState([]);
@@ -14,32 +14,53 @@ function ActualizarPlan() {
         tipo: '',
         fecha: '',
         semana: '',
-        responsables: '',
         modalidad: '',
         enlace: ''
     });
+    const [afiche, setAfiche] = useState(null);
+    const [idPlanTrabajo, setIdPlanTrabajo] = useState('');
+    const añoActual = new Date().getFullYear();
+    const [idEquipo, setIdEquipo] = useState('');
+
 
     useEffect(() => {
         const fetchData = async () => {
-            // Simulando la obtención de datos de comentarios de alguna fuente
-            // Para propósitos de demostración, utilizaremos comentarios predefinidos para cada actividad
-            const mockComentarios = {
-                1: ['Comentario 1', 'Comentario 2'],
-                2: ['Comentario 3', 'Comentario 4'],
-                3: ['Comentario 5', 'Comentario 6'],
-                4: ['Comentario 7', 'Comentario 8'],
-            };
+            try {
+                const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+                    params: {
+                        anno: añoActual
+                    }
+                });
+                setIdEquipo(result.data[0].id);
 
-            const mockData = [
-                { id: 1, nombre: 'Actividad 1', estado: 'Pendiente', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Juan, Ana', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[1]},
-                { id: 2, nombre: 'Actividad 2', estado: 'Realizada', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Cruz, Vane', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[2]},
-                { id: 3, nombre: 'Actividad 3', estado: 'Pendiente', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Julian, Pri', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[3]},
-                { id: 4, nombre: 'Actividad 4', estado: 'En progreso', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Fran, Jose', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[4]},
-            ];
-            setData(mockData);
+            } catch (error) {
+                console.error(error);
+
+            }
         }
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const idEquipoInt = parseInt(idEquipo);
+                const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
+                    params: {
+                        idEquipo: idEquipoInt
+                    }
+                })
+                setIdPlanTrabajo(response.data[0].id);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchData();
+    }, []);
+
+    console.log("Id del Equipo: ")
+    console.log("Id plan de trabajo",idPlanTrabajo)
+    
 
     const handleChange = (event, id) => {
         const { name, value } = event.target;
@@ -70,6 +91,35 @@ function ActualizarPlan() {
     const handleAgregarActividad = () => {
         setShowForm(true); // Mostrar el formulario al hacer clic en "Agregar Actividad"
     };
+
+    const handleAficheChange = (event) => {
+        const file = event.target.files[0];
+        setAfiche(file);
+    };
+
+    const handleSubmitActividad = async (event) => {
+        event.preventDefault();
+        
+        try {
+
+            const formData = new FormData();
+            formData.append('nombre', formValues.nombre);
+            formData.append('tipo', formValues.tipo);
+            formData.append('fecha', formValues.fechaReal);
+            formData.append('semana', formValues.semana);
+            formData.append('afiche', afiche);
+            formData.append('modalidad', formValues.modalidad);
+            formData.append('enlace', formValues.enlace);
+            formData.append('idPlanTrb', idPlanTrabajo);
+            formData.append('cantRecord', 0);
+
+            //const response = await axios.post('http://3.14.65.142:3000/students/registrarAct', formData);
+
+        } catch (error) {
+            console.log(error);
+            alert("Error al insertar actividad");
+        }
+    }
 
     return (
         <div
@@ -146,7 +196,7 @@ function ActualizarPlan() {
                         </Table>
                     </form>
                     {showForm && (
-                        <form style={{ marginTop: '2rem' }}>
+                        <form onSubmit={handleSubmitActividad} style={{ marginTop: '2rem' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ marginBottom: '1rem' }}>
                                     <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Nombre:</Typography>
@@ -167,8 +217,13 @@ function ActualizarPlan() {
                                     </div>
                                 </div>
                                 <div style={{ marginBottom: '1rem' }}>
-                                    <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Responsables:</Typography>
-                                    <TextField name="responsables" variant="outlined" fullWidth placeholder="Responsable 1, Responsable 2, Responsable 3" value={formValues.responsables} onChange={handleChange} />
+                                    <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Afiche:</Typography>
+                                    <input
+                                        type="file"
+                                        name="afiche"
+                                        accept=".pdf"
+                                        onChange={handleAficheChange}
+                                    />
                                 </div>
                                 <div style={{ marginBottom: '1rem' }}>
                                     <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Modalidad:</Typography>
@@ -178,21 +233,22 @@ function ActualizarPlan() {
                                     <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Enlace:</Typography>
                                     <TextField name="enlace" variant="outlined" fullWidth placeholder="Escriba el URL de la actividad" value={formValues.enlace} onChange={handleChange} />
                                 </div>
+                                <Button type='submit' style={{ width:"15vw", backgroundColor:"#38340C", color:"#FFFF", marginLeft:"25vw"}}>Insertar Actividad</Button>
                             </div>
                         </form>
                     )}
-                    <div style={{ textAlign: 'center', marginTop: '2vh' }}>
-                        <button type="submit" onClick={handleConfirmarCambios} style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginRight: '0.3vw' }}>
-                            Confirmar Cambios
-                        </button>
-                        <button type="button" onClick={handleAgregarActividad} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>
-                            Agregar Actividad
-                        </button>
-                        <button type="button" onClick={handleCancelar} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>
-                            Cancelar
-                        </button>
-                    </div>
                 </Paper>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: '2vh'}}>
+                <button type="submit" onClick={handleConfirmarCambios} style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '15vw', marginBottom:"3vh" }}>
+                    Confirmar Cambios
+                </button>
+                <button type="button" onClick={handleAgregarActividad} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>
+                    Agregar Actividad
+                </button>
+                <button type="button" onClick={handleCancelar} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>
+                    Cancelar
+                </button>
             </div>
         </div>
     );

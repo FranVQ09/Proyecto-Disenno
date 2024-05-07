@@ -24,17 +24,15 @@ function LoginPage() {
 
       const userId = sessionStorage.getItem('userId');
 
-      console.log(userId);  
 
       if (response.data.body[0].Tipo === 1) {
         const result = await axios.get('http://3.14.65.142:3000/professors/esCoordinador', {
-          params: {
+          params:{
             idAnno: añoActual,
-            idProfesor: response.data.body[0].Id
+            idUsuario: response.data.body[0].id
           }
         });
 
-        console.log(result.data);
         if (result.data.Result === -1 || result.data.body[0].isCoordinador === -2 || result.data.body[0].isCoordinador === 0) { 
           navigate('/profesor');
         } else {
