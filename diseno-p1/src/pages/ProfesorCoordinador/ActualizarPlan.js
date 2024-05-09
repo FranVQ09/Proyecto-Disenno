@@ -7,7 +7,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
 function ActualizarPlan() {
-    const [data, setData] = useState([]);
     const [showForm, setShowForm] = useState(false); 
     const [formValues, setFormValues] = useState({
         nombre: '',
@@ -15,13 +14,19 @@ function ActualizarPlan() {
         fecha: '',
         semana: '',
         modalidad: '',
-        enlace: ''
+        enlace: '', 
+        cantRecor: 0,
     });
     const [afiche, setAfiche] = useState(null);
     const [idPlanTrabajo, setIdPlanTrabajo] = useState('');
     const añoActual = new Date().getFullYear();
     const [idEquipo, setIdEquipo] = useState('');
+    const [actualizarForm, setActualizarForm] = useState(false);
+    const [selectedPeriodo, setSelectedPeriodo] = useState('');
 
+    const [actividades, setActividades] = useState([]);
+
+    const [profesEquipo, setProfesEquipo] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,59 +44,61 @@ function ActualizarPlan() {
         fetchData();
     }, []);
     
-    useEffect(() => {
-        if (idEquipo) { // Verificar si idEquipo tiene un valor válido
-            const fetchData = async () => {
-                try {
-                    const idEquipoInt = parseInt(idEquipo);
-                    if (!isNaN(idEquipoInt)) {
-                        const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
-                            params: {
-                                idEquipo: idEquipoInt
-                            }
-                        });
-                        setIdPlanTrabajo(response.data[0].id);
-                    } else {
-                        console.error('Id de equipo no válido:', idEquipo);
-                    }
-                } catch (error) {
-                    console.error('Error al obtener el plan de trabajo:', error);
-                }
-            }
-            fetchData();
-        }
-    }, [idEquipo]);
-
-    console.log(idPlanTrabajo)
-
     const handleChange = (event, id) => {
         const { name, value } = event.target;
-        setFormValues(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-        const newData = data.map((actividad) => {
-            if (actividad.id === id) {
-                return { ...actividad, estado: event.target.value };
+
+        if (id) {
+            setActividades(prevActividades => {
+                return prevActividades.map(actividad => {
+                    if (actividad.id === id) {
+                        return { ...actividad, estado: value };
+                    }
+                    return actividad;
+                });
+            });
+        } else {
+            setFormValues(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+    };
+    
+
+    const handleConfirmarCambios = async (event) => {
+        event.preventDefault();
+        try {
+            const actividadesModificadas = actividades.filter(actividad => actividad.estado !== actividad.estadoOriginal);
+
+            for (const actividad of actividadesModificadas) {
+                await axios.put('http://3.14.65.142:3000/activities/cambiarEstado', {
+                    IdActiv: actividad.id,
+                    estado: actividad.estado
+                });
             }
-            return actividad;
-        });
-        setData(newData);
+
+            setActividades(prevActividades =>
+                prevActividades.map(actividad => ({
+                    ...actividad,
+                    estadoOriginal: actividad.estado
+                }))
+            );
+
+            console.log("Cambios confirmados exitosamente.");
+            alert("Cambios confirmados exitosamente.");
+        } catch (error) {
+            console.error('Error al confirmar los cambios:', error);
+            alert('Error al confirmar los cambios');
+        }
     };
 
-    const handleConfirmarCambios = () => {
-        // Lógica para confirmar cambios
-        console.log("Cambios confirmados");
-    };
 
     const handleCancelar = () => {
-        // Lógica para cancelar cambios
         setShowForm(false);
-        console.log("Cambios cancelados");
     };
 
     const handleAgregarActividad = () => {
-        setShowForm(true); // Mostrar el formulario al hacer clic en "Agregar Actividad"
+        setShowForm(true); 
     };
 
     const handleAficheChange = (event) => {
@@ -113,7 +120,7 @@ function ActualizarPlan() {
             formData.append('modalidad', formValues.modalidad);
             formData.append('enlace', formValues.enlace);
             formData.append('idPlTr', idPlanTrabajo);
-            formData.append('cantRecord', 0);
+            formData.append('cantRecord', formValues.cantRecor);
 
     
             const response = await axios.post('http://3.14.65.142:3000/activities/registrarAct', formData);
@@ -127,7 +134,8 @@ function ActualizarPlan() {
                 fecha: '',
                 semana: '',
                 modalidad: '',
-                enlace: ''
+                enlace: '',
+                cantRecor: 0,
             });
             setAfiche(null);
             setShowForm(false);
@@ -135,17 +143,88 @@ function ActualizarPlan() {
         } catch (error) {
             console.log(error);
             alert("Error al insertar actividad");
-            console.log(typeof formValues.nombre)
-            console.log(typeof formValues.tipo)
-            console.log(typeof fechaDate)
-            console.log(typeof formValues.semana)
-            console.log(typeof formValues.modalidad)
-            console.log(typeof formValues.enlace)
-            console.log(typeof afiche)
-            console.log(typeof idPlanTrabajo)
-    
         }
     }
+
+    const handleCerrar = () => {
+        setActualizarForm(false);
+        setSelectedPeriodo('');
+    }
+
+    const handlePeriodo = async (event) => {
+        event.preventDefault();
+        try {
+            const idEquipoInt = parseInt(idEquipo);
+            const periodoInt = parseInt(selectedPeriodo);
+            const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
+                params: {
+                    idEquipo: idEquipoInt
+                }
+            });
+
+            if (response.data.length > 0) {
+                if (periodoInt === response.data[0].periodo) {
+                    setIdPlanTrabajo(response.data[0].id);
+                } else {
+                    setIdPlanTrabajo(response.data[1].id);
+                }
+                event.preventDefault();
+                setActualizarForm(true);
+            } else {
+                console.error('No se encontró un plan de trabajo para el equipo:', idEquipo);
+                alert('No se encontró un plan de trabajo para el equipo para ese periodo');
+            }
+
+        }catch (error) {
+            console.error('Error al obtener el plan de trabajo:', error);
+            alert('No se encontró un plan de trabajo para el equipo en ese periodo');
+            setSelectedPeriodo('');
+        }
+    }
+    const handlePeriodoChange = (event) => {
+        setSelectedPeriodo(event.target.value);
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (idPlanTrabajo !== "") {
+                try {
+                    const respuesta = await axios.get('http://3.14.65.142:3000/activities/spObtenerActivi', {
+                        params: {
+                            idPlanTrab: idPlanTrabajo
+                        }
+                    });
+    
+                    // Actualizar el estado de las actividades con los datos de la base de datos
+                    setActividades(respuesta.data.map(actividad => ({
+                        ...actividad,
+                        estadoOriginal: null
+                    })));
+                } catch (error) {
+                    console.error('Error al obtener las actividades:', error);
+                }
+            }
+        };
+    
+        fetchData();
+    }, [idPlanTrabajo]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const encargados = await axios.get('http://3.14.65.142:3000/obtenerDatosEquipo', {
+                    params: {
+                        idEquipo: idEquipo
+                    }
+                });
+                setProfesEquipo(encargados.data);
+            } catch (error) {
+                console.error('Error al obtener los profes del Equipo:', error);
+                alert('Error al obtener los profes del Equipo');
+            }
+        }
+        fetchData();
+    }, [idEquipo]);
 
     return (
         <div
@@ -184,100 +263,152 @@ function ActualizarPlan() {
                 <Link href="/profesorCoordinador" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"35vh", marginLeft:"6vw" }}>Salir</Link>
             </div>
             <div style={{ width: "70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw' }}>
-                <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
+                <Paper elevation={3} style={{ width:"30vw", marginLeft:"16.5vw", padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
                     <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Plan de Actividades</Typography>
-                    <form>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold"}}>Nombre de Actividad</TableCell>
-                                    <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold"}}>Estado</TableCell>
-                                    <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold"}}>Eliminar</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {data.map((actividad) => (
-                                    <TableRow key={actividad.id} style={{ backgroundColor: "white" }}>
-                                        <TableCell>
-                                            {actividad.nombre}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Select
-                                                value={actividad.estado}
-                                                onChange={(e) => handleChange(e, actividad.id)}
-                                            >
-                                                <MenuItem value="Pendiente">Sin realizar</MenuItem>
-                                                <MenuItem value="Realizada">Realizada</MenuItem>
-                                                <MenuItem value="En progreso">En progreso</MenuItem>
-                                            </Select>
-                                        </TableCell>
-                                        <TableCell>
-                                            <DeleteIcon 
-                                                style={{ marginRight: '0.5rem', verticalAlign: 'middle', cursor: 'pointer' }}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                    <form onSubmit={handlePeriodo}>
+                        <TextField 
+                            name="periodo" 
+                            variant="outlined" 
+                            fullWidth 
+                            placeholder="Selecione periodo 1 o 2" 
+                            value={selectedPeriodo}
+                            onChange={handlePeriodoChange} 
+                        />
+                        <Button 
+                            type="submit" 
+                            style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginTop:"2vh" }}
+                        >
+                            Seleccionar
+                        </Button>
                     </form>
-                    {showForm && (
-                        <form onSubmit={handleSubmitActividad} style={{ marginTop: '2rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Nombre:</Typography>
-                                    <TextField name="nombre" variant="outlined" fullWidth placeholder="Taller Inteligencia Artificial" value={formValues.nombre} onChange={handleChange} />
-                                </div>
-                                <div style={{ display: 'flex', marginBottom: '1rem' }}>
+                </Paper>
+                {actualizarForm && (
+                    <><Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw", marginTop:"3vh" }}>
+                        <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Plan de Actividades</Typography>
+                        <form>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Nombre de Actividad</TableCell>
+                                        <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Estado</TableCell>
+                                        <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Responsables</TableCell>
+                                        <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Eliminar</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {actividades.map((actividad) => (
+                                        <TableRow key={actividad.id} style={{ backgroundColor: "white" }}>
+                                            <TableCell>
+                                                {actividad.nombre}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Select
+                                                    value={actividad.estado}
+                                                    onChange={(e) => handleChange(e, actividad.id)}
+                                                >
+                                                    <MenuItem value="PLANEADA">Planeada</MenuItem>
+                                                    <MenuItem value="NOTIFICADA">Notificada</MenuItem>
+                                                    <MenuItem value="REALIZADA">Realizada</MenuItem>
+                                                    <MenuItem value="CANCELADA">Cancelada</MenuItem>
+                                                </Select>
+                                            </TableCell>
+                                            <TableCell>
+
+                                            </TableCell>
+                                            <TableCell>
+                                                <DeleteIcon
+                                                    style={{ marginRight: '0.5rem', verticalAlign: 'middle', cursor: 'pointer' }} />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </form>
+                        {showForm && (
+                            <form onSubmit={handleSubmitActividad} style={{ marginTop: '2rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Nombre:</Typography>
+                                        <TextField name="nombre" variant="outlined" fullWidth placeholder="Taller Inteligencia Artificial" value={formValues.nombre} onChange={handleChange} />
+                                    </div>
+                                    <div style={{ display: 'flex', marginBottom: '1rem' }}>
                                     <div style={{ marginRight: '1rem' }}>
                                         <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Tipo:</Typography>
-                                        <TextField name="tipo" variant="outlined" style={{ width: '10rem' }} placeholder="Orientadora" value={formValues.tipo} onChange={handleChange} />
+                                        <Select
+                                            name="tipo"
+                                            variant="outlined"
+                                            style={{ width: '10rem' }}
+                                            value={formValues.tipo}
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value="Orientadoras">Orientadoras</MenuItem>
+                                            <MenuItem value="Motivacionales">Motivacionales</MenuItem>
+                                            <MenuItem value="De apoyo a la vida estudiantil">De apoyo a la vida estudiantil</MenuItem>
+                                            <MenuItem value="De orden técnico">De orden técnico</MenuItem>
+                                            <MenuItem value="De recreación">De recreación</MenuItem>
+                                        </Select>
                                     </div>
-                                    <div style={{ marginRight: '1rem' }}>
-                                        <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Fecha:</Typography>
-                                        <TextField name="fecha" variant="outlined" style={{ width: '10rem' }} placeholder="mm/dd/aaaa" value={formValues.fecha} onChange={handleChange} />
+                                        <div style={{ marginRight: '1rem' }}>
+                                            <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Fecha:</Typography>
+                                            <TextField name="fecha" variant="outlined" style={{ width: '10rem' }} placeholder="mm/dd/aaaa" value={formValues.fecha} onChange={handleChange} />
+                                        </div>
+                                        <div>
+                                            <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Semana:</Typography>
+                                            <TextField name="semana" variant="outlined" style={{ width: '5rem' }} placeholder="4" value={formValues.semana} onChange={handleChange} />
+                                        </div>
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Afiche:</Typography>
+                                        <input
+                                            type="file"
+                                            name="afiche"
+                                            accept=".pdf, .jpg, .jpeg, .png"
+                                            onChange={handleAficheChange} />
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Modalidad:</Typography>
+                                        <Select
+                                            name="modalidad"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={formValues.modalidad}
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value="presencial">Presencial</MenuItem>
+                                            <MenuItem value="virtual">Virtual</MenuItem>
+                                        </Select>
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Enlace:</Typography>
+                                        <TextField name="enlace" variant="outlined" fullWidth placeholder="Escriba el URL de la actividad" value={formValues.enlace} onChange={handleChange} />
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Cantidad de Recordatorios:</Typography>
+                                        <TextField name="cantRecor" type="number" variant="outlined" fullWidth placeholder="Cantidad de Recordatorios:" value={formValues.cantRecor} onChange={handleChange} />
                                     </div>
                                     <div>
-                                        <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Semana:</Typography>
-                                        <TextField name="semana" variant="outlined" style={{ width: '5rem' }} placeholder="4" value={formValues.semana} onChange={handleChange} />
+                                        <Button type='submit' style={{ width: "15vw", backgroundColor: "#38340C", color: "#FFFF", marginLeft: "20vw" }}>Insertar Actividad</Button>
+                                        <button type="button" onClick={handleCancelar} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>Cancelar</button>
                                     </div>
                                 </div>
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Afiche:</Typography>
-                                    <input
-                                        type="file"
-                                        name="afiche"
-                                        accept=".png, .jpg, .jpeg, .png"
-                                        onChange={handleAficheChange}
-                                    />
-                                </div>
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Modalidad:</Typography>
-                                    <TextField name="modalidad" variant="outlined" fullWidth placeholder="Presencial" value={formValues.modalidad} onChange={handleChange} />
-                                </div>
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Enlace:</Typography>
-                                    <TextField name="enlace" variant="outlined" fullWidth placeholder="Escriba el URL de la actividad" value={formValues.enlace} onChange={handleChange} />
-                                </div>
-                                <Button type='submit' style={{ width:"15vw", backgroundColor:"#38340C", color:"#FFFF", marginLeft:"25vw"}}>Insertar Actividad</Button>
-                            </div>
-                        </form>
-                    )}
-                </Paper>
+                            </form>
+                        )}
+                    </Paper>
+                    <div style={{ textAlign: 'center', marginTop: '2vh' }}>
+                        <button onClick={handleConfirmarCambios} style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '-5vw', marginBottom: "3vh" }}>
+                            Confirmar Cambios
+                        </button>
+                        <button type="button" onClick={handleAgregarActividad} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>
+                            Agregar Actividad
+                        </button>
+                        <Button onClick={handleCerrar} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.7vw', fontWeight: 'bold', marginLeft: '0.3vw', height:"4.5vh" }}>Cerrar</Button>
+                    </div></>
+                )} 
             </div>
-            <div style={{ textAlign: 'center', marginTop: '2vh'}}>
-                <button type="submit" onClick={handleConfirmarCambios} style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '15vw', marginBottom:"3vh" }}>
-                    Confirmar Cambios
-                </button>
-                <button type="button" onClick={handleAgregarActividad} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>
-                    Agregar Actividad
-                </button>
-                <button type="button" onClick={handleCancelar} style={{ padding: '1vh 2vw', backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginLeft: '0.3vw' }}>
-                    Cancelar
-                </button>
-            </div>
+
         </div>
     );
 }
 
 export default ActualizarPlan;
+
