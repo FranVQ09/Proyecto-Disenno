@@ -5,43 +5,41 @@ import Typography from '@mui/material/Typography';
 import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField } from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import CommentIcon from '@mui/icons-material/Comment';
+import axios from 'axios';
+
 
 function VisualizarPlan() {
-    const [data, setData] = useState([]);
+    const[actividades, setActividades] = useState([])
+    const [verPlan, setVerPlan] = useState(false);
     const [formularioDetalleAbierto, setFormularioDetalleAbierto] = useState(false);
     const [formularioComentariosAbierto, setFormularioComentariosAbierto] = useState(false);
     const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
     const [comentariosActividad, setComentariosActividad] = useState([]);
     const [nuevoComentario, setNuevoComentario] = useState('');
+    const añoActual = new Date().getFullYear();
+    const [idEquipo, setIdEquipo] = useState(0);
+    const [selectedPeriodo, setSelectedPeriodo] = useState('');
+    const [idPlanTrabajo, setIdPlanTrabajo] = useState(0);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            // Simulando la obtención de datos de comentarios de alguna fuente
-            // Para propósitos de demostración, utilizaremos comentarios predefinidos para cada actividad
-            const mockComentarios = {
-                1: ['Comentario 1', 'Comentario 2'],
-                2: ['Comentario 3', 'Comentario 4'],
-                3: ['Comentario 5', 'Comentario 6'],
-                4: ['Comentario 7', 'Comentario 8'],
-            };
 
-            const mockData = [
-                { id: 1, nombre: 'Actividad 1', estado: 'Pendiente', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Juan, Ana', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[1]},
-                { id: 2, nombre: 'Actividad 2', estado: 'Realizada', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Cruz, Vane', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[2]},
-                { id: 3, nombre: 'Actividad 3', estado: 'Pendiente', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Julian, Pri', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[3]},
-                { id: 4, nombre: 'Actividad 4', estado: 'Realizada', tipo:'Orientadora', Fecha:'2021-10-10', Semana:'2', Responsables:'Fran, Jose', Modalidad: 'Presencial', enlace:'www.ejemplo.com', comentarios: mockComentarios[4]},
-            ];
-            setData(mockData);
+    const abrirFormularioDetalle = async (actividad) => {
+
+        try {
+            const detalles = await axios.get('http://3.14.65.142:3000/activities/obtenerDatosActividad', {
+                params: {
+                    idActividad: actividad.id
+                }
+            })
+            setActividadSeleccionada(detalles.data);
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            alert('Error fetching data');
         }
-        fetchData();
-    }, []);
 
-    const abrirFormularioDetalle = (actividad) => {
-        setActividadSeleccionada(actividad);
         setFormularioDetalleAbierto(true);
-        // Cargar los comentarios de la actividad seleccionada
-        setComentariosActividad(actividad.comentarios);
     };
+
+    console.log(actividadSeleccionada)
 
     const abrirFormularioComentarios = (actividad) => {
         setActividadSeleccionada(actividad);
@@ -68,6 +66,82 @@ function VisualizarPlan() {
         // Limpiar el campo de texto después de agregar el comentario
         setNuevoComentario('');
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+                    params: {
+                        anno: añoActual
+                    }
+                })
+                setIdEquipo(result.data[0].id);
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+                alert('Error fetching data');
+            }
+        }
+        fetchData();
+    }, [añoActual]);
+
+    const handlePeriodoChange = (event) => {
+        setSelectedPeriodo(event.target.value);
+    }
+
+    const handlePeriodo = async (event) => {
+        event.preventDefault();
+        try {
+            const idEquipoInt = parseInt(idEquipo);
+            const periodoInt = parseInt(selectedPeriodo);
+            const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
+                params: {
+                    idEquipo: idEquipoInt
+                }
+            });
+
+            
+
+            if (response.data.length > 0) {
+                if (periodoInt === response.data[0].periodo) {
+                    setIdPlanTrabajo(response.data[0].id);
+                    setVerPlan(true);
+                } else {
+                    setIdPlanTrabajo(response.data[1].id);
+                    setVerPlan(true);
+                }
+                event.preventDefault();
+            } else {
+                console.error('No se encontró un plan de trabajo para el equipo:', idEquipo);
+                alert('No se encontró un plan de trabajo para el equipo para ese periodo');
+            }
+
+        }catch (error) {
+            console.error('Error al obtener el plan de trabajo:', error);
+            alert('No se encontró un plan de trabajo para el equipo en ese periodo');
+            setSelectedPeriodo('');
+        }
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (idPlanTrabajo !== 0) {
+                    console.log(idPlanTrabajo)
+                const datos = await axios.get('http://3.14.65.142:3000/activities/spObtenerActivi', {
+                    params: {
+                        idPlanTrab: idPlanTrabajo
+                    }
+                })
+                setActividades(datos.data);
+                }
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+                alert('Error fetching data');   
+            }
+        }
+        fetchData();
+    }, [idPlanTrabajo]);
+
 
     return (
         <div
@@ -106,7 +180,27 @@ function VisualizarPlan() {
                 <Link href="/profesorCoordinador" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"35vh", marginLeft:"6vw" }}>Salir</Link>
             </div>
             <div style={{ width: "70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw' }}>
-                <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
+                    <Paper elevation={3} style={{ width:"30vw", marginLeft:"16.5vw", padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
+                        <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Plan de Actividades</Typography>
+                        <form onSubmit={handlePeriodo}>
+                            <TextField 
+                                name="periodo" 
+                                variant="outlined" 
+                                fullWidth 
+                                placeholder="Selecione periodo 1 o 2" 
+                                value={selectedPeriodo}
+                                onChange={handlePeriodoChange} 
+                            />
+                            <Button 
+                                type="submit" 
+                                style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', fontWeight: 'bold', marginTop:"2vh" }}
+                            >
+                                Seleccionar
+                            </Button>
+                        </form>
+                    </Paper>
+                {verPlan && (
+                    <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw", marginTop:"3vh"}}>
                     <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Plan de Actividades</Typography>
                     <form>
                         <Table>
@@ -118,7 +212,7 @@ function VisualizarPlan() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {data.map((actividad) => (
+                                {actividades.map((actividad) => (
                                     <TableRow key={actividad.id} style={{ backgroundColor: "white" }}>
                                         <TableCell>
                                             {actividad.nombre}
@@ -140,6 +234,7 @@ function VisualizarPlan() {
                         </Table>
                     </form>
                 </Paper>
+                )}
                 {formularioDetalleAbierto && actividadSeleccionada && (
                     <div
                         style={{
@@ -156,15 +251,14 @@ function VisualizarPlan() {
                         }}
                     >
                         <Typography variant="h4" style={{ marginBottom: '1rem' }}>Detalles de la Actividad</Typography>
-                        <Typography variant="h6">Nombre: {actividadSeleccionada.nombre}</Typography>
-                        <Typography variant="h6">Estado: {actividadSeleccionada.estado}</Typography>
-                        <Typography variant="h6">Tipo: {actividadSeleccionada.tipo}</Typography>
-                        <Typography variant="h6">Fecha: {actividadSeleccionada.Fecha}</Typography>
-                        <Typography variant="h6">Semana: {actividadSeleccionada.Semana}</Typography>
-                        <Typography variant="h6">Responsables: {actividadSeleccionada.Responsables}</Typography>
-                        <Typography variant="h6">Modalidad: {actividadSeleccionada.Modalidad}</Typography>
-                        <Typography variant="h6">Enlace: {actividadSeleccionada.enlace}</Typography>
-                        {/* Agrega más campos según tus necesidades */}
+                        <Typography variant="h6">Nombre: {actividadSeleccionada[0].nombre[0]}</Typography>
+                        <Typography variant="h6">Tipo: {actividadSeleccionada[0].nombre[1]}</Typography>
+                        <Typography variant="h6">Estado: {actividadSeleccionada[0].nombre[2]}</Typography>
+                        <Typography variant="h6">Fecha: {actividadSeleccionada[0].fechaRealizacion}</Typography>
+                        <Typography variant="h6">Semana: {actividadSeleccionada[0].semana}</Typography>
+                        <Typography variant="h6">Modalidad: {actividadSeleccionada[0]['']}</Typography>
+                        <Typography variant="h6">Enlace: {actividadSeleccionada[0].enlance}</Typography>
+                    
                         <Button variant="contained" onClick={cerrarFormularioDetalle} style={{ marginTop: '1rem', backgroundColor:"#E2CE1A", color:"#38340C", border: "0.15vw solid #38340C" }}>Cerrar</Button>
                     </div>
                 )}
@@ -184,11 +278,11 @@ function VisualizarPlan() {
                         }}
                     >
                         <Typography variant="h4" style={{ marginBottom: '1rem' }}>Comentarios de la Actividad: {actividadSeleccionada.nombre}</Typography>
-                        {/* Mostrar comentarios existentes */}
+                       
                         {comentariosActividad.map((comentario, index) => (
                             <Typography key={index} variant="body1">{comentario}</Typography>
                         ))}
-                        {/* Formulario para agregar comentario */}
+                        
                         <TextField
                             variant="outlined"
                             label="Agregar Comentario"

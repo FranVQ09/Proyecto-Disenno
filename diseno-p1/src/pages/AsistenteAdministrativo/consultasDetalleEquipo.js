@@ -146,8 +146,6 @@ function ConsultasDetalleEquipo() {
                 <TableRow style={{ backgroundColor:"#38340C" }}>
                   <TableCell style={{ color:"#FFFF"}}>Código</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Nombre</TableCell>
-                  <TableCell style={{ color:"#FFFF"}}>Apellido 1</TableCell>
-                  <TableCell style={{ color:"#FFFF"}}>Apellido 2</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Coordinador</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Acciones</TableCell>
                 </TableRow>
@@ -157,8 +155,6 @@ function ConsultasDetalleEquipo() {
                   <TableRow key={profesor.Codigo}>
                     <TableCell>{profesor.Codigo}</TableCell>
                     <TableCell>{profesor.Nombre}</TableCell>
-                    <TableCell>{profesor.Apellido1}</TableCell>
-                    <TableCell>{profesor.Apellido2}</TableCell>
                     <TableCell>{profesor.isCoordinador ? 'Si' : 'No'}</TableCell>
                     <TableCell>
                     <DeleteIcon 

@@ -25,7 +25,6 @@ function ConsultasEstudiantesCoordinador() {
                     }
                 })
                 setData(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
@@ -130,7 +129,7 @@ function ConsultasEstudiantesCoordinador() {
                                 <TableRow key={estudiante.id} style={{ backgroundColor: "white" }}>
                                     <TableCell>{estudiante.Nombre}</TableCell>
                                     <TableCell>{estudiante.Apellido1}</TableCell>
-                                    <TableCell>{estudiante.Apellido2}</TableCell> {/* Aquí estaba el error, cambié "sede" por "correo" porque "sede" no está en los datos de estudiante */}
+                                    <TableCell>{estudiante.Apellido2}</TableCell> 
                                     <TableCell>{estudiante.carnet}</TableCell>
                                     <TableCell>{estudiante.correo}</TableCell>
                                     <TableCell>{estudiante.celular}</TableCell>
