@@ -24,6 +24,8 @@ function VisualizarPlan() {
     const [comentarioSeleccionado, setComentarioSeleccionado] = useState(null);
     const [respuestaComentario, setRespuestaComentario] = useState('');
     const [loading, setLoading] = useState(true);
+    const [responsablesActividad, setResponsablesActividad] = useState([]);
+
 
 
     const abrirFormularioDetalle = async (actividad) => {
@@ -35,6 +37,19 @@ function VisualizarPlan() {
                 }
             })
             setActividadSeleccionada(detalles.data);
+
+            const responsables = await axios.get('http://3.14.65.142:3000/activities/obtenerProfesEncargado', {
+                params: {
+                    idActividad: actividad.id
+                }
+            })
+            if (responsables.data.Result === -1) {
+                console.log(responsables.data)
+                setResponsablesActividad([]);
+            } else {
+                setResponsablesActividad(responsables.data);
+                setFormularioDetalleAbierto(true);
+            }
         } catch (error) {
             console.error('Error fetching data: ', error);
             alert('Error fetching data');
@@ -51,7 +66,6 @@ function VisualizarPlan() {
                 }
             })
             setComentariosActividad(comentarios.data);
-            console.log(comentarios.data);
             setActividadSeleccionada(actividad);
             setFormularioComentariosAbierto(true);
         } catch (error) {
@@ -62,6 +76,7 @@ function VisualizarPlan() {
 
     const cerrarFormularioDetalle = () => {
         setFormularioDetalleAbierto(false);
+        setResponsablesActividad([]);
     };
 
     const cerrarFormularioComentarios = () => {
@@ -321,6 +336,9 @@ function VisualizarPlan() {
                         <Typography variant="h6">Semana: {actividadSeleccionada[0].semana}</Typography>
                         <Typography variant="h6">Modalidad: {actividadSeleccionada[0]['']}</Typography>
                         <Typography variant="h6">Enlace: {actividadSeleccionada[0].enlance}</Typography>
+                        <Typography variant="h6">
+                            Responsables: {responsablesActividad.body && responsablesActividad.body.length > 0 ? responsablesActividad.body : "No hay responsables"}
+                        </Typography>
                     
                         <Button variant="contained" onClick={cerrarFormularioDetalle} style={{ marginTop: '1rem', backgroundColor:"#E2CE1A", color:"#38340C", border: "0.15vw solid #38340C" }}>Cerrar</Button>
                     </div>
