@@ -9,7 +9,7 @@ import axios from 'axios';
 
 
 function VisualizarPlan() {
-    const[actividades, setActividades] = useState([])
+    const [actividades, setActividades] = useState([])
     const [verPlan, setVerPlan] = useState(false);
     const [formularioDetalleAbierto, setFormularioDetalleAbierto] = useState(false);
     const [formularioComentariosAbierto, setFormularioComentariosAbierto] = useState(false);
@@ -20,6 +20,7 @@ function VisualizarPlan() {
     const [idEquipo, setIdEquipo] = useState(0);
     const [selectedPeriodo, setSelectedPeriodo] = useState('');
     const [idPlanTrabajo, setIdPlanTrabajo] = useState(0);
+    const userId = sessionStorage.getItem('userId');
 
 
     const abrirFormularioDetalle = async (actividad) => {
@@ -39,31 +40,63 @@ function VisualizarPlan() {
         setFormularioDetalleAbierto(true);
     };
 
-    console.log(actividadSeleccionada)
-
-    const abrirFormularioComentarios = (actividad) => {
-        setActividadSeleccionada(actividad);
-        setFormularioComentariosAbierto(true);
-        // Cargar los comentarios de la actividad seleccionada
-        setComentariosActividad(actividad.comentarios);
+    const abrirFormularioComentarios = async (actividad) => {
+        try {
+            const comentarios = await axios.get('http://3.14.65.142:3000/comments/obtenerComentarios', {
+                params: {
+                    idActividad: actividad.id
+                }
+            })
+            setComentariosActividad(comentarios.data);
+            console.log(comentarios.data);
+            setActividadSeleccionada(actividad);
+            setFormularioComentariosAbierto(true);
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            alert('Error fetching data');
+        }
     };
 
     const cerrarFormularioDetalle = () => {
         setFormularioDetalleAbierto(false);
-        // Limpiar los comentarios al cerrar el formulario
-        setComentariosActividad([]);
     };
 
     const cerrarFormularioComentarios = () => {
         setFormularioComentariosAbierto(false);
-        // Limpiar los comentarios al cerrar el formulario
+
         setComentariosActividad([]);
     };
 
-    const agregarComentario = () => {
-        // Agregar el nuevo comentario a la lista de comentarios de la actividad
-        setComentariosActividad([...comentariosActividad, nuevoComentario]);
-        // Limpiar el campo de texto después de agregar el comentario
+    const obtenerFechaActual = () => {
+        const fecha = new Date();
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const año = fecha.getFullYear();
+      
+        return `${dia}/${mes}/${año}`;
+    };
+
+    const fechaActual = obtenerFechaActual()
+    const agregarComentario = async () => {
+        console.log("Actividad ID: ", actividadSeleccionada.id)
+        try {
+            const insertarComent = await axios.post('http://3.14.65.142:3000/comments/insertarComentario', {
+                idActividad: actividadSeleccionada.id,
+                comentario: nuevoComentario,
+                fecha: fechaActual,
+                idProfesor: userId
+            })
+
+            const comentariosActualizados = await axios.get('http://3.14.65.142:3000/comments/obtenerComentarios', {
+                params: {
+                    idActividad: actividadSeleccionada.id
+                }
+            });
+            setComentariosActividad(comentariosActualizados.data);
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            alert('Error fetching data');
+        }  
         setNuevoComentario('');
     };
 
@@ -98,8 +131,6 @@ function VisualizarPlan() {
                     idEquipo: idEquipoInt
                 }
             });
-
-            
 
             if (response.data.length > 0) {
                 if (periodoInt === response.data[0].periodo) {
@@ -275,12 +306,24 @@ function VisualizarPlan() {
                             boxShadow: '0px 0px 2vw rgba(0, 0, 0, 0.3)',
                             zIndex: '1000',
                             maxWidth: '90vw', // Limita el ancho del formulario para que no sea demasiado ancho
+                            maxHeight: '90vh',
+                            overflow: 'auto',
                         }}
                     >
                         <Typography variant="h4" style={{ marginBottom: '1rem' }}>Comentarios de la Actividad: {actividadSeleccionada.nombre}</Typography>
                        
                         {comentariosActividad.map((comentario, index) => (
-                            <Typography key={index} variant="body1">{comentario}</Typography>
+                            <div key={index} style={{marginBottom: '1vh', backgroundColor:"#cff0fc", borderRadius:"1vw" }}>
+                                <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Autor: {comentario.Nombre}</Typography>
+                                <div>
+                                    <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Comentario: </Typography>
+                                    <Typography variant="body1" style={{ marginLeft:"1vw" }}>{comentario.Comentario}</Typography>
+                                </div>
+                                <div>
+                                    <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Respuestas: </Typography>
+                                </div>
+                                <Button variant='contained' style={{ marginTop:"1vh", marginBottom:"1vh",marginLeft:"1vw", padding:"1vh", height:"3vh", weight:"2vw", backgroundColor:"#38340C"}}>Responder</Button>
+                            </div>
                         ))}
                         
                         <TextField

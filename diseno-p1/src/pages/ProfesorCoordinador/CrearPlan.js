@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Button } from '@mui/material';
 
 function CrearPlan() {
-    const userId = localStorage.getItem('userId');
+    const userId = sessionStorage.getItem('userId');
     const añoActual = new Date().getFullYear();
     const [periodoLectivo, setPeriodoLectivo] = useState('');
     const [idEquipo, setIdEquipo] = useState('');

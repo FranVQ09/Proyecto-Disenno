@@ -101,7 +101,7 @@ function ConsultasEstudiantesCoordinador() {
                 <Link href="/consultasEstudianteCoordinador" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: '#E2CE1A', marginTop: '2vh', marginLeft: "0.5vw", whiteSpace: "nowrap", borderRadius: '1vw' }}>Consultar Estudiantes</Link>
                 <Link href="/profesorCoordinador" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop: "35vh", marginLeft: "6vw" }}>Salir</Link>
             </div>
-            <div style={{ width: "70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw' }}>
+            <div style={{ width: "70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw', overflow:"auto" }}>
                 <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
                     <h1 style={{ color: '#38340C', fontSize: '2.5vw', textAlign: 'center', marginBottom: '3vh' }}>Datos de Estudiantes</h1>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-1vh' }}>
