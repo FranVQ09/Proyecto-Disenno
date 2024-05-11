@@ -27,6 +27,7 @@ function ActualizarPlan() {
     const [actividades, setActividades] = useState([]);
 
     const [profesEquipo, setProfesEquipo] = useState([]);
+    const [selectedResponsables, setSelectedResponsables ] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,6 +63,9 @@ function ActualizarPlan() {
                 [name]: value
             }));
         }
+    };
+    const handleResponsablesChange = (event) => {
+        setSelectedResponsables(event.target.value)
     };
     
 
@@ -198,7 +202,8 @@ function ActualizarPlan() {
                     // Actualizar el estado de las actividades con los datos de la base de datos
                     setActividades(respuesta.data.map(actividad => ({
                         ...actividad,
-                        estadoOriginal: null
+                        estadoOriginal: actividad.estado,
+                        responsables: []
                     })));
                 } catch (error) {
                     console.error('Error al obtener las actividades:', error);
@@ -209,6 +214,9 @@ function ActualizarPlan() {
         fetchData();
     }, [idPlanTrabajo]);
 
+    console.log("Actividades: ", actividades);
+
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -313,7 +321,18 @@ function ActualizarPlan() {
                                                 </Select>
                                             </TableCell>
                                             <TableCell>
-
+                                                <Select
+                                                    multiple
+                                                    value={selectedResponsables}
+                                                    onChange={handleResponsablesChange}
+                                                    fullWidth
+                                                >
+                                                    {profesEquipo.map((profesor) => (
+                                                        <MenuItem key={profesor.id} value={profesor}>
+                                                            {profesor.Nombre}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
                                             </TableCell>
                                             <TableCell>
                                                 <DeleteIcon

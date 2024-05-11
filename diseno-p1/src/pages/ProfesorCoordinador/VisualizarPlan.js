@@ -23,6 +23,7 @@ function VisualizarPlan() {
     const userId = sessionStorage.getItem('userId');
     const [comentarioSeleccionado, setComentarioSeleccionado] = useState(null);
     const [respuestaComentario, setRespuestaComentario] = useState('');
+    const [loading, setLoading] = useState(true);
 
 
     const abrirFormularioDetalle = async (actividad) => {
@@ -159,13 +160,14 @@ function VisualizarPlan() {
         const fetchData = async () => {
             try {
                 if (idPlanTrabajo !== 0) {
-                    console.log(idPlanTrabajo)
+                    setLoading(true);
                 const datos = await axios.get('http://3.14.65.142:3000/activities/spObtenerActivi', {
                     params: {
                         idPlanTrab: idPlanTrabajo
                     }
                 })
                 setActividades(datos.data);
+                setLoading(false);
                 }
             } catch (error) {
                 console.error('Error fetching data: ', error);
@@ -260,7 +262,10 @@ function VisualizarPlan() {
                     <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw", marginTop:"3vh"}}>
                     <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Plan de Actividades</Typography>
                     <form>
-                        <Table>
+                        {loading ? (
+                            <Typography variant="h3" style={{ marginLeft:"25vw"}}>Cargando...</Typography>
+                        ): (
+                            <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell style={{ backgroundColor: '#38340C', color: "white" }}>Nombre de Actividad</TableCell>
@@ -289,6 +294,7 @@ function VisualizarPlan() {
                                 ))}
                             </TableBody>
                         </Table>
+                        )} 
                     </form>
                 </Paper>
                 )}
@@ -340,25 +346,31 @@ function VisualizarPlan() {
                        
                         {comentariosActividad.map((comentario, index) => (
                             <div key={index} style={{marginBottom: '1vh', backgroundColor:"#cff0fc", borderRadius:"1vw" }}>
-                                <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Autor: {comentario.Nombre}</Typography>
+                                {comentario && (
+                                    <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Autor: {comentario.Nombre}</Typography>
+                                )}
                                 <div>
-                                    <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Comentario: </Typography>
-                                    <Typography variant="body1" style={{ marginLeft:"1vw" }}>{comentario.Comentario}</Typography>
+                                    {comentario && (
+                                        <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Comentario: </Typography>
+                                    )}
+                                    {comentario && (
+                                        <Typography variant="body1" style={{ marginLeft:"1vw" }}>{comentario.Comentario}</Typography>
+                                    )}
                                 </div>
                                 <div>
                                     <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Respuestas: </Typography>
                                 </div>
                                 <Button onClick={() => handleResponder(comentario)} variant='contained' style={{ marginTop:"1vh", marginBottom:"1vh",marginLeft:"1vw", padding:"1vh", height:"3vh", weight:"2vw", backgroundColor:"#38340C"}}>Responder</Button>
                                 {comentarioSeleccionado && comentarioSeleccionado.id === comentario.id && (
-                                <div>
-                                    <textarea
-                                    value={respuestaComentario}
-                                    onChange={(e) => setRespuestaComentario(e.target.value)}
-                                    placeholder="Escribe tu respuesta aquí..."
-                                    style={{ marginLeft: '1vw'}}
-                                />
-                                <button onClick={handleEnviarRespuesta} style={{ marginLeft:"1vw", marginBottom:"1vh"}}>Enviar</button>
-                                </div>
+                                    <div>
+                                        <textarea
+                                            value={respuestaComentario}
+                                            onChange={(e) => setRespuestaComentario(e.target.value)}
+                                            placeholder="Escribe tu respuesta aquí..."
+                                            style={{ marginLeft: '1vw'}}
+                                        />
+                                        <button onClick={handleEnviarRespuesta} style={{ marginLeft:"1vw", marginBottom:"1vh"}}>Enviar</button>
+                                    </div>
                                 )}
                             </div>
                         ))}
