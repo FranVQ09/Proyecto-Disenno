@@ -21,6 +21,8 @@ function VisualizarPlan() {
     const [selectedPeriodo, setSelectedPeriodo] = useState('');
     const [idPlanTrabajo, setIdPlanTrabajo] = useState(0);
     const userId = sessionStorage.getItem('userId');
+    const [comentarioSeleccionado, setComentarioSeleccionado] = useState(null);
+    const [respuestaComentario, setRespuestaComentario] = useState('');
 
 
     const abrirFormularioDetalle = async (actividad) => {
@@ -173,6 +175,26 @@ function VisualizarPlan() {
         fetchData();
     }, [idPlanTrabajo]);
 
+    const handleResponder = async (comentario) => {
+        setComentarioSeleccionado(comentario);
+    }
+
+    const handleEnviarRespuesta = async () => {
+
+        try {
+            const respuesta = await axios.post('http://3.14.65.142:3000/comments/insertarReplica', {
+                idActividad: , 
+                comentario: , 
+            })
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            alert('Error fetching data');
+        }
+
+        setRespuestaComentario('');
+        setComentarioSeleccionado(null);
+    }
+
 
     return (
         <div
@@ -322,7 +344,18 @@ function VisualizarPlan() {
                                 <div>
                                     <Typography variant='subtitle1' style={{ marginLeft:"1vw", fontWeight:"bold" }}>Respuestas: </Typography>
                                 </div>
-                                <Button variant='contained' style={{ marginTop:"1vh", marginBottom:"1vh",marginLeft:"1vw", padding:"1vh", height:"3vh", weight:"2vw", backgroundColor:"#38340C"}}>Responder</Button>
+                                <Button onClick={() => handleResponder(comentario)} variant='contained' style={{ marginTop:"1vh", marginBottom:"1vh",marginLeft:"1vw", padding:"1vh", height:"3vh", weight:"2vw", backgroundColor:"#38340C"}}>Responder</Button>
+                                {comentarioSeleccionado && comentarioSeleccionado.id === comentario.id && (
+                                <div>
+                                    <textarea
+                                    value={respuestaComentario}
+                                    onChange={(e) => setRespuestaComentario(e.target.value)}
+                                    placeholder="Escribe tu respuesta aquí..."
+                                    style={{ marginLeft: '1vw'}}
+                                />
+                                <button onClick={handleEnviarRespuesta} style={{ marginLeft:"1vw", marginBottom:"1vh"}}>Enviar</button>
+                                </div>
+                                )}
                             </div>
                         ))}
                         
