@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 function ActualizarPlan() {
     const [showForm, setShowForm] = useState(false); 
@@ -25,9 +26,35 @@ function ActualizarPlan() {
     const [selectedPeriodo, setSelectedPeriodo] = useState('');
 
     const [actividades, setActividades] = useState([]);
-
     const [profesEquipo, setProfesEquipo] = useState([]);
-    const [selectedResponsables, setSelectedResponsables ] = useState([]);
+    const [showFormAgregarResponsable, setShowFormAgregarResponsable] = useState(false);
+    const [selectedProfesores, setSelectedProfesores] = useState([]);
+
+    const handleMostarFormAgregarResponsable = (actividadId) => {
+        setShowFormAgregarResponsable(actividadId);
+    }
+
+    const handleCancelarFormAgregarResponsable = () => {
+        setShowFormAgregarResponsable(false);
+    };
+
+    const handleAgregarResponsable = async (e, actividadId) => {
+        e.preventDefault();
+        try {
+            const responsables = selectedProfesores.map(profesor => profesor.id);
+            const insertarResponsable = await axios.post('http://3.14.65.142:3000/activities/registrarEncargados', {
+                IdActiv: actividadId,
+                lista: responsables
+            })
+            alert('Responsable agregado exitosamente');
+            setSelectedProfesores([]);
+            setShowFormAgregarResponsable(false);
+        } catch (error) {
+            console.error('Error al agregar responsable:', error);
+            alert('Error al agregar responsable');
+        }
+    };
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,13 +90,12 @@ function ActualizarPlan() {
                 [name]: value
             }));
         }
-    };
-    
+    };    
 
-    const handleResponsablesChange = (event) => {
-        setSelectedResponsables(event.target.value)
+    const handleSelectChange = (event) => {
+        const selectedValues = event.target.value;
+        setSelectedProfesores(selectedValues);
     };
-    
 
     const handleConfirmarCambios = async (event) => {
         event.preventDefault();
@@ -203,8 +229,7 @@ function ActualizarPlan() {
                             idPlanTrab: idPlanTrabajo
                         }
                     });
-    
-                    // Actualizar el estado de las actividades con los datos de la base de datos
+
                     setActividades(respuesta.data.map(actividad => ({
                         ...actividad,
                         estadoOriginal: actividad.estado,
@@ -219,9 +244,6 @@ function ActualizarPlan() {
         fetchData();
     }, [idPlanTrabajo]);
 
-    console.log("Actividades: ", actividades);
-
-    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -309,42 +331,55 @@ function ActualizarPlan() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {actividades.map((actividad) => (
-                                        <TableRow key={actividad.id} style={{ backgroundColor: "white" }}>
-                                            <TableCell>
-                                                {actividad.nombre}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Select
-                                                    value={actividad.estado}
-                                                    onChange={(e) => handleChange(e, actividad.id)}
-                                                >
-                                                    <MenuItem value="PLANEADA">Planeada</MenuItem>
-                                                    <MenuItem value="NOTIFICADA">Notificada</MenuItem>
-                                                    <MenuItem value="REALIZADA">Realizada</MenuItem>
-                                                    <MenuItem value="CANCELADA">Cancelada</MenuItem>
-                                                </Select>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Select
-                                                    multiple
-                                                    value={selectedResponsables}
-                                                    onChange={handleResponsablesChange}
-                                                    fullWidth
-                                                >
-                                                    {profesEquipo.map((profesor) => (
-                                                        <MenuItem key={profesor.id} value={profesor}>
-                                                            {profesor.Nombre}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </TableCell>
-                                            <TableCell>
-                                                <DeleteIcon
-                                                    style={{ marginRight: '0.5rem', verticalAlign: 'middle', cursor: 'pointer' }} />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                {actividades.map((actividad) => (
+                                    <TableRow key={actividad.id} style={{ backgroundColor: "white" }}>
+                                        <TableCell>
+                                            {actividad.nombre}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Select
+                                                value={actividad.estado}
+                                                onChange={(e) => handleChange(e, actividad.id)}
+                                            >
+                                                <MenuItem value="PLANEADA">Planeada</MenuItem>
+                                                <MenuItem value="NOTIFICADA">Notificada</MenuItem>
+                                                <MenuItem value="REALIZADA">Realizada</MenuItem>
+                                                <MenuItem value="CANCELADA">Cancelada</MenuItem>
+                                            </Select>
+                                        </TableCell>
+                                        <TableCell>
+                                            <PersonAddAltIcon
+                                                onClick={() => handleMostarFormAgregarResponsable(actividad.id)}
+                                                style={{ marginRight: '0.5vw', verticalAlign: 'middle', cursor: 'pointer' }}
+                                            />
+                                            {actividad.id === showFormAgregarResponsable && (
+                                                <div>
+                                                    <Select
+                                                        multiple
+                                                        value={selectedProfesores} // Asegúrate de que selectedProfesores sea un array
+                                                        onChange={handleSelectChange}
+                                                        style={{ width: "20vw" }}
+                                                    >
+                                                        {profesEquipo.map((profesor) => (
+                                                            <MenuItem key={profesor.id} value={profesor}>
+                                                                {profesor.Nombre}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                    <div style={{ marginTop:"1vh" }}>
+                                                        <Button onClick={(e) => handleAgregarResponsable(e, actividad.id)} style={{ backgroundColor: '#EEE1B0', color:"#38340C" }}>Agregar</Button>
+                                                        <Button style={{ backgroundColor: '#38340C', color:"#EEE1B0", marginLeft:"1vw" }} onClick={handleCancelarFormAgregarResponsable}>Cancelar</Button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            <DeleteIcon
+                                                style={{ marginRight: '0.5vw', verticalAlign: 'middle', cursor: 'pointer' }}
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                                 </TableBody>
                             </Table>
                         </form>
