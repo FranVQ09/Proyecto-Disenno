@@ -72,6 +72,8 @@ function AgregarProfesor() {
                 idProfesor: profesorSeleccionado.id,
                 idUsuario: idUsuarioEntero
             })
+            alert("Profesor agregado correctamente al equipo.")
+            
         } catch (error) {
             console.error(error);
             alert(error.response.data.Message);

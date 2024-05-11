@@ -12,6 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ClearIcon from '@mui/icons-material/Clear';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 
 
@@ -24,7 +25,8 @@ function ConsultasDetalleEquipo() {
   const [coordinador, setCoordinador] = useState('');
   const userId = sessionStorage.getItem('userId');
 
-
+  console.log("UserId: ", userId  )
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -62,9 +64,6 @@ function ConsultasDetalleEquipo() {
   }
 
   const handleEliminar = async (idBorrarProfesor) => {
-    console.log("Profesor Id: ", idBorrarProfesor);
-    console.log("IdEquipo: ", idEquipo);
-    console.log("UserId: ", userId);
     const intUserId = parseInt(userId);
     try {
       const result = await axios.delete('http://3.14.65.142:3000/professors/darDeBajaProfeEq', {
@@ -85,6 +84,27 @@ function ConsultasDetalleEquipo() {
     } catch(error) {
       console.error(error);
       alert("No tiene los permisos para borrar este profesor");
+    }
+  }
+
+  const handleCoordinador = async (profesor) => {
+    console.log("Profesor: ", profesor);
+
+    try {
+      const userIdInt = parseInt(userId);
+
+      console.log("IdEquipo: ", typeof idEquipo);
+      console.log("Profesor: ",  profesor.id);
+      console.log("UserId: ",  userIdInt);
+
+      const result = await axios.put('http://3.14.65.142:3000/professors/definirCoordinador', {
+        idEquipo: idEquipo,
+        idProfe: profesor.id,
+        idAsisAdmin: userIdInt
+      })
+    } catch (error) {
+      console.error(error);
+      alert('Error asignando coordinador');
     }
   }
 
@@ -150,6 +170,7 @@ function ConsultasDetalleEquipo() {
                   <TableCell style={{ color:"#FFFF"}}>Código</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Nombre</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Coordinador</TableCell>
+                  <TableCell style={{ color:"#FFFF"}}>Marcar Coordinador</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -159,6 +180,14 @@ function ConsultasDetalleEquipo() {
                     <TableCell>{profesor.Codigo}</TableCell>
                     <TableCell>{profesor.Nombre}</TableCell>
                     <TableCell>{profesor.isCordinador ? <CheckCircleIcon style={{ color:"green"}}></CheckCircleIcon> : <ClearIcon style={{ color: "red"}}></ClearIcon>}</TableCell>
+                    <TableCell>
+                      <PersonAddIcon
+                        onClick={() => handleCoordinador(profesor)}
+                        style={{ cursor: 'pointer' }}
+                      >
+
+                      </PersonAddIcon>
+                    </TableCell>
                     <TableCell>
                     <DeleteIcon 
                       onClick={() => handleEliminar(profesor.id)}

@@ -37,8 +37,8 @@ function ConsultasDetalleEquipo() {
       setMostrarPlan(true);
 
     } catch (error) {
-        console.error('Error fetching data: ', error);
-        alert('Error fetching data');
+        console.error('No hay un plan de actividades para ese año ', error);
+        alert('No hay un plan de actividades para ese año');
     }
     
   }
