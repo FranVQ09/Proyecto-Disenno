@@ -183,9 +183,13 @@ function VisualizarPlan() {
 
         try {
             const respuesta = await axios.post('http://3.14.65.142:3000/comments/insertarReplica', {
-                idActividad: , 
-                comentario: , 
+                idActividad: actividadSeleccionada.id, 
+                comentario: respuestaComentario, 
+                fecha: fechaActual,
+                idProfesor: userId,
+                idComentario: comentarioSeleccionado.id,
             })
+
         } catch (error) {
             console.error('Error fetching data: ', error);
             alert('Error fetching data');
