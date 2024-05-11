@@ -1,37 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useDropzone } from 'react-dropzone';
+import axios from 'axios';
 
 function ModificarCoordinador() {
     const [image, setImage] = useState(null);
+    const userId = sessionStorage.getItem('userId');
+    const [userData, setUserData] = useState([]);
     const [formData, setFormData] = useState({
       nombre: '',
       correo: '',
-      sede: '',
-      codigo: '',
-      anno: '',
-      estado: ''
+      apellido1: '',
+      apellido2: '',
+      extension: '',
+      celular: '',
+      numOfi: ''
     });
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://3.14.65.142:3000/professors/obtenerDatosProfeso', {
+                    params: {
+                        idProfesor: userId
+                    }
+                })
+                setUserData(response.data[0]);
+            } catch(error) {
+                console.error(error);
+                alert('Error con el ID');
+            }
+        }
+        fetchData();
+    }, [userId]);
 
     const onDrop = (acceptedFiles) => {
         const file = acceptedFiles[0];
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setImage(reader.result);
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+        setImage(file);
     };
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: 'image/*',
+        accept: 'image/png, image/jpeg, image/jpg',
         onDrop,
     });
 
@@ -45,7 +58,27 @@ function ModificarCoordinador() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        alert('Profesor modificado correctamente');
+        try {
+            
+            const formData1 = new FormData();
+            formData1.append('idProfesor', userId);
+            formData1.append('nombre', formData.nombre);
+            formData1.append('correo', formData.correo);
+            formData1.append('ap1', formData.apellido1);
+            formData1.append('ap2', formData.apellido2);
+            formData1.append('celular', formData.celular);
+            formData1.append('numOfi', formData.numOfi);
+            formData1.append('exten', userData.extension);
+            formData1.append('imagen', image);
+            formData1.append('idUsEnc', userId);
+            const response = await axios.put('http://3.14.65.142:3000/professors/modificarDatoProfesor', formData1);
+            alert("Profesor modificado");
+            // Recargar la página
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            alert("Error, no se pudo modificar el profesor");
+        }
     };
 
     return (
@@ -87,22 +120,23 @@ function ModificarCoordinador() {
               <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
                 <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Información Profesor</Typography>
                 <form onSubmit={handleSubmit}>
-                  <TextField label="Nombre" name="nombre" fullWidth margin="normal" value={formData.nombre} onChange={handleChange} />
-                  <TextField label="Apellidos" name="apellidos" fullWidth margin="normal" value={formData.apellidos} onChange={handleChange} />
-                  <TextField label="Correo" name="correo" fullWidth margin="normal" value={formData.correo} onChange={handleChange} />
-                  <TextField label="Teléfono Celular" name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} />
-                  <TextField label="Teléfono Oficina" name="oficina" fullWidth margin="normal" value={formData.oficina} onChange={handleChange} />
-                  <TextField label="Sede" name="sede" fullWidth margin="normal" value={formData.sede} onChange={handleChange} />
+                  <TextField label={"Nombre: " + userData.Nombre} name="nombre" fullWidth margin="normal" value={formData.nombre} onChange={handleChange} />
+                  <TextField label={"Apellido1: " + userData.Apellido1} name="apellido1" fullWidth margin="normal" value={formData.apellido1} onChange={handleChange} />
+                  <TextField label={"Apellido2: " + userData.Apellido2} name="apellido2" fullWidth margin="normal" value={formData.apellido2} onChange={handleChange} />
+                  <TextField label={"Correo: " + userData.correo} name="correo" fullWidth margin="normal" value={formData.correo} onChange={handleChange} />
+                  <TextField label={"Teléfono Celular: " + userData.celular} name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} />
+                  <TextField label={"Teléfono Oficina: " + userData.numOficina} name="numOfi" fullWidth margin="normal" value={formData.numOfi} onChange={handleChange} />
+                  <TextField label={"extension: " + userData.extension} name="extension" fullWidth margin="normal" value={formData.extension} onChange={handleChange} InputProps={{ readOnly: true }}/>
                   {image ? (
                       <div>
                           <img src={image} alt="Foto de perfil" style={{ width: '30%', borderRadius: '1vw', marginTop: '2vh', marginLeft:"22.5vw" }} />
                           <Button variant="contained" color="secondary" onClick={handleDeleteImage} style={{ marginTop: '1vh', width:"20vw", marginLeft:"22.5vw", backgroundColor:"#E2CE1A", color:"black", border: "0.15vw solid #38340C" }}>Eliminar Foto</Button>
                       </div>
                   ) : (
-                      <div style={{ width:"50vw", marginLeft:"6vw", marginTop: '2vh', border: '2px dashed #38340C', borderRadius: '1vw', padding: '2vw' }} {...getRootProps()}>
+                      <div {...getRootProps()} style={{ width:"50vw", marginLeft:"6vw", marginTop: '2vh', border: '2px dashed #38340C', borderRadius: '1vw', padding: '2vw' }} >
                           <input {...getInputProps()} />
-                          <Typography variant="body1">Arrastra y suelta una imagen aquí, o haz clic para seleccionar una imagen.</Typography>
-                          <Typography variant="body1">NOTA: La Imagen debe ser formato PNG</Typography>
+                          <p>Arrastra y suelta la imagen o haga cliz para seleccionar una</p>
+                          <p>NOTA: La imagen debe ser formato PNG o JPEG</p>
                       </div>
                   )}
                   <Button type="submit" variant="contained" color="primary" style={{ marginTop: '2vh', width:"15vw", marginLeft:"25vw", backgroundColor:"#38340C", marginTop:"2vh", marginBottom:"2vh", border: '2px solid #EEE1B0'}}>Enviar</Button>
