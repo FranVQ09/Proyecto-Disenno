@@ -47,7 +47,7 @@ function ActualizarPlan() {
     
     const handleChange = (event, id) => {
         const { name, value } = event.target;
-
+    
         if (id) {
             setActividades(prevActividades => {
                 return prevActividades.map(actividad => {
@@ -64,6 +64,8 @@ function ActualizarPlan() {
             }));
         }
     };
+    
+
     const handleResponsablesChange = (event) => {
         setSelectedResponsables(event.target.value)
     };
@@ -125,11 +127,14 @@ function ActualizarPlan() {
             formData.append('enlace', formValues.enlace);
             formData.append('idPlTr', idPlanTrabajo);
             formData.append('cantRecord', formValues.cantRecor);
-
     
             const response = await axios.post('http://3.14.65.142:3000/activities/registrarAct', formData);
-
-            console.log(response.data)
+    
+            // Obtener la nueva actividad del objeto de respuesta
+            const nuevaActividad = response.data;
+    
+            // Actualizar el estado de actividades agregando la nueva actividad
+            setActividades(prevActividades => [...prevActividades, nuevaActividad]);
     
             alert('Actividad insertada exitosamente');
             setFormValues({
@@ -358,7 +363,7 @@ function ActualizarPlan() {
                                             variant="outlined"
                                             style={{ width: '10rem' }}
                                             value={formValues.tipo}
-                                            onChange={handleChange}
+                                            onChange={(e) => handleChange(e)}
                                         >
                                             <MenuItem value="Orientadoras">Orientadoras</MenuItem>
                                             <MenuItem value="Motivacionales">Motivacionales</MenuItem>
@@ -391,7 +396,7 @@ function ActualizarPlan() {
                                             variant="outlined"
                                             fullWidth
                                             value={formValues.modalidad}
-                                            onChange={handleChange}
+                                            onChange={(e) => handleChange(e)}
                                         >
                                             <MenuItem value="presencial">Presencial</MenuItem>
                                             <MenuItem value="virtual">Virtual</MenuItem>

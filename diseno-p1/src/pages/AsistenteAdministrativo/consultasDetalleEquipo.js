@@ -10,6 +10,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ClearIcon from '@mui/icons-material/Clear';
+
 
 
 function ConsultasDetalleEquipo() {
@@ -155,7 +158,7 @@ function ConsultasDetalleEquipo() {
                   <TableRow key={profesor.Codigo}>
                     <TableCell>{profesor.Codigo}</TableCell>
                     <TableCell>{profesor.Nombre}</TableCell>
-                    <TableCell>{profesor.isCoordinador ? 'Si' : 'No'}</TableCell>
+                    <TableCell>{profesor.isCordinador ? <CheckCircleIcon style={{ color:"green"}}></CheckCircleIcon> : <ClearIcon style={{ color: "red"}}></ClearIcon>}</TableCell>
                     <TableCell>
                     <DeleteIcon 
                       onClick={() => handleEliminar(profesor.id)}

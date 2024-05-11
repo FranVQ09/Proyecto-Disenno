@@ -134,7 +134,7 @@ function ConsultasDetalleEquipo() {
             justifyContent: 'flex-start',
             alignItems: 'center',
             backgroundColor: '#38340C',
-            overflow: 'hidden',
+            overflow: 'auto',
             width: '60vw',
             marginLeft: '15vw',
             marginTop: '4vh',
