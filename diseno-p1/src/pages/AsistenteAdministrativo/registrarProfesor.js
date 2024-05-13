@@ -32,6 +32,7 @@ function RegistrarProfesor() {
             ...prevState,
             [name]: value
         }));
+
     };
 
     const handleDeleteImage = () => {
@@ -96,25 +97,34 @@ function RegistrarProfesor() {
             <Paper elevation={3} style={{ padding: '2vw', borderRadius: '1vw', width: '80vw', backgroundColor:"#EEE1B0" }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <TextField name="nombre" label="Nombre" variant="outlined" fullWidth value={formValues.nombre} onChange={handleChange} />
+                        <TextField name="nombre" label="Nombre" variant="outlined" fullWidth value={formValues.nombre} onChange={handleChange} required />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="ap1" label="Apellido 1" variant="outlined" fullWidth value={formValues.ap1} onChange={handleChange} />
+                        <TextField name="ap1" label="Apellido 1" variant="outlined" fullWidth value={formValues.ap1} onChange={handleChange} required />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="ap2" label="Apellido 2" variant="outlined" fullWidth value={formValues.ap2} onChange={handleChange} />
+                        <TextField name="ap2" label="Apellido 2" variant="outlined" fullWidth value={formValues.ap2} onChange={handleChange} required />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="correo" label="Correo" type="email" variant="outlined" fullWidth value={formValues.correo} onChange={handleChange} />
+                        <TextField 
+                            name="correo" 
+                            label="Correo" 
+                            type="email" 
+                            variant="outlined" 
+                            fullWidth 
+                            value={formValues.correo} 
+                            onInput={handleChange} 
+                            required
+                        />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="password" label="Contraseña" type="password" variant="outlined" fullWidth value={formValues.password} onChange={handleChange} />
+                        <TextField name="password" label="Contraseña" type="password" variant="outlined" fullWidth value={formValues.password} onChange={handleChange} required/>
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="numOfi" label="Teléfono de Oficina" variant="outlined" fullWidth value={formValues.numOfi} onChange={handleChange} />
+                        <TextField name="numOfi" label="Teléfono de Oficina" variant="outlined" fullWidth value={formValues.numOfi} onChange={handleChange} required/>
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="celular" label="Teléfono Celular" variant="outlined" fullWidth value={formValues.celular} onChange={handleChange} />
+                        <TextField name="celular" label="Teléfono Celular" variant="outlined" fullWidth value={formValues.celular} onChange={handleChange} required/>
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
@@ -124,6 +134,7 @@ function RegistrarProfesor() {
                             value={selectedSede}
                             onChange={handleSede}
                             displayEmpty
+                            required
                             >
                                 <MenuItem value='CA'>Cartago</MenuItem>
                                 <MenuItem value='SJ'>San José</MenuItem>
@@ -134,7 +145,7 @@ function RegistrarProfesor() {
                         </FormControl>
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField name="exten" label="Extensión" variant="outlined" fullWidth value={formValues.exten} onChange={handleChange} />
+                        <TextField name="exten" label="Extensión" variant="outlined" fullWidth value={formValues.exten} onChange={handleChange} required />
                     </Grid>
                     <Grid item xs={5} style={{ marginLeft:"24vw"}}>
                         {image ? (
