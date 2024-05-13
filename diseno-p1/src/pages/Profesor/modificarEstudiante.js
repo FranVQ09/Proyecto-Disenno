@@ -4,23 +4,22 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useDropzone } from 'react-dropzone';
+import axios from 'axios';
 
 
 
 function ModificarEstudiante() {
-    const [image, setImage] = useState(null);
     const [formData, setFormData] = useState({
         nombre: '',
-        apellidos: '',
+        apellido1: '',
+        apellido2: '',
         correo: '',
-        carnet: '',
         celular: '',
-        carrera: '',
-        sede: ''
     });
     const [searchCarnet, setSearchCarnet] = useState('');
     const [showForm, setShowForm] = useState(false);
+    const userId = sessionStorage.getItem('userId');
+    const [estudiante, setEstudiante] = useState(null);
 
     const handleSearchCarnetChange = (e) => {
         setSearchCarnet(e.target.value);
@@ -28,32 +27,33 @@ function ModificarEstudiante() {
 
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
-        // Aqui va la parte de validar si el carnet existe en la base de datos
-        // Ahora mismo siempre existe
-        setShowForm(true);
-    };
+        
+        try {
+            const userIdInt = parseInt(userId);
+            const result = await axios.get('http://3.14.65.142:3000/students/obtenerDatosEstudiante', {
+                params: {
+                    idUsuario: userIdInt
+                }
+            })
+            console.log(result.data)
+            const carnets = result.data.map((estudiante) => estudiante.carnet);
 
-    const onDrop = (acceptedFiles) => {
-        const file = acceptedFiles[0];
-        const reader = new FileReader();
+            if (carnets.includes(searchCarnet)) {
+                const estudianteEncontrado = result.data.find((estudiante) => estudiante.carnet === searchCarnet);
+                setEstudiante(estudianteEncontrado);
+                setShowForm(true);
+            } else {
+                alert('Estudiante no encontrado');
+                setSearchCarnet('');
+            }
 
-        reader.onloadend = () => {
-            setImage(reader.result);
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error(error);
+            alert('Error al buscar estudiante');
         }
     };
-
-    const { getRootProps, getInputProps } = useDropzone({
-        accept: 'image/*',
-        onDrop,
-    });
-
-    const handleDeleteImage = () => {
-        setImage(null);
-    };
+    
+    
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -61,7 +61,42 @@ function ModificarEstudiante() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        alert('Estudiante modificado correctamente');
+        try {
+            const estudianteId = estudiante.id;
+            const estudianteIdString = estudianteId.toString();
+    
+            const formData1 = new FormData();
+            formData1.append('idUsEnc', userId);
+            formData1.append('idEstudiante', estudianteIdString);
+            formData1.append('nombre', formData.nombre);
+            formData1.append('apellido1', formData.apellido1);
+            formData1.append('apellido2', formData.apellido2);
+            formData1.append('celular', formData.celular);
+            formData1.append('correo', formData.correo);
+            
+            // Convertir FormData a un objeto para depurar
+            const formDataObject = {};
+            for (const [key, value] of formData1.entries()) {
+                formDataObject[key] = value;
+            }
+            
+            const response = await axios.put('http://3.14.65.142:3000/students/actualizarEstudiante', formDataObject);
+    
+            alert("Estudiante modificado");
+            setShowForm(false);
+            setSearchCarnet('');
+            setFormData({
+                nombre: '',
+                apellido1: '',
+                apellido2: '',
+                correo: '',
+                celular: '',
+            })
+            setEstudiante(null);
+        } catch (error) {
+            console.error(error);
+            alert('Error al modificar estudiante');
+        }
     };
 
     const handleCancel = () => {
@@ -120,27 +155,13 @@ function ModificarEstudiante() {
               <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
                 <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Información Estudiante</Typography>
                 <form onSubmit={handleSubmit}>
-                  <TextField label="Nombre" name="nombre" fullWidth margin="normal" value={formData.nombre} onChange={handleChange} />
-                  <TextField label="Apellidos" name="correo" fullWidth margin="normal" value={formData.apellidos} onChange={handleChange} />
-                  <TextField label="Correo" name="sede" fullWidth margin="normal" value={formData.correo} onChange={handleChange} />
-                  <TextField label="Carnet" name="codigo" fullWidth margin="normal" value={formData.carnet} onChange={handleChange} />
-                  <TextField label="Teléfono Celular" name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} />
-                  <TextField label="Carrera" name="carrera" fullWidth margin="normal" value={formData.carrera} onChange={handleChange} />
-                  <TextField label="Sede" name="sede" fullWidth margin="normal" value={formData.sede} onChange={handleChange} />
-                  {image ? (
-                      <div>
-                          <img src={image} alt="Foto de perfil" style={{ width: '30%', borderRadius: '1vw', marginTop: '2vh', marginLeft:"22.5vw" }} />
-                          <Button variant="contained" color="secondary" onClick={handleDeleteImage} style={{ marginTop: '1vh', width:"20vw", marginLeft:"22.5vw", backgroundColor:"#E2CE1A", color:"black", border: "0.15vw solid #38340C" }}>Eliminar Foto</Button>
-                      </div>
-                  ) : (
-                      <div style={{ width:"50vw", marginLeft:"6vw", marginTop: '2vh', border: '2px dashed #38340C', borderRadius: '1vw', padding: '2vw' }} {...getRootProps()}>
-                          <input {...getInputProps()} />
-                          <Typography variant="body1">Arrastra y suelta una imagen aquí, o haz clic para seleccionar una imagen.</Typography>
-                          <Typography variant="body1">NOTA: La Imagen debe ser formato PNG</Typography>
-                      </div>
-                  )}
-                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2vh' }}>
-                        <Button type="submit" variant="contained" color="primary" style={{ width: '20vw', backgroundColor:"#38340C", border: '2px solid #38340C', marginLeft:"-1vw"}}>Enviar</Button>
+                    <TextField label={"Nombre: " + estudiante.Nombre} name='nombre' fullWidth margin="normal" value={formData.nombre} onChange={handleChange} />
+                    <TextField label={"Apellido 1: " + estudiante.Apellido1} name="apellido1" fullWidth margin="normal" value={formData.apellido1} onChange={handleChange} />
+                    <TextField label={"Apellido 2: " + estudiante.Apellido2} name="apellido2" fullWidth margin="normal" value={formData.apellido2} onChange={handleChange} />
+                    <TextField label={"Correo: " + estudiante.correo} name="correo" fullWidth margin="normal" value={formData.correo} onChange={handleChange} />  
+                    <TextField label={"Celular: " + estudiante.celular} name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} />                  
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2vh' }}>
+                        <Button type='submit' variant="contained" color="primary" style={{ width: '20vw', backgroundColor:"#38340C", border: '2px solid #38340C', marginLeft:"-1vw"}}>Enviar</Button>
                         <Button variant="contained" color="secondary" onClick={handleCancel} style={{ width: '20vw', backgroundColor:"#EEE1B0", border: '2px solid #38340C', color:"black", marginLeft:"1vw"}}>Cancelar</Button>
                     </div>
                 </form>

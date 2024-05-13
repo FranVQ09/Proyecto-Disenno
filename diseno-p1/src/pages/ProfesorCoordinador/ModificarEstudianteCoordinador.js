@@ -94,6 +94,7 @@ function ModificarEstudianteCoordinador() {
                 correo: '',
                 celular: '',
             })
+            setEstudiante(null);
         } catch (error) {
             console.error(error);
             alert('Error al modificar estudiante');
