@@ -46,19 +46,28 @@ function ModificarInformacionProfesor() {
     const handleOptionChange = async (event) => {
         setSelectedOption(event.target.value);
         setProfesorId(event.target.value.id);
-        try {
-            console.log("ProfesorId: ", profesorId);
-            const response = await axios.get('http://3.14.65.142:3000/professors/obtenerDatosProfeso', {
-                params: {
-                    idProfesor: profesorId
-                }
-            })
-            setUserData(response.data[0]);
-        } catch(error) {
-            console.error(error);
-            alert('Error con el ID');
-        }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if(profesorId !== 0) {
+            try {
+                console.log("ProfesorId: ", profesorId);
+                const response = await axios.get('http://3.14.65.142:3000/professors/obtenerDatosProfeso', {
+                    params: {
+                        idProfesor: profesorId
+                    }
+                })
+                console.log("Datos: ", response.data[0]);
+                setUserData(response.data[0]);
+            } catch (error) {
+                console.error(error);
+                alert('Error con el ID');
+            }
+            }
+        }
+        fetchData();
+    }, [profesorId]);
 
     const onDrop = (acceptedFiles) => {
         const file = acceptedFiles[0];
@@ -93,7 +102,7 @@ function ModificarInformacionProfesor() {
             console.log('idUsEnc: ', profesorId);
 
             const formData1 = new FormData();
-            formData1.append('idProfesor', userId);
+            formData1.append('idProfesor', profesorId);
             formData1.append('nombre', formData.nombre);
             formData1.append('correo', formData.correo);
             formData1.append('ap1', formData.apellido1);
@@ -102,7 +111,8 @@ function ModificarInformacionProfesor() {
             formData1.append('numOfi', formData.numOfi);
             formData1.append('exten', userData.extension);
             formData1.append('imagen', image);
-            formData1.append('idUsEnc', profesorId);
+            formData1.append('idUsEnc', userId);
+            
             const response = await axios.put('http://3.14.65.142:3000/professors/modificarDatoProfesor', formData1);
             alert("Profesor modificado");
             // Recargar la página
