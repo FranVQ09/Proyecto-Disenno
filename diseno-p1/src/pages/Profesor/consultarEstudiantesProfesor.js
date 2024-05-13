@@ -65,6 +65,71 @@ function ConsultarEstudiantesProfesor() {
         setData(newData);
     };
 
+    const handleGenerarExcel = async () => {
+        try {
+            const response = await axios.get('http://3.14.65.142:3000/students/archivoAll', {
+                responseType: 'blob' // Indica que esperamos un objeto blob como respuesta
+            });
+    
+            // Crear un objeto URL para el archivo blob
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+            // Crear un enlace <a> en el documento
+            const link = document.createElement('a');
+            link.href = url;
+    
+            // Establecer el nombre de archivo para el enlace
+            link.setAttribute('download', 'Estudiantes.xlsx');
+    
+            // Hacer clic en el enlace para iniciar la descarga
+            document.body.appendChild(link);
+            link.click();
+    
+            // Limpiar el objeto URL y eliminar el enlace
+            window.URL.revokeObjectURL(url);
+            link.parentNode.removeChild(link);
+    
+            alert("Archivo generado con éxito");
+        } catch (error) {
+            console.log(error);
+            alert("Error al generar el archivo");
+        }
+    }
+
+    const handleExcelSede = async () => {
+        try {
+            const response = await axios.get('http://3.14.65.142:3000/archivoSede', {
+                params: {
+                    profe: userId
+                }, 
+                responseType: 'blob' // Indica que esperamos un objeto blob como respuesta
+            });
+    
+            // Crear un objeto URL para el archivo blob
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+            // Crear un enlace <a> en el documento
+            const link = document.createElement('a');
+            link.href = url;
+    
+            // Establecer el nombre de archivo para el enlace
+            link.setAttribute('download', 'Estudiantes_Sede.xlsx');
+    
+            // Hacer clic en el enlace para iniciar la descarga
+            document.body.appendChild(link);
+            link.click();
+    
+            // Limpiar el objeto URL y eliminar el enlace
+            window.URL.revokeObjectURL(url);
+            link.parentNode.removeChild(link);
+    
+            alert("Archivo generado con éxito");
+        } catch (error) {
+            console.log(error);
+            alert("Error al generar el archivo");
+        }
+    }
+
     return (
         <div
             style={{
@@ -101,16 +166,22 @@ function ConsultarEstudiantesProfesor() {
                 <Link href="/consultarEstudiantesProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: '#E2CE1A', marginTop: '2vh', marginLeft: "0.5vw", whiteSpace: "nowrap", borderRadius: '1vw' }}>Consultar Estudiantes</Link>
                 <Link href="/profesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop: "35vh", marginLeft: "6vw" }}>Salir</Link>
             </div>
-            <div style={{ width: "70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw', marginBottom:"2vh" }}>
+            <div style={{ width: "70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw', marginBottom:"2vh", maxHeight:"70vh", overflow:"auto" }}>
                 <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw", marginBotom:"2vh" }}>
                     <h1 style={{ color: '#38340C', fontSize: '2.5vw', textAlign: 'center', marginBottom: '3vh' }}>Datos de Estudiantes</h1>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-1vh' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-2vh' }}>
                         <h3 style={{ marginRight: '10px' }}>Filtros: </h3>
                         <Button onClick={handleOrdenNombre} style={{ marginLeft: "10px", color:"#38340C"}}>
                             Ordenar por Nombre {ordenNombre === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
                         </Button>
                         <Button onClick={handleOrdenCarnet} style={{ marginLeft: "10px", color:"#38340C"}}>
                             Ordenar por Carnet {ordenCarnet === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                        </Button>
+                        <Button onClick={handleGenerarExcel} variant='contained' style={{ backgroundColor:"#93bf85", color:"#38340C", marginLeft:"7vw", width:"13vw" }}>
+                            Excel Estudiantes
+                        </Button>
+                        <Button onClick={handleExcelSede} variant='contained' style={{ backgroundColor:"#93bf85", color:"#38340C", marginLeft:"1vw", width:"15vw", marginBottom:"2.5vh" }}>
+                            Excel Estudiantes Por Sede
                         </Button>
                     </div>
                     <Table>

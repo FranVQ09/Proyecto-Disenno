@@ -6,6 +6,7 @@ import axios from 'axios';
 
 
 function InformesExcel() {
+    const userId = sessionStorage.getItem('userId');
 
     const handleGenerar = async () => {
         try {
@@ -21,7 +22,41 @@ function InformesExcel() {
             link.href = url;
     
             // Establecer el nombre de archivo para el enlace
-            link.setAttribute('download', 'datos.xlsx');
+            link.setAttribute('download', 'Estudiantes.xlsx');
+    
+            // Hacer clic en el enlace para iniciar la descarga
+            document.body.appendChild(link);
+            link.click();
+    
+            // Limpiar el objeto URL y eliminar el enlace
+            window.URL.revokeObjectURL(url);
+            link.parentNode.removeChild(link);
+    
+            alert("Archivo generado con éxito");
+        } catch (error) {
+            console.log(error);
+            alert("Error al generar el archivo");
+        }
+    }
+
+    const handleExcelSede = async () => {
+        try {
+            const response = await axios.get('http://3.14.65.142:3000/archivoSede', {
+                params: {
+                    profe: userId
+                }, 
+                responseType: 'blob' // Indica que esperamos un objeto blob como respuesta
+            });
+    
+            // Crear un objeto URL para el archivo blob
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+            // Crear un enlace <a> en el documento
+            const link = document.createElement('a');
+            link.href = url;
+    
+            // Establecer el nombre de archivo para el enlace
+            link.setAttribute('download', 'Estudiantes_Sede.xlsx');
     
             // Hacer clic en el enlace para iniciar la descarga
             document.body.appendChild(link);
@@ -79,6 +114,8 @@ function InformesExcel() {
                     <form style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                         <label style={{ color: '#38340C', fontSize: '1.5vw', marginBottom: '1vh', marginTop:"1vh" }}>Generar Excel de los Estudiantes:</label>
                         <Button onClick={handleGenerar} style={{ width:"10vw", padding:"1vh", backgroundColor:"#38340C", color:"white", fontSize:"1vw", borderRadius:"1vw", marginBottom:"1vh" }}>Generar</Button>
+                        <label style={{ color: '#38340C', fontSize: '1.5vw', marginBottom: '1vh', marginTop:"1vh" }}>Generar Excel de los Estudiantes por Sede:</label>
+                        <Button onClick={handleExcelSede} style={{ width:"10vw", padding:"1vh", backgroundColor:"#38340C", color:"white", fontSize:"1vw", borderRadius:"1vw", marginBottom:"1vh" }}>Generar</Button>
                     </form>
                 </div>
             </Paper>
