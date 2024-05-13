@@ -113,7 +113,7 @@ function PlanActividadesProfesor() {
           setComentariosActividad(comentariosActualizados.data);
       } catch (error) {
           console.error('Error fetching data: ', error);
-          alert('Error fetching data');
+          alert('Error insertando el comentario. \nRevise que todos los campos esten llenos');
       }  
       setNuevoComentario('');
   };
@@ -261,6 +261,7 @@ function PlanActividadesProfesor() {
                             placeholder="Selecione periodo 1 o 2" 
                             value={selectedPeriodo}
                             onChange={handlePeriodoChange} 
+                            required
                         />
                         <Button 
                             type="submit" 
@@ -383,6 +384,7 @@ function PlanActividadesProfesor() {
                                         onChange={(e) => setRespuestaComentario(e.target.value)}
                                         placeholder="Escribe tu respuesta aquí..."
                                         style={{ marginLeft: '1vw'}}
+                                        required
                                     />
                                     <button onClick={handleEnviarRespuesta} style={{ marginLeft:"1vw", marginBottom:"1vh"}}>Enviar</button>
                                 </div>
@@ -399,6 +401,7 @@ function PlanActividadesProfesor() {
                         margin="normal"
                         value={nuevoComentario}
                         onChange={(e) => setNuevoComentario(e.target.value)}
+                        required
                     />
                     <Button variant="contained"  onClick={agregarComentario} style={{ marginTop: '1rem', backgroundColor:"#38340C", color:"white", border: "0.15vw solid #38340C"}}>Agregar Comentario</Button>
                     <Button variant="contained"  onClick={cerrarFormularioComentarios} style={{ marginTop: '1rem', marginLeft: '1rem', backgroundColor:"#E2CE1A", color:"#38340C", border: "0.15vw solid #38340C" }}>Cerrar</Button>

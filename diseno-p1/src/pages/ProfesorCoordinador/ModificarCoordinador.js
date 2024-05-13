@@ -77,7 +77,7 @@ function ModificarCoordinador() {
             window.location.reload();
         } catch (error) {
             console.error(error);
-            alert("Error, no se pudo modificar el profesor");
+            alert("Error, no se pudo modificar el profesor.\nPor favor, verifique que los datos sean correctos y todos los campos estén completos.");
         }
     };
 
@@ -120,13 +120,13 @@ function ModificarCoordinador() {
               <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
                 <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Información Profesor</Typography>
                 <form onSubmit={handleSubmit}>
-                  <TextField label={"Nombre: " + userData.Nombre} name="nombre" fullWidth margin="normal" value={formData.nombre} onChange={handleChange} />
-                  <TextField label={"Apellido1: " + userData.Apellido1} name="apellido1" fullWidth margin="normal" value={formData.apellido1} onChange={handleChange} />
-                  <TextField label={"Apellido2: " + userData.Apellido2} name="apellido2" fullWidth margin="normal" value={formData.apellido2} onChange={handleChange} />
+                  <TextField label={"Nombre: " + userData.Nombre} name="nombre" fullWidth margin="normal" value={formData.nombre} onChange={handleChange} required/>
+                  <TextField label={"Apellido1: " + userData.Apellido1} name="apellido1" fullWidth margin="normal" value={formData.apellido1} onChange={handleChange} required/>
+                  <TextField label={"Apellido2: " + userData.Apellido2} name="apellido2" fullWidth margin="normal" value={formData.apellido2} onChange={handleChange} required/>
                   <TextField label={"Correo: " + userData.correo} name="correo" fullWidth margin="normal" value={formData.correo} onChange={handleChange} />
-                  <TextField label={"Teléfono Celular: " + userData.celular} name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} />
-                  <TextField label={"Teléfono Oficina: " + userData.numOficina} name="numOfi" fullWidth margin="normal" value={formData.numOfi} onChange={handleChange} />
-                  <TextField label={"extension: " + userData.extension} name="extension" fullWidth margin="normal" value={formData.extension} onChange={handleChange} InputProps={{ readOnly: true }}/>
+                  <TextField label={"Teléfono Celular: " + userData.celular} name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} required/>
+                  <TextField label={"Teléfono Oficina: " + userData.numOficina} name="numOfi" fullWidth margin="normal" value={formData.numOfi} onChange={handleChange} required/>
+                  <TextField label={"extension: " + userData.extension} name="extension" fullWidth margin="normal" value={formData.extension} onChange={handleChange} InputProps={{ readOnly: true }} required/>
                   {image ? (
                       <div>
                           <img src={image} alt="Foto de perfil" style={{ width: '30%', borderRadius: '1vw', marginTop: '2vh', marginLeft:"22.5vw" }} />

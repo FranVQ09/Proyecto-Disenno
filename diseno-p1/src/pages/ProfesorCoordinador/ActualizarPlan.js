@@ -308,6 +308,7 @@ function ActualizarPlan() {
                             placeholder="Selecione periodo 1 o 2" 
                             value={selectedPeriodo}
                             onChange={handlePeriodoChange} 
+                            required
                         />
                         <Button 
                             type="submit" 
@@ -359,6 +360,7 @@ function ActualizarPlan() {
                                                         value={selectedProfesores} // Asegúrate de que selectedProfesores sea un array
                                                         onChange={handleSelectChange}
                                                         style={{ width: "20vw" }}
+                                                        required
                                                     >
                                                         {profesEquipo.map((profesor) => (
                                                             <MenuItem key={profesor.id} value={profesor}>

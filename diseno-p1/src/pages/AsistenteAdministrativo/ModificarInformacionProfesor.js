@@ -167,6 +167,7 @@ function ModificarInformacionProfesor() {
                     onChange={handleOptionChange}
                     fullWidth
                     style={{ marginBottom: '1.5vh' }}
+                    required
                 >
                     {Object.values(profesSede).map((profe, index) => (
                         <MenuItem key={index} value={profe}>

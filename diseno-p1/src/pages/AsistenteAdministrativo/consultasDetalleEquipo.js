@@ -156,6 +156,7 @@ function ConsultasDetalleEquipo() {
                 onChange={(event) => setAño(event.target.value)}
                 variant="outlined"
                 style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh" }}
+                required
             />
           </form>
         </div>

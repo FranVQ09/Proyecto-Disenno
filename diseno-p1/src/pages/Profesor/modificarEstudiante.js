@@ -145,7 +145,7 @@ function ModificarEstudiante() {
                     <Paper elevation={3} style={{ padding: '2vh', backgroundColor: '#EEE1B0', borderRadius: '1vw' }}>
                         <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Buscar Estudiante</Typography>
                         <form onSubmit={handleSearchSubmit}>
-                            <TextField label="Número de Carnet" fullWidth margin="normal" value={searchCarnet} onChange={handleSearchCarnetChange} />
+                            <TextField label="Número de Carnet" fullWidth margin="normal" value={searchCarnet} onChange={handleSearchCarnetChange} required/>
                             <Button type="submit" variant="contained" color="primary" style={{ marginTop: '2vh', width: '100%', backgroundColor: '#38340C', color: '#EEE1B0' }}>Buscar</Button>
                         </form>
                     </Paper>
@@ -155,11 +155,11 @@ function ModificarEstudiante() {
               <Paper elevation={3} style={{ padding: '2vh', backgroundColor: "#EEE1B0", borderTopLeftRadius: "1vw", borderTopRightRadius: "1vw" }}>
                 <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Información Estudiante</Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField label={"Nombre: " + estudiante.Nombre} name='nombre' fullWidth margin="normal" value={formData.nombre} onChange={handleChange} />
-                    <TextField label={"Apellido 1: " + estudiante.Apellido1} name="apellido1" fullWidth margin="normal" value={formData.apellido1} onChange={handleChange} />
-                    <TextField label={"Apellido 2: " + estudiante.Apellido2} name="apellido2" fullWidth margin="normal" value={formData.apellido2} onChange={handleChange} />
-                    <TextField label={"Correo: " + estudiante.correo} name="correo" fullWidth margin="normal" value={formData.correo} onChange={handleChange} />  
-                    <TextField label={"Celular: " + estudiante.celular} name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} />                  
+                    <TextField label={"Nombre: " + estudiante.Nombre} name='nombre' fullWidth margin="normal" value={formData.nombre} onChange={handleChange} required/>
+                    <TextField label={"Apellido 1: " + estudiante.Apellido1} name="apellido1" fullWidth margin="normal" value={formData.apellido1} onChange={handleChange} required/>
+                    <TextField label={"Apellido 2: " + estudiante.Apellido2} name="apellido2" fullWidth margin="normal" value={formData.apellido2} onChange={handleChange} required/>
+                    <TextField label={"Correo: " + estudiante.correo} name="correo" fullWidth margin="normal" value={formData.correo} onChange={handleChange} required/>  
+                    <TextField label={"Celular: " + estudiante.celular} name="celular" fullWidth margin="normal" value={formData.celular} onChange={handleChange} required/>                  
                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2vh' }}>
                         <Button type='submit' variant="contained" color="primary" style={{ width: '20vw', backgroundColor:"#38340C", border: '2px solid #38340C', marginLeft:"-1vw"}}>Enviar</Button>
                         <Button variant="contained" color="secondary" onClick={handleCancel} style={{ width: '20vw', backgroundColor:"#EEE1B0", border: '2px solid #38340C', color:"black", marginLeft:"1vw"}}>Cancelar</Button>

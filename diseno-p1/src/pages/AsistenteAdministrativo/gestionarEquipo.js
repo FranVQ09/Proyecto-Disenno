@@ -127,6 +127,7 @@ function GestionarEquipo() {
                                     onChange={(event) => setAño(event.target.value)}
                                     variant="outlined"
                                     style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh" }}
+                                    required
                                 />
                                 <div style={{ display:"flex", justifyContent:"center"}}>
                                     <Button type="submit" variant="contained" style={{ backgroundColor:"#38340C" }}>Crear</Button>

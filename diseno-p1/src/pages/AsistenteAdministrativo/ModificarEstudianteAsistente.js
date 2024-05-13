@@ -135,7 +135,7 @@ const handleCancel = () => {
                     <a style={{ color: 'white', fontWeight: 'bold', fontSize: '2.5vw', textDecoration: 'none', display: 'inline-block', backgroundColor: '#38340C', marginLeft: '1vw' }}>Información</a>
                 </div>
                 <Link href="/modificarInformacionProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#38340C', marginTop: '20vh', marginLeft: "0.8vw", borderRadius:'1vw'}}>Información Profesor</Link>
-                <Link href="/modificarEstudianteAsistente" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#E2CE1A', marginTop: '2vh', marginLeft: "0vw", whiteSpace:"nowrap"}}>Información Estudiante</Link>
+                <Link href="/modificarEstudianteAsistente" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#E2CE1A', marginTop: '2vh', marginLeft: "0vw", whiteSpace:"nowrap", borderRadius:"1vw"}}>Información Estudiante</Link>
                 <Link href="/asistente" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"42vh", marginLeft:"6vw" }}>Salir</Link>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', backgroundColor: '#E2CE1A', overflow: 'hidden', minHeight: '100vh' }}>
@@ -144,7 +144,7 @@ const handleCancel = () => {
                     <Paper elevation={3} style={{ padding: '2vh', backgroundColor: '#EEE1B0', borderRadius: '1vw' }}>
                         <Typography variant="h3" style={{ color: '#38340C', textAlign: 'center', marginBottom: '3vh' }}>Buscar Estudiante</Typography>
                         <form onSubmit={handleSearchSubmit}>
-                            <TextField label="Número de Carnet" fullWidth margin="normal" value={searchCarnet} onChange={handleSearchCarnetChange} />
+                            <TextField label="Número de Carnet" fullWidth margin="normal" value={searchCarnet} onChange={handleSearchCarnetChange} required/>
                             <Button type="submit" variant="contained" color="primary" style={{ marginTop: '2vh', width: '100%', backgroundColor: '#38340C', color: '#EEE1B0' }}>Buscar</Button>
                         </form>
                     </Paper>

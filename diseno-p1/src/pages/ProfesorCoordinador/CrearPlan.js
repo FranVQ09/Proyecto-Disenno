@@ -97,6 +97,7 @@ function CrearPlan() {
                             width="50%"
                             margin="normal"
                             value={periodoLectivo}
+                            required
                             onChange={(e) => {
                                 const newValue = e.target.value;
                                 if (newValue === "" || newValue === '1' || newValue === '2') {

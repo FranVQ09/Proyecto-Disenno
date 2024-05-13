@@ -146,6 +146,7 @@ function AgregarProfesor() {
                             onChange={(event) => setAño(event.target.value)}
                             variant="outlined"
                             style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh" }}
+                            required
                         />
                     </form>
                 </div>
@@ -164,18 +165,13 @@ function AgregarProfesor() {
                             value={profesorSeleccionado}
                             onChange={handleChange}
                             style={{ width:"30vw", backgroundColor:"#FFFF", borderRadius:"0.5vh"}}
+                            required
                         >
                             <MenuItem value="" disabled>Seleccionar Profesor</MenuItem>
                             {profesoresSede.map((profesor, index) => (
                                 <MenuItem key={index} value={profesor}>{profesor.Nombre}</MenuItem>
                             ))}
                         </Select>
-                        <IconButton onClick={handleToggleCoordinador} style={{ marginTop: '1vh' }}>
-                            {esCoordinador ? <CheckCircle color="primary" /> : <RadioButtonUnchecked color="disabled" />}
-                        </IconButton>
-                        <Typography variant="body2" style={{ marginTop: '0.5vh' }}>
-                            {esCoordinador ? 'Coordinador' : 'No es Coordinador'}
-                        </Typography>
                         <Button type="submit" style={{ marginTop: '3vh', backgroundColor:"#38340C", color:"#FFFF" }}>Submit</Button>
                         <Button onClick={handleCancelar} style={{ marginTop: '3vh', backgroundColor:"#38340C", color:"#FFFF" }}>Cancelar</Button>
                     </form>
