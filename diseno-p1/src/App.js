@@ -20,6 +20,7 @@ import RegistrarProfesor from './pages/AsistenteAdministrativo/registrarProfesor
 import InformesExcel from './pages/AsistenteAdministrativo/InformesExcel';
 import CargarInforme from './pages/AsistenteAdministrativo/CargarInforme';
 import ModificarInformacionProfesor from './pages/AsistenteAdministrativo/ModificarInformacionProfesor';
+import ModificarEstudianteAsistente from './pages/AsistenteAdministrativo/ModificarEstudianteAsistente';
 
 // Import Profesor Coordinador
 import MenuProfesorCoordinador from './pages/ProfesorCoordinador/MenuProfesor';
@@ -72,6 +73,7 @@ function App() {
           <Route path="/actualizarPlan" element={<ActualizarPlan />} />
           <Route path="/visualizarPlan" element={<VisualizarPlan />} />
           <Route path="/modificarInformacionProfesor" element={<ModificarInformacionProfesor />} />
+          <Route path="/modificarEstudianteAsistente" element={<ModificarEstudianteAsistente />} />
         </Routes>
       </Router>
     </div>
