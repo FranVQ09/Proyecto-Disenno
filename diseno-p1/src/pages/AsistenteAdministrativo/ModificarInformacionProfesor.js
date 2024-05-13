@@ -66,7 +66,7 @@ function ModificarInformacionProfesor() {
     };
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: 'image/png, image/jpeg, image/jpg',
+        accept: 'image/png, image/jpeg, image/jpg,',
         onDrop,
     });
 
@@ -156,8 +156,7 @@ function ModificarInformacionProfesor() {
                     value={selectedOption}
                     onChange={handleOptionChange}
                     fullWidth
-                    margin="normal"
-                    style={{ marginBottom: '1.5rem' }}
+                    style={{ marginBottom: '1.5vh' }}
                 >
                     {Object.values(profesSede).map((profe, index) => (
                         <MenuItem key={index} value={profe}>
