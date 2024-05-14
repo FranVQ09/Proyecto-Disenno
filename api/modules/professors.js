@@ -55,7 +55,9 @@ professorsRouter.post("/agregarProfeEquipo", async (req, res) => {
   try {
     const pool = await getPool();
     const request = pool.request();
-
+    console.log(`Profesor: ${req.body.idProfesor}`)
+    console.log(`Equipo: ${req.body.idEquipo}`)
+    console.log(`Usuario: ${req.body.idUsuario}`)
     request.input("inIdEquipo", sql.Int, req.body.idEquipo);
     request.input("inidProfesor", sql.Int, req.body.idProfesor);
     request.input("inidUsuario", sql.Int, req.body.idUsuario);
@@ -124,6 +126,7 @@ professorsRouter.delete("/darDeBajaProfeEq", async (req, res) => {
 
 professorsRouter.put("/definirCoordinador", async (req, res) => {
   try {
+
     const pool = await getPool();
     const request = pool.request();
 
@@ -198,9 +201,9 @@ professorsRouter.get("/esCoordinador", async (req, res)=>{
   try {
     const pool = await getPool();
     const request = pool.request();
-
+  
     request.input("inAnno", sql.Int, req.query.idAnno);
-    request.input("inIdUsuario", sql.Int, req.body.idUsuario);
+    request.input("inIdUsuario", sql.Int, req.query.idUsuario);
 
     const result = await request.execute("dbo.esCoordinador");
 
@@ -231,6 +234,7 @@ professorsRouter.put(
   "/modificarDatoProfesor",
   upload.single("imagen"),
   async (req, res) => {
+    
     try {
       const pool = await getPool();
       const request = pool.request();
