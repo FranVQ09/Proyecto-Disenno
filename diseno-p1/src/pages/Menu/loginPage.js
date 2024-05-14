@@ -14,7 +14,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://3.14.65.142:3000/iniciarSesion', {
+      const response = await axios.post('https://3.14.65.142:443/iniciarSesion', {
         correo: correo, 
         password: password
       });
