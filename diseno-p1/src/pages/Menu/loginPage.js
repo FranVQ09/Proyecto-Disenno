@@ -14,7 +14,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://3.14.65.142:443/iniciarSesion', {
+      const response = await axios.post('http://3.14.65.142:3000/iniciarSesion', {
         correo: correo, 
         password: password
       });
@@ -169,7 +169,7 @@ function LoginPage() {
           style={{
             position: 'absolute',
             width:"30vw",
-            height:"27vh",
+            height:"35vh",
             top: '50vh', // Centra verticalmente
             left: '50vw', // Centra horizontalmente
             transform: 'translate(-50%, -50%)', // Centra el formulario
