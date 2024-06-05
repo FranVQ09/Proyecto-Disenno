@@ -30,7 +30,7 @@ function MenuEstudiante() {
             {/* Enlaces del menú */}
             <div style={{ display: 'flex' }}>
                 <a
-                    href="/consultasProfesor"
+                    href="/verPerfilEstudiante"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
@@ -40,10 +40,10 @@ function MenuEstudiante() {
                         marginRight: '10px' // Margen derecho entre enlaces
                     }}
                 >
-                    Consultas
+                    Ver Perfil
                 </a>
                 <a
-                    href="/modificarProfesor"
+                    href="/modificarPerfilEstudiante"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
@@ -53,10 +53,10 @@ function MenuEstudiante() {
                         marginRight: '10px' // Margen derecho entre enlaces
                     }}
                 >
-                    Modificar Información
+                    Modificar Perfil
                 </a>
                 <a
-                    href="/planActividadesProfesor"
+                    href="/verActividades"
                     style={{
                         color: 'white',
                         fontWeight: 'bold',
@@ -66,7 +66,7 @@ function MenuEstudiante() {
                         marginRight: '10px' // Margen derecho entre enlaces
                     }}
                 >
-                    Plan de Actividades
+                    Ver Actividades
                 </a>
             </div>
             <a

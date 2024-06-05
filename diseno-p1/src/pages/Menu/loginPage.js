@@ -39,11 +39,13 @@ function LoginPage() {
           navigate('/profesorCoordinador');
         }
 
-        } else if (response.data.body[0].Tipo === 3) {
+      } else if (response.data.body[0].Tipo === 3) {
           navigate('/asistente');
-        } else {
-          alert('Profesor no registrado');
-        }
+      } else if (response.data.body[0].Tipo === 2) {
+          navigate('/estudiante');
+      } else {
+          alert('Usuario no válido');
+      }
       setCorreo('');
       setPassword('');
       

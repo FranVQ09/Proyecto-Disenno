@@ -42,6 +42,9 @@ import PlanActividadesProfesor from './pages/Profesor/planActividaesProfesor';
 
 // Import estudiante
 import MenuEstudiante from './pages/Estudiante/MenuEstudiante';
+import VerPerfilEstudiante from './pages/Estudiante/VerPerfilEstudiante';
+import ModificarPerfilEstudiante from './pages/Estudiante/ModificarPerfilEstudiante';
+import VerActividades from './pages/Estudiante/VerActividades';
 
 function App() {
   return (
@@ -77,6 +80,9 @@ function App() {
           <Route path="/modificarInformacionProfesor" element={<ModificarInformacionProfesor />} />
           <Route path="/modificarEstudianteAsistente" element={<ModificarEstudianteAsistente />} />
           <Route path="/estudiante" element={<MenuEstudiante />} />
+          <Route path="/verPerfilEstudiante" element={<VerPerfilEstudiante />}></Route>
+          <Route path="/modificarPerfilEstudiante" element={<ModificarPerfilEstudiante />}></Route>
+          <Route path="/verActividades" element={<VerActividades />}></Route>
         </Routes>
       </Router>
     </div>
