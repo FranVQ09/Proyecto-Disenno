@@ -32,7 +32,7 @@ class Profesor extends Persistible {
                 formData.append('imagen', this.imagen)
                 
                 
-                const response = await axios.post('http://3.14.65.142:3000/professors/registrarProfe', formData);
+                const response = await axios.post('http://18.223.33.212:3000/professors/registrarProfe', formData);
                 alert('Profesor registrado exitosamente');
                    
     

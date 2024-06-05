@@ -6,7 +6,7 @@ import { Select } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import axios from 'axios';
-
+import { resolveBreakpointValues } from '@mui/system/breakpoints';
 
 
 function AgregarProfesor() {
