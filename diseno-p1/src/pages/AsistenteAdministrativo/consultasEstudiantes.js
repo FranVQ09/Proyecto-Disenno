@@ -22,7 +22,7 @@ function ConsultasDetalleEquipo() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://3.14.65.142:3000/students/obtenerDatosEstudiante', {
+        const response = await axios.get('http://18.223.33.212:3000/students/obtenerDatosEstudiante', {
           params: {
             idUsuario: userId
           }

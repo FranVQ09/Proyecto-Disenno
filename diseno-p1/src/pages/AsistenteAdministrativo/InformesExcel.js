@@ -10,7 +10,7 @@ function InformesExcel() {
 
     const handleGenerar = async () => {
         try {
-            const response = await axios.get('http://3.14.65.142:3000/students/archivoAll', {
+            const response = await axios.get('http://18.223.33.212:3000/students/archivoAll', {
                 responseType: 'blob' // Indica que esperamos un objeto blob como respuesta
             });
     
@@ -41,7 +41,7 @@ function InformesExcel() {
 
     const handleExcelSede = async () => {
         try {
-            const response = await axios.get('http://3.14.65.142:3000/archivoSede', {
+            const response = await axios.get('http://18.223.33.212:3000/archivoSede', {
                 params: {
                     profe: userId
                 }, 

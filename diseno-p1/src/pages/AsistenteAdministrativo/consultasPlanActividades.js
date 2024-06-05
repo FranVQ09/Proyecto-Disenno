@@ -27,7 +27,7 @@ function ConsultasDetalleEquipo() {
 
     try {
       const añoInt = parseInt(año);
-      const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+      const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
           params: {
               anno: añoInt
           }
@@ -50,7 +50,7 @@ function ConsultasDetalleEquipo() {
             if (!isNaN(parseInt(idEquipo))) {
                 const idEquipoInt = parseInt(idEquipo);
                 const periodoInt = parseInt(periodo);
-                const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
+                const response = await axios.get('http://18.223.33.212:3000/obtenerPlanTrabajo', {
                     params: {
                         idEquipo: idEquipoInt
                     }
@@ -81,7 +81,7 @@ function ConsultasDetalleEquipo() {
     if (idPlanTrabajo !== 0) { 
       const fetchData = async () => {
         try {
-          const datos = await axios.get('http://3.14.65.142:3000/activities/spObtenerActivi', {
+          const datos = await axios.get('http://18.223.33.212:3000/activities/spObtenerActivi', {
             params: {
               idPlanTrab: idPlanTrabajo
             }
@@ -101,7 +101,7 @@ function ConsultasDetalleEquipo() {
       const fetchData = async () => {
         try {
           const detallesPromises = actividades.map(async (actividad) => {
-            const detalles = await axios.get('http://3.14.65.142:3000/activities/obtenerDatosActividad', {
+            const detalles = await axios.get('http://18.223.33.212:3000/activities/obtenerDatosActividad', {
               params: {
                 idActividad: actividad.id
               }

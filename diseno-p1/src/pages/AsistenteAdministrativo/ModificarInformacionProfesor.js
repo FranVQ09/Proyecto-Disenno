@@ -30,7 +30,7 @@ function ModificarInformacionProfesor() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://3.14.65.142:3000/obtenerProfesCedes', {
+                const result = await axios.get('http://18.223.33.212:3000/obtenerProfesCedes', {
                     params: {
                         sede: userSede
                     }
@@ -53,7 +53,7 @@ function ModificarInformacionProfesor() {
             if(profesorId !== 0) {
             try {
                 console.log("ProfesorId: ", profesorId);
-                const response = await axios.get('http://3.14.65.142:3000/professors/obtenerDatosProfeso', {
+                const response = await axios.get('http://18.223.33.212:3000/professors/obtenerDatosProfeso', {
                     params: {
                         idProfesor: profesorId
                     }
@@ -113,7 +113,7 @@ function ModificarInformacionProfesor() {
             formData1.append('imagen', image);
             formData1.append('idUsEnc', userId);
             
-            const response = await axios.put('http://3.14.65.142:3000/professors/modificarDatoProfesor', formData1);
+            const response = await axios.put('http://18.223.33.212:3000/professors/modificarDatoProfesor', formData1);
             alert("Profesor modificado");
             // Recargar la página
             window.location.reload();

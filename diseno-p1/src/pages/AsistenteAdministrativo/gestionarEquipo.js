@@ -18,7 +18,7 @@ function GestionarEquipo() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://3.14.65.142:3000/obtTodoEquipos');
+                const response = await axios.get('http://18.223.33.212:3000/obtTodoEquipos');
                 console.log(response.data);
                 setEquipos(response.data);
             } catch (error) {
@@ -41,11 +41,11 @@ function GestionarEquipo() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const result = await axios.post('http://3.14.65.142:3000/registrarEqui', {
+        const result = await axios.post('http://18.223.33.212:3000/registrarEqui', {
             anno: año
         })
 
-        const response = await axios.get('http://3.14.65.142:3000/obtTodoEquipos');
+        const response = await axios.get('http://18.223.33.212:3000/obtTodoEquipos');
 
         setEquipos(response.data);
 

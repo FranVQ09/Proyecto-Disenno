@@ -14,7 +14,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://3.14.65.142:3000/iniciarSesion', {
+      const response = await axios.post(' http://18.223.33.212:3000/iniciarSesion', {
         correo: correo, 
         password: password
       });
@@ -26,7 +26,7 @@ function LoginPage() {
 
 
       if (response.data.body[0].Tipo === 1) {
-        const result = await axios.get('http://3.14.65.142:3000/professors/esCoordinador', {
+        const result = await axios.get(' http://18.223.33.212:3000/professors/esCoordinador', {
           params:{
             idAnno: añoActual,
             idUsuario: response.data.body[0].id
@@ -66,7 +66,7 @@ function LoginPage() {
     try {
       // Actualiza el estado 'password' con el valor del campo de contraseña
       setPassword(newPassword);
-      const response = await axios.put('http://3.14.65.142:3000/cambiarPassword', {
+      const response = await axios.put('http://18.223.33.212:3000/cambiarPassword', {
         correo: correo,
         newPassword: newPassword
       });

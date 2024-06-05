@@ -5,13 +5,8 @@ import TextField from '@mui/material/TextField';
 import { Select } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { CheckCircle, ConstructionOutlined, RadioButtonUnchecked } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import axios from 'axios';
-import { resolveBreakpointValues } from '@mui/system/breakpoints';
+
 
 
 function AgregarProfesor() {
@@ -30,7 +25,7 @@ function AgregarProfesor() {
         event.preventDefault();
         
         try{
-            const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+            const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
                 params: {
                     anno: año
                 }
@@ -42,7 +37,7 @@ function AgregarProfesor() {
                 setAgregarForm(true);
             }
 
-            const response = await axios.get('http://3.14.65.142:3000/obtenerProfesCedes', {
+            const response = await axios.get('http://18.223.33.212:3000/obtenerProfesCedes', {
                 params: {
                     sede: userSede
                 }
@@ -67,7 +62,7 @@ function AgregarProfesor() {
         console.log("IdEquipo: ", idEquipo);
         console.log("IdProfesor: ", profesorSeleccionado.id);
         try {
-            const result = await axios.post('http://3.14.65.142:3000/professors/agregarProfeEquipo', {
+            const result = await axios.post('http://18.223.33.212:3000/professors/agregarProfeEquipo', {
                 idEquipo: idEquipo,
                 idProfesor: profesorSeleccionado.id,
                 idUsuario: idUsuarioEntero

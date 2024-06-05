@@ -19,7 +19,7 @@ function CargarInforme() {
             formData.append('sede', userSede);
             formData.append('archivo', selectedFile);
 
-            const data = await axios.post('http://3.14.65.142:3000/students/insertEstudiantes', formData)
+            const data = await axios.post('http://18.223.33.212:3000/students/insertEstudiantes', formData)
             alert("Archivo cargado con éxito");
 
         } catch (error) {

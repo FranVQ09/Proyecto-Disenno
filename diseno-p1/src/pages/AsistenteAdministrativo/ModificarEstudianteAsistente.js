@@ -28,7 +28,7 @@ const handleSearchSubmit = async (e) => {
     
     try {
         const userIdInt = parseInt(userId);
-        const result = await axios.get('http://3.14.65.142:3000/students/obtenerDatosEstudiante', {
+        const result = await axios.get('http://18.223.33.212:3000/students/obtenerDatosEstudiante', {
             params: {
                 idUsuario: userIdInt
             }
@@ -80,7 +80,7 @@ const handleSubmit = async (e) => {
         console.log("FormData:", formDataObject);
         console.log(formData1)
         
-        const response = await axios.put('http://3.14.65.142:3000/students/actualizarEstudiante', formDataObject);
+        const response = await axios.put('http://18.223.33.212:3000/students/actualizarEstudiante', formDataObject);
 
         alert("Estudiante modificado");
         setShowForm(false);

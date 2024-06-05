@@ -30,7 +30,7 @@ function ConsultasDetalleEquipo() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+      const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
         params: {
           anno: año
         }
@@ -42,7 +42,7 @@ function ConsultasDetalleEquipo() {
         setBuscarEquipo(false);
       }
 
-      const response = await axios.get('http://3.14.65.142:3000/obtenerDatosEquipo', {
+      const response = await axios.get('http://18.223.33.212:3000/obtenerDatosEquipo', {
         params: {
           idEquipo: idEquipo
         }
@@ -66,14 +66,14 @@ function ConsultasDetalleEquipo() {
   const handleEliminar = async (idBorrarProfesor) => {
     const intUserId = parseInt(userId);
     try {
-      const result = await axios.delete('http://3.14.65.142:3000/professors/darDeBajaProfeEq', {
+      const result = await axios.delete('http://18.223.33.212:3000/professors/darDeBajaProfeEq', {
         data: {
           idProfesor: idBorrarProfesor,
           idEquipo: idEquipo,
           idAsisAdminis: intUserId
         }
       })
-      const response = await axios.get('http://3.14.65.142:3000/obtenerDatosEquipo', {
+      const response = await axios.get('http://18.223.33.212:3000/obtenerDatosEquipo', {
         params: {
           idEquipo: idEquipo
         }
@@ -97,7 +97,7 @@ function ConsultasDetalleEquipo() {
       console.log("Profesor: ",  profesor.id);
       console.log("UserId: ",  userIdInt);
 
-      const result = await axios.put('http://3.14.65.142:3000/professors/definirCoordinador', {
+      const result = await axios.put('http://18.223.33.212:3000/professors/definirCoordinador', {
         idEquipo: idEquipo,
         idProfe: profesor.id,
         idAsisAdmin: userIdInt
