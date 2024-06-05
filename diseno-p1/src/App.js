@@ -1,15 +1,15 @@
 import './styles/App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-//Imports de las paginas
-//Import de Login Page y Register Page
+// Imports de las paginas
+// Import de Login Page y Register Page
 import Login from "./pages/Menu/loginPage";
 import Register from "./pages/Menu/registerPage";
 
-//Imports de las ventas de trabajo
+// Imports de las ventas de trabajo
 import Menu from "./pages/Menu/Menu";
 
-//Import de Asistnete Administrativo
+// Import de Asistnete Administrativo
 import AsistenteAdministrativo from "./pages/AsistenteAdministrativo/menuAsistente";
 import ConsultasDetalleEquipo from './pages/AsistenteAdministrativo/consultasDetalleEquipo';
 import ConsultasEstudiantes from './pages/AsistenteAdministrativo/consultasEstudiantes';
@@ -32,7 +32,7 @@ import CrearPlan from './pages/ProfesorCoordinador/CrearPlan';
 import ActualizarPlan from './pages/ProfesorCoordinador/ActualizarPlan';
 import VisualizarPlan from './pages/ProfesorCoordinador/VisualizarPlan';
 
-//Import Profesor
+// Import Profesor
 import MenuProfesor from './pages/Profesor/menuProfesor';
 import ConsultasProfesor from './pages/Profesor/consultasProfesor';
 import ConsultarEstudiantesProfesor from './pages/Profesor/consultarEstudiantesProfesor';
@@ -40,6 +40,8 @@ import ModificarProfesor from './pages/Profesor/modificarProfesor';
 import ModificarEstudiante from './pages/Profesor/modificarEstudiante';
 import PlanActividadesProfesor from './pages/Profesor/planActividaesProfesor';
 
+// Import estudiante
+import MenuEstudiante from './pages/Estudiante/MenuEstudiante';
 
 function App() {
   return (
@@ -74,6 +76,7 @@ function App() {
           <Route path="/visualizarPlan" element={<VisualizarPlan />} />
           <Route path="/modificarInformacionProfesor" element={<ModificarInformacionProfesor />} />
           <Route path="/modificarEstudianteAsistente" element={<ModificarEstudianteAsistente />} />
+          <Route path="/estudiante" element={<MenuEstudiante />} />
         </Routes>
       </Router>
     </div>
