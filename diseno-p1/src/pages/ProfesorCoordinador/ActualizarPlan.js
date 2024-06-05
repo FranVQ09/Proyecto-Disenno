@@ -42,7 +42,7 @@ function ActualizarPlan() {
         e.preventDefault();
         try {
             const responsables = selectedProfesores.map(profesor => profesor.id);
-            const insertarResponsable = await axios.post('http://3.14.65.142:3000/activities/registrarEncargados', {
+            const insertarResponsable = await axios.post('http://18.223.33.212:3000/activities/registrarEncargados', {
                 IdActiv: actividadId,
                 lista: responsables
             })
@@ -59,7 +59,7 @@ function ActualizarPlan() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+                const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
                     params: {
                         anno: añoActual
                     }
@@ -103,7 +103,7 @@ function ActualizarPlan() {
             const actividadesModificadas = actividades.filter(actividad => actividad.estado !== actividad.estadoOriginal);
 
             for (const actividad of actividadesModificadas) {
-                await axios.put('http://3.14.65.142:3000/activities/cambiarEstado', {
+                await axios.put('http://18.223.33.212:3000/activities/cambiarEstado', {
                     IdActiv: actividad.id,
                     estado: actividad.estado
                 });
@@ -154,7 +154,7 @@ function ActualizarPlan() {
             formData.append('idPlTr', idPlanTrabajo);
             formData.append('cantRecord', formValues.cantRecor);
     
-            const response = await axios.post('http://3.14.65.142:3000/activities/registrarAct', formData);
+            const response = await axios.post('http://18.223.33.212:3000/activities/registrarAct', formData);
     
             // Obtener la nueva actividad del objeto de respuesta
             const nuevaActividad = response.data;
@@ -191,7 +191,7 @@ function ActualizarPlan() {
         try {
             const idEquipoInt = parseInt(idEquipo);
             const periodoInt = parseInt(selectedPeriodo);
-            const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
+            const response = await axios.get('http://18.223.33.212:3000/obtenerPlanTrabajo', {
                 params: {
                     idEquipo: idEquipoInt
                 }
@@ -224,7 +224,7 @@ function ActualizarPlan() {
         const fetchData = async () => {
             if (idPlanTrabajo !== "") {
                 try {
-                    const respuesta = await axios.get('http://3.14.65.142:3000/activities/spObtenerActivi', {
+                    const respuesta = await axios.get('http://18.223.33.212:3000/activities/spObtenerActivi', {
                         params: {
                             idPlanTrab: idPlanTrabajo
                         }
@@ -247,7 +247,7 @@ function ActualizarPlan() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const encargados = await axios.get('http://3.14.65.142:3000/obtenerDatosEquipo', {
+                const encargados = await axios.get('http://18.223.33.212:3000/obtenerDatosEquipo', {
                     params: {
                         idEquipo: idEquipo
                     }

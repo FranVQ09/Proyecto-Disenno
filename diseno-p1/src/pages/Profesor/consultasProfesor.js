@@ -21,7 +21,7 @@ function ConsultasProfesor() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+                const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
                     params: {
                         anno: añoActual
                     }
@@ -40,7 +40,7 @@ function ConsultasProfesor() {
             if (!idEquipo) return;
 
             try {
-                const response = await axios.get('http://3.14.65.142:3000/obtenerDatosEquipo', {
+                const response = await axios.get('http://18.223.33.212:3000/obtenerDatosEquipo', {
                     params: {
                         idEquipo: idEquipo
                     }

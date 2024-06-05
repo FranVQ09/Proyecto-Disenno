@@ -31,14 +31,14 @@ function VisualizarPlan() {
     const abrirFormularioDetalle = async (actividad) => {
 
         try {
-            const detalles = await axios.get('http://3.14.65.142:3000/activities/obtenerDatosActividad', {
+            const detalles = await axios.get('http://18.223.33.212:3000/activities/obtenerDatosActividad', {
                 params: {
                     idActividad: actividad.id
                 }
             })
             setActividadSeleccionada(detalles.data);
 
-            const responsables = await axios.get('http://3.14.65.142:3000/activities/obtenerProfesEncargado', {
+            const responsables = await axios.get('http://18.223.33.212:3000/activities/obtenerProfesEncargado', {
                 params: {
                     idActividad: actividad.id
                 }
@@ -60,7 +60,7 @@ function VisualizarPlan() {
 
     const abrirFormularioComentarios = async (actividad) => {
         try {
-            const comentarios = await axios.get('http://3.14.65.142:3000/comments/obtenerComentarios', {
+            const comentarios = await axios.get('http://18.223.33.212:3000/comments/obtenerComentarios', {
                 params: {
                     idActividad: actividad.id
                 }
@@ -98,14 +98,14 @@ function VisualizarPlan() {
     const agregarComentario = async () => {
         console.log("Actividad ID: ", actividadSeleccionada.id)
         try {
-            const insertarComent = await axios.post('http://3.14.65.142:3000/comments/insertarComentario', {
+            const insertarComent = await axios.post('http://18.223.33.212:3000/comments/insertarComentario', {
                 idActividad: actividadSeleccionada.id,
                 comentario: nuevoComentario,
                 fecha: fechaActual,
                 idProfesor: userId
             })
 
-            const comentariosActualizados = await axios.get('http://3.14.65.142:3000/comments/obtenerComentarios', {
+            const comentariosActualizados = await axios.get('http://18.223.33.212:3000/comments/obtenerComentarios', {
                 params: {
                     idActividad: actividadSeleccionada.id
                 }
@@ -121,7 +121,7 @@ function VisualizarPlan() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+                const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
                     params: {
                         anno: añoActual
                     }
@@ -144,7 +144,7 @@ function VisualizarPlan() {
         try {
             const idEquipoInt = parseInt(idEquipo);
             const periodoInt = parseInt(selectedPeriodo);
-            const response = await axios.get('http://3.14.65.142:3000/obtenerPlanTrabajo', {
+            const response = await axios.get('http://18.223.33.212:3000/obtenerPlanTrabajo', {
                 params: {
                     idEquipo: idEquipoInt
                 }
@@ -176,7 +176,7 @@ function VisualizarPlan() {
             try {
                 if (idPlanTrabajo !== 0) {
                     setLoading(true);
-                const datos = await axios.get('http://3.14.65.142:3000/activities/spObtenerActivi', {
+                const datos = await axios.get('http://18.223.33.212:3000/activities/spObtenerActivi', {
                     params: {
                         idPlanTrab: idPlanTrabajo
                     }
@@ -199,7 +199,7 @@ function VisualizarPlan() {
     const handleEnviarRespuesta = async () => {
 
         try {
-            const respuesta = await axios.post('http://3.14.65.142:3000/comments/insertarReplica', {
+            const respuesta = await axios.post('http://18.223.33.212:3000/comments/insertarReplica', {
                 idActividad: actividadSeleccionada.id, 
                 comentario: respuestaComentario, 
                 fecha: fechaActual,

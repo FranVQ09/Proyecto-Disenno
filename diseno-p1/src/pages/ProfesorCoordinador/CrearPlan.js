@@ -14,7 +14,7 @@ function CrearPlan() {
     useEffect(() => {
         const fetchData = async () => {
             try{
-                const response = await axios.get('http://3.14.65.142:3000/obtenerEquipoAnno', {
+                const response = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
                     params: {
                         anno: añoActual,
                     }
@@ -32,7 +32,7 @@ function CrearPlan() {
     const handleCrear = async (e) => {
         e.preventDefault();
         try {
-            const result = await axios.post('http://3.14.65.142:3000/registrarPlan', {
+            const result = await axios.post('http://18.223.33.212:3000/registrarPlan', {
                 idEquipo: idEquipo,
                 periodo: parseInt(periodoLectivo),
             })

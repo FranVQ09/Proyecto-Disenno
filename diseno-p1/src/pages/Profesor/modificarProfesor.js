@@ -24,7 +24,7 @@ function ModificarProfesor() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://3.14.65.142:3000/professors/obtenerDatosProfeso', {
+                const response = await axios.get('http://18.223.33.212:3000/professors/obtenerDatosProfeso', {
                     params: {
                         idProfesor: userId
                     }
@@ -71,7 +71,7 @@ function ModificarProfesor() {
             formData1.append('exten', userData.extension);
             formData1.append('imagen', image);
             formData1.append('idUsEnc', userId);
-            const response = await axios.put('http://3.14.65.142:3000/professors/modificarDatoProfesor', formData1);
+            const response = await axios.put('http://18.223.33.212:3000/professors/modificarDatoProfesor', formData1);
             alert("Profesor modificado");
             // Recargar la página
             window.location.reload();

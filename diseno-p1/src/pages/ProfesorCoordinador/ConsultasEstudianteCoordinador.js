@@ -18,7 +18,7 @@ function ConsultasEstudiantesCoordinador() {
         //Aqui se hace la logica para obtener los datos de los estudiantes de la base de datos
         const fetchData = async () => {
             try{
-                const response = await axios.get('http://3.14.65.142:3000/students/obtenerDatosEstudiante', {
+                const response = await axios.get('http://18.223.33.212:3000/students/obtenerDatosEstudiante', {
                     params: {
                         idUsuario: userId
                     }
@@ -66,7 +66,7 @@ function ConsultasEstudiantesCoordinador() {
 
     const handleGenerarExcel = async () => {
         try {
-            const response = await axios.get('http://3.14.65.142:3000/students/archivoAll', {
+            const response = await axios.get('http://18.223.33.212:3000/students/archivoAll', {
                 responseType: 'blob' // Indica que esperamos un objeto blob como respuesta
             });
     
@@ -97,7 +97,7 @@ function ConsultasEstudiantesCoordinador() {
 
     const handleExcelSede = async () => {
         try {
-            const response = await axios.get('http://3.14.65.142:3000/archivoSede', {
+            const response = await axios.get('http://18.223.33.212:3000/archivoSede', {
                 params: {
                     profe: userId
                 }, 
