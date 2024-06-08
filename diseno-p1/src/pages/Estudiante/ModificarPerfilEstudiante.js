@@ -71,11 +71,10 @@ function ModificarPerfilEstudiante() {
         const response = await axios.put('http://18.223.33.212:3000/students/modificarDatosEst', formDataToSend);
         alert("Perfil de estudiante modificado con imagen.");
       } else {
-        const formDataToSend = new FormData();
-        formDataToSend.append('idEstudiante', userId);
-        formDataToSend.append('celular', formData.telefono);
-
-        const response = await axios.put('http://18.223.33.212:3000/students/modificarDatosEstSinImagen', formDataToSend);
+        const response = await axios.put('http://18.223.33.212:3000/students/modificarDatosEstSinImagen', {
+          idEstudiante: userId,
+          celular: formData.telefono
+        });
         alert("Perfil de estudiante modificado sin imagen.");
       }
 
