@@ -45,6 +45,7 @@ import MenuEstudiante from './pages/Estudiante/MenuEstudiante';
 import VerPerfilEstudiante from './pages/Estudiante/VerPerfilEstudiante';
 import ModificarPerfilEstudiante from './pages/Estudiante/ModificarPerfilEstudiante';
 import VerActividades from './pages/Estudiante/VerActividades';
+import VerProximaActividad from './pages/Estudiante/VerProximaActividad';
 
 function App() {
   return (
@@ -83,6 +84,7 @@ function App() {
           <Route path="/verPerfilEstudiante" element={<VerPerfilEstudiante />}></Route>
           <Route path="/modificarPerfilEstudiante" element={<ModificarPerfilEstudiante />}></Route>
           <Route path="/verActividades" element={<VerActividades />}></Route>
+          <Route path="/verProximaActividad" element={<VerProximaActividad />}></Route>
         </Routes>
       </Router>
     </div>

@@ -10,7 +10,6 @@ function VerPerfilEstudiante() {
   const userId = sessionStorage.getItem('userId');
   const [datosEstudiante, setDatosEstudiante] = useState([]);
 
-  console.log(userId)
   
   useEffect(() => {
     const fetchData = async () => {

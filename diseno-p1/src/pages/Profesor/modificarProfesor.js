@@ -59,7 +59,6 @@ function ModificarProfesor() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            
             const formData1 = new FormData();
             formData1.append('idProfesor', userId);
             formData1.append('nombre', formData.nombre);
