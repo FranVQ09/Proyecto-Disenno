@@ -13,6 +13,7 @@ function ActualizarPlan() {
         nombre: '',
         tipo: '',
         fecha: '',
+        fechaPubli: '',
         semana: '',
         modalidad: '',
         enlace: '', 
@@ -143,7 +144,8 @@ function ActualizarPlan() {
         
         try {
             const formData = new FormData();
-            const fechaDate = new Date(formValues.fecha); // Convertir la cadena de fecha a un objeto Date
+            const fechaDate = new Date(formValues.fecha); 
+            const fechaPubliDate = new Date(formValues.fechaPubli);
             formData.append('nombre', formValues.nombre);
             formData.append('tipo', formValues.tipo);
             formData.append('fechaReal', fechaDate); // Usar el objeto Date aquí
@@ -153,6 +155,7 @@ function ActualizarPlan() {
             formData.append('enlace', formValues.enlace);
             formData.append('idPlTr', idPlanTrabajo);
             formData.append('cantRecord', formValues.cantRecor);
+            formData.append('diasPubli', 2)
     
             const response = await axios.post('http://18.223.33.212:3000/activities/registrarAct', formData);
     
@@ -410,8 +413,8 @@ function ActualizarPlan() {
                                         </Select>
                                     </div>
                                         <div style={{ marginRight: '1rem' }}>
-                                            <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Fecha:</Typography>
-                                            <TextField name="fecha" variant="outlined" style={{ width: '10rem' }} placeholder="mm/dd/aaaa" value={formValues.fecha} onChange={handleChange} />
+                                            <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Fecha Realización:</Typography>
+                                            <TextField name="fecha" variant="outlined" style={{ width: '13.5rem' }} placeholder="mm/dd/aaaa" value={formValues.fecha} onChange={handleChange} />
                                         </div>
                                         <div>
                                             <Typography variant="h5" style={{ color: '#38340C', fontWeight: "bold", textAlign: 'left' }}>Semana:</Typography>
