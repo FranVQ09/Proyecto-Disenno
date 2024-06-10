@@ -89,7 +89,7 @@ function VerProximaActividad() {
                 <a style={{ color: 'white', fontWeight: 'bold', fontSize: '2.5vw', textDecoration: 'none', display: 'inline-block', backgroundColor: '#38340C', marginLeft: '0.5vw' }}>Actividad</a>
             </div>
             <div>
-            <Link href="/estudiante" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"75vh", marginLeft:"6vw" }}>Salir</Link>
+              <Link href="/estudiante" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"75vh", marginLeft:"6vw" }}>Salir</Link>
             </div>
           </div>
           <div style={{ maxWidth:"90vw", width: "70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw'}}>
