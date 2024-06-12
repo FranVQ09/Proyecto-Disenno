@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
+
 function ActualizarPlan() {
     const [showForm, setShowForm] = useState(false); 
     const [formValues, setFormValues] = useState({
@@ -30,6 +31,11 @@ function ActualizarPlan() {
     const [profesEquipo, setProfesEquipo] = useState([]);
     const [showFormAgregarResponsable, setShowFormAgregarResponsable] = useState(false);
     const [selectedProfesores, setSelectedProfesores] = useState([]);
+    const [realizadoForm, setRealizadoForm] = useState(false);
+    const [canceladoForm, setCanceladoForm] = useState(false);
+    const [formPosition, setFormPosition] = useState({ top: 0, left: 0 });
+    const [actividadId, setActividadId] = useState(0);
+    const [archivo, setArchivo] = useState(null);
 
     const handleMostarFormAgregarResponsable = (actividadId) => {
         setShowFormAgregarResponsable(actividadId);
@@ -264,6 +270,90 @@ function ActualizarPlan() {
         fetchData();
     }, [idEquipo]);
 
+    const handleRealizado = (event, actividadId) => {
+        event.preventDefault();
+        setRealizadoForm(true);
+        setActividadId(actividadId);
+
+        const buttonPosition = event.target.getBoundingClientRect();
+        const rowPosition = event.target.closest('tr').getBoundingClientRect();
+        setFormPosition({ top: rowPosition.top + 50, left: buttonPosition.left + 200 });
+
+        
+    };
+    
+    const handleCancelado = (event, actividadId) => {
+        event.preventDefault();
+        setCanceladoForm(true);
+        setActividadId(actividadId);
+
+        const buttonPosition = event.target.getBoundingClientRect();
+        const rowPosition = event.target.closest('tr').getBoundingClientRect();
+        setFormPosition({ top: rowPosition.top + 50, left: buttonPosition.left + 200 });
+
+        
+    };
+
+    const submitRealizado = async (event) => {
+        event.preventDefault();
+        try {
+            if (archivo) {
+                
+                const formData = new FormData();
+                formData.append('justificacion', archivo);
+                formData.append('IdActiv', actividadId);
+
+                const response = await axios.post('http://18.223.33.212:3000/activities/actividadRealiza', formData);
+
+                alert('Justificación realizada, enviada exitosamente');
+                setRealizadoForm(false);
+                setActividadId(0);
+                setArchivo(null);
+            }
+        } catch (error) {
+            console.error('Error al enviar la justificación:', error);
+            alert('Error al enviar la justificación');
+            
+        }
+    }
+
+    const submitCancelado = async (event) => {
+        event.preventDefault();
+        try {
+            if (archivo) {
+                
+                const formData = new FormData();
+                formData.append('justificacion', archivo);
+                formData.append('IdActiv', actividadId);
+
+                const response = await axios.post('http://18.223.33.212:3000/activities/actividadCancelada', formData);
+
+                alert('Justificación realizada, enviada exitosamente');
+                setCanceladoForm(false);
+                setActividadId(0);
+                setArchivo(null);
+            }
+        } catch (error) {
+            console.error('Error al enviar la justificación:', error);
+            alert('Error al enviar la justificación');
+            
+        }
+    }
+
+    const handleCancelarCanceloForm = () => {
+        setCanceladoForm(false);
+    }
+
+    const handleCancelarRealizadoForm = () => {
+        setRealizadoForm(false);
+    }
+
+    const handleArchivoChange = (event) => {
+        const file = event.target.files[0]; // Accede al primer archivo seleccionado
+        setArchivo(file); // Actualiza el estado con el archivo seleccionado
+    };
+
+
     return (
         <div
             style={{
@@ -330,6 +420,7 @@ function ActualizarPlan() {
                                     <TableRow>
                                         <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Nombre de Actividad</TableCell>
                                         <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Estado</TableCell>
+                                        <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Acciones</TableCell>
                                         <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Responsables</TableCell>
                                         <TableCell style={{ backgroundColor: '#38340C', color: "white", fontSize: '0.8vw', fontWeight: "bold" }}>Eliminar</TableCell>
                                     </TableRow>
@@ -341,15 +432,15 @@ function ActualizarPlan() {
                                             {actividad.nombre}
                                         </TableCell>
                                         <TableCell>
-                                            <Select
-                                                value={actividad.estado}
-                                                onChange={(e) => handleChange(e, actividad.id)}
-                                            >
-                                                <MenuItem value="PLANEADA">Planeada</MenuItem>
-                                                <MenuItem value="NOTIFICADA">Notificada</MenuItem>
-                                                <MenuItem value="REALIZADA">Realizada</MenuItem>
-                                                <MenuItem value="CANCELADA">Cancelada</MenuItem>
-                                            </Select>
+                                            {actividad.estado}
+                                        </TableCell>
+                                        <TableCell>
+                                            <div>
+                                                <Button onClick={(event) => handleRealizado(event, actividad.id)} style={{ backgroundColor:"#70b578", color:"#38340C" }}>Realizada</Button>
+                                            </div>
+                                            <div style={{ marginTop:"1vh" }}>
+                                                <Button onClick={(event) => handleCancelado(event, actividad.id)} style={{ backgroundColor:"#d94f37", color:"#38340C" }}>Cancelada</Button>
+                                            </div>
                                         </TableCell>
                                         <TableCell>
                                             <PersonAddAltIcon
@@ -388,6 +479,71 @@ function ActualizarPlan() {
                                 </TableBody>
                             </Table>
                         </form>
+                        {realizadoForm && (
+                            <form 
+                                onSubmit={(event) => submitRealizado(event, actividadId)}
+                                style={{
+                                    position: 'absolute',
+                                    top: `${formPosition.top}px`,
+                                    left: `${formPosition.left}px`,
+                                    transform: 'translate(-50%, -50%)',
+                                    backgroundColor: 'white',
+                                    padding: '2vw',
+                                    borderRadius: '2vw',
+                                    boxShadow: '0px 0px 2vw rgba(0, 0, 0, 0.3)',
+                                    zIndex: '1000',
+                                    maxWidth: '90vw',
+                                }}
+                            >
+                                <div>
+                                    <Typography variant='h5'> Justificación de la Actividad Realizada</Typography>
+                                    <Typography  style={{ marginTop:"1vh" }} htmlFor="archivoInput">Subir archivo:</Typography>
+                                    <input
+                                        type="file"
+                                        id="archivoInput"
+                                        accept=".pdf,.png,.jpg,.jpeg"
+                                        onChange={handleArchivoChange}
+                                        multiple
+                                        style={{ marginBottom: '1vh', marginTop:"1vh"}}
+                                    />
+                                </div>
+                                <Button  style={{ backgroundColor: '#38340C', color: 'white', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw' }} type="submit">Enviar</Button>
+                                <Button style={{ backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', marginLeft:"1vw" }} onClick={handleCancelarRealizadoForm}>Cancelar</Button>
+                            </form>
+                        )}
+
+                        {canceladoForm && (
+                            <form 
+                                onSubmit={(event) => submitCancelado(event, actividadId)}
+                                style={{
+                                    position: 'absolute',
+                                    top: `${formPosition.top}px`,
+                                    left: `${formPosition.left}px`,
+                                    transform: 'translate(-50%, -50%)',
+                                    backgroundColor: 'white',
+                                    padding: '2vw',
+                                    borderRadius: '2vw',
+                                    boxShadow: '0px 0px 2vw rgba(0, 0, 0, 0.3)',
+                                    zIndex: '1000',
+                                    maxWidth: '90vw',
+                                }}
+                            >
+                                <div>
+                                    <Typography variant='h5'> Justificación de la Actividad Cancelada</Typography>
+                                    <Typography  style={{ marginTop:"1vh" }} htmlFor="archivoInput">Subir archivo:</Typography>
+                                    <input
+                                        type="file"
+                                        id="archivoInput"
+                                        accept=".pdf,.png,.jpg,.jpeg"
+                                        onChange={handleArchivoChange}
+                                        multiple
+                                        style={{ marginBottom: '1vh', marginTop:"1vh" }}
+                                    />
+                                </div>
+                                <Button style={{ backgroundColor: '#38340C', color: 'white', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw' }} type="submit">Enviar</Button>
+                                <Button style={{ backgroundColor: '#EEE1B0', color: '#38340C', border: '3px solid #38340C', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', marginLeft:"1vw" }} onClick={handleCancelarCanceloForm}>Cancelar</Button>
+                            </form>
+                        )}
                         {showForm && (
                             <form onSubmit={handleSubmitActividad} style={{ marginTop: '2rem' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -475,4 +631,3 @@ function ActualizarPlan() {
 }
 
 export default ActualizarPlan;
-
