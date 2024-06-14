@@ -309,6 +309,8 @@ function ActualizarPlan() {
                 setRealizadoForm(false);
                 setActividadId(0);
                 setArchivo(null);
+            } else {
+                alert('No se selecciono ningún archivo')
             }
         } catch (error) {
             console.error('Error al enviar la justificación:', error);
