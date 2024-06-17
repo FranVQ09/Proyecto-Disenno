@@ -1,9 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import estuiante from '../../fotos/estudiante.png';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import IconButton from '@mui/material/IconButton';
+import { Typography, Button, TextField, Select, MenuItem } from '@mui/material';
+import axios from 'axios';
 
 function MenuEstudiante() {
+  const userId = sessionStorage.getItem('userId');
+  const [notificaciones, setNotificaciones] = useState([]);
+  const [notificacionesForm, setNotificacionesForm] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://18.223.33.212:3000/obtenerNotificaciones', {
+          params: {
+            idUsuario: userId
+          }
+        })
+        setNotificaciones(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchData();
+  }, [userId]);
+
+  const handleOpen = () => setNotificacionesForm(true);
+  const handleClose = () => setNotificacionesForm(false);
+
+  const handleNotificationClick = (notificacion) => {
+    console.log("Notificacion: ", notificacion);
+    setSelectedNotification(notificacion);
+    actualizarParams(notificacion);
+  };
+  
+  const actualizarParams = async (notificacion) => {
+    try {
+      console.log("Notificación seleccionada: ", notificacion);
+      const response = await axios.put('http://18.223.33.212:3000/notificacionLeida', {
+        idNoti: notificacion.idNotificaciones
+      });
+      console.log("Response: ", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       style={{
@@ -85,7 +130,7 @@ function MenuEstudiante() {
           </a>
         </div>
         <IconButton style={{ color: 'white', marginLeft: "33vw" }}>
-          <NotificationsIcon style={{ fontSize: '2vw' }} />
+          <NotificationsIcon onClick={handleOpen} style={{ fontSize: '2vw' }} />
         </IconButton>
         <a
           href="/"
@@ -126,6 +171,57 @@ function MenuEstudiante() {
 
         }}
       />
+      {/* Formulario de notificaciones */}
+      {notificacionesForm && (
+        <form
+          style={{
+            position: 'absolute',
+            top: '30vh',
+            left: '84vw',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            padding: '2vw',
+            borderRadius: '0.3vw',
+            boxShadow: '0px 0px 2vw rgba(0, 0, 0, 0.3)',
+            zIndex: '1000',
+            maxWidth: '90vw',
+          }}
+        >
+          <div>
+            <Typography variant='h4'>Notificaciones</Typography>
+          </div>
+          <div style={{ maxHeight: '20vh', overflowY: 'auto', width: '20vw' }}>
+            {notificaciones.map((notificacion, index) => (
+              <div
+                key={index}
+                onClick={() => handleNotificationClick(notificacion)}
+                style={{
+                  margin: '0',  // Eliminar márgenes entre notificaciones
+                  padding: '0.5vw 1vw',  // Ajustar el tamaño del botón
+                  backgroundColor: selectedNotification === notificacion ? '#f0f0f0' : 'white',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s',
+                  fontSize: '1vw',
+                  borderBottom: '1px solid #ddd',  // Separador entre notificaciones
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedNotification === notificacion ? '#f0f0f0' : 'white'}
+              >
+                Actividad: {notificacion.Actividad}
+                <br></br>
+                Fecha de Realización: {notificacion.FechaRealizacion}
+                <br></br>
+                Visto: {notificacion.Visto === "NOLEIDO" ? "No leido" : (notificacion.Visto === "LEIDO" ? "Leido" : notificacion.Visto)}
+              </div>
+            ))}
+          </div>
+          <div>
+            <button type="button" onClick={handleClose} style={{ marginTop: '1vw', padding: '0.5vw 1vw' }}>
+              Cerrar
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }
