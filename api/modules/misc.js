@@ -336,5 +336,142 @@ miscRouter.get("/obtenerEquipoAnno", async (req, res) =>{
   res.status(400).json({ Result: -30 });
 }
 })
+miscRouter.get("/obtenerNotificaciones", async(req, res)=>{
+  try{
+    const pool = await getPool();
+    const request = pool.request();
+    request.input("InIdUsuario", sql.Int, req.query.idUsuario);
+    const result = await request.execute("dbo.ObtenerNotificacion");
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la sede o el estudiante.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(200)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+    res.json(result.recordset);
+  }
+  catch{
+    res.status(400).json({ Result: -30 });
+  }
+})
+miscRouter.put("/notificacionLeida", async(req, res)=>{
+  try{
+    const pool = await getPool();
+    const request = pool.request();
+    request.input("inIdNotificacion", sql.Int, req.body.idNoti);
+    const result = await request.execute("dbo.setNotificacionLeida");
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la notificacion.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+    res.json({Result: result.returnValue});
+  }
+  catch{
+    res.status(400).json({ Result: -30 });
+  }
+});
+miscRouter.delete("/borrarNotificacion", async(req, res)=>{
+  try{
+    const pool = await getPool();
+    const request = pool.request();
+    request.input("inIdNotificacion", sql.Int, req.body.idNoti);
+    const result = await request.execute("dbo.EliminarNotificacion");
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro la notificacion.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+    res.json({Result: result.returnValue});
+  }
+  catch{
+    res.status(400).json({ Result: -30 });
+  }
+});
+miscRouter.delete("/borrarNotiUsuario", async(req, res)=>{
+  try{
+    const pool = await getPool();
+    const request = pool.request();
+    request.input("inIdUsuario", sql.Int, req.body.idUsuario);
+    const result = await request.execute("dbo.BorrarTodasNotificacion");
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "No se encontro el usuario.";
+          break;
+        case -2:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+    res.json({Result: result.returnValue});
+  }
+  catch{
+    res.status(400).json({ Result: -30 });
+  }
+});
+miscRouter.post("/comprobarNuevasNotificaciones", async(req, res)=>{
+  try{
+    const pool = await getPool();
+    const request = pool.request();
+    request.input("inFechaActual", sql.Date, req.body.fechaActual);
+    const result = await request.execute("dbo.Recordatorios");
+    if (result.returnValue < 1) {
+      let errorMessage;
+      switch (result.returnValue) {
+        case -1:
+          errorMessage = "Error inesperado.";
+          break;
+        default:
+          errorMessage = "Error.";
+      }
+      return res
+        .status(400)
+        .json({ Result: result.returnValue, Message: errorMessage });
+    }
+    res.json({Result: result.returnValue});
+  } 
+  catch{
+    res.status(400).json({ Result: -30 });
+  }
+})
 
 module.exports = { miscRouter };
