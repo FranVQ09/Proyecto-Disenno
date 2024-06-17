@@ -1,6 +1,7 @@
 import React from 'react';
 import AsistenteAdministrativo from '../../fotos/AsistenteAdministrativo.png';
 
+
 const MenuAsistente = () => {
   return (
     // Contenedor principal
@@ -82,6 +83,19 @@ const MenuAsistente = () => {
                     }}
                 >
                     Informes
+                </a>
+                <a
+                    href="/modificarInformacionProfesor"
+                    style={{
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '20px',
+                        textDecoration: 'none',
+                        marginRight: '10px', // Margen derecho entre enlaces
+                        marginLeft: '10px' // Margen derecho entre enlaces
+                    }}
+                >
+                    Modificar Información
                 </a>
             </div>
             <a

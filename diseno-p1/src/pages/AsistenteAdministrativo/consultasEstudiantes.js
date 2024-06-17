@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -9,29 +9,48 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import axios from 'axios';
 
 function ConsultasDetalleEquipo() {
   const [ordenNombre, setOrdenNombre] = useState('asc');
   const [ordenCarnet, setOrdenCarnet] = useState('asc');
   const [ordenSede, setOrdenSede] = useState('asc');
+  const [datos, setDatos] = useState([]);
+  const userId = sessionStorage.getItem('userId');
 
-  const [datos, setDatos] = useState([
-    { nombre: 'Juan', carnet: '2020080900', sede: 'Cartago', correo: 'juan@example.com', telefono: '123456789' },
-    { nombre: 'María', carnet: '2021050800', sede: 'San José', correo: 'maria@example.com', telefono: '987654321' },
-    { nombre: 'Andrés', carnet: '2021043887', sede: 'Heredia', correo: 'pedro@example.com', telefono: '456789123'}
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://18.223.33.212:3000/students/obtenerDatosEstudiante', {
+          params: {
+            idUsuario: userId
+          }
+        });
+        console.log(response.data);
+        setDatos(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
 
   const handleOrdenNombre = () => {
     const nuevoOrden = ordenNombre === 'asc' ? 'desc' : 'asc';
     setOrdenNombre(nuevoOrden);
     const datosOrdenados = [...datos];
+
     datosOrdenados.sort((a, b) => {
+      const nombreA = a.Nombre || '';
+      const nombreB = b.Nombre || '';
+
       if (ordenNombre === 'asc') {
-        return a.nombre.localeCompare(b.nombre);
+        return nombreA.localeCompare(nombreB);
       } else {
-        return b.nombre.localeCompare(a.nombre);
+        return nombreB.localeCompare(nombreA);
       }
-    });
+    })
     setDatos(datosOrdenados);
   };
 
@@ -39,25 +58,35 @@ function ConsultasDetalleEquipo() {
     const nuevoOrden = ordenCarnet === 'asc' ? 'desc' : 'asc';
     setOrdenCarnet(nuevoOrden);
     const datosOrdenados = [...datos];
+
+
     datosOrdenados.sort((a, b) => {
+      const carnetA = a.carnet || '';
+      const carnetB = b.carnet || '';
+
       if (ordenCarnet === 'asc') {
-        return parseInt(a.carnet) - parseInt(b.carnet);
+        return carnetA.localeCompare(carnetB);
       } else {
-        return parseInt(b.carnet) - parseInt(a.carnet);
+        return carnetB.localeCompare(carnetA);
       }
     });
     setDatos(datosOrdenados);
   }
 
-  const handleOrdenSede = () => {
+  const handleOrdenAP1 = () => {
     const nuevoOrden = ordenSede === 'asc' ? 'desc' : 'asc';
     setOrdenSede(nuevoOrden);
     const datosOrdenados = [...datos];
+
+
     datosOrdenados.sort((a, b) => {
+      const apellido1A = a.Apellido1 || '';
+      const apellido1B = b.Apellido1 || '';
+
       if (ordenSede === 'asc') {
-        return a.sede.localeCompare(b.sede);
+        return apellido1A.localeCompare(apellido1B);
       } else {
-        return b.sede.localeCompare(a.sede);
+        return apellido1B.localeCompare(apellido1A);
       }
     });
     setDatos(datosOrdenados);
@@ -105,7 +134,7 @@ function ConsultasDetalleEquipo() {
             justifyContent: 'flex-start',
             alignItems: 'center',
             backgroundColor: '#38340C',
-            overflow: 'hidden',
+            overflow: 'auto',
             width: '60vw',
             marginLeft: '15vw',
             marginTop: '4vh',
@@ -115,14 +144,14 @@ function ConsultasDetalleEquipo() {
         >
         {/* Filtros */}
           <label style={{ color: "white", marginLeft:"2vw", marginTop:"1.7vh", fontSize:'1.2vw' }}>Filtros: </label>
-          <Button onClick={handleOrdenNombre} style={{ marginLeft:"2vw", marginTop:"2vh", color:"white"}}>
-            Ordenar por Nombre {ordenNombre === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+          <Button onClick={handleOrdenNombre} style={{ marginLeft:"2vw", marginTop:"2vh", color:"white",}}>
+            Ordenar por Nombre: <span style={{ marginLeft:"1vh", marginTop:"0.5vh"}}> {ordenNombre === 'asc' ? <SortByAlphaIcon style={{ color:"#E2CE1A" }}/> : <SortByAlphaIcon style={{ color:"#E2CE1A" }}/>} </span>
           </Button>
           <Button onClick={handleOrdenCarnet} style={{ marginLeft:"1vw", marginTop:"2vh", color:"white"}}>
-            Ordenar por Carnet {ordenCarnet === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+            Ordenar por Carnet <span style={{ marginLeft:"1vh", marginTop:"0.5vh"}}>{ordenCarnet === 'asc' ? <ArrowUpwardIcon style={{ color:"#E2CE1A" }}/> : <ArrowDownwardIcon style={{ color:"#E2CE1A" }}/>}</span>
           </Button>
-          <Button onClick={handleOrdenSede} style={{ marginLeft:"1vw", marginTop:"2vh", color:"white"}}>
-            Ordenar por Sede {ordenSede === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+          <Button onClick={handleOrdenAP1} style={{ marginLeft:"1vw", marginTop:"2vh", color:"white"}}>
+            Ordenar por Apellido 1: <span style={{ marginLeft:"1vh", marginTop:"0.5vh"}}>{ordenSede === 'asc' ? <SortByAlphaIcon style={{ color:"#E2CE1A" }}/> : <SortByAlphaIcon style={{ color:"#E2CE1A" }}/>} </span>
           </Button>
         </div>
         <Paper style={{ marginTop: '0vh', width: '60vw', marginLeft: "15vw" }}>
@@ -130,20 +159,22 @@ function ConsultasDetalleEquipo() {
             <TableHead>
               <TableRow>
                 <TableCell style={{ backgroundColor:'#EEE1B0'}}>Nombre</TableCell>
-                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Carnet</TableCell>
-                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Sede</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Apellido 1</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Apellido 2</TableCell>
                 <TableCell style={{ backgroundColor:'#EEE1B0'}}>Correo</TableCell>
-                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Teléfono</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Celular</TableCell>
+                <TableCell style={{ backgroundColor:'#EEE1B0'}}>Carnet</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {datos.map((estudiante, index) => (
                 <TableRow key={index}>
-                  <TableCell>{estudiante.nombre}</TableCell>
-                  <TableCell>{estudiante.carnet}</TableCell>
-                  <TableCell>{estudiante.sede}</TableCell>
+                  <TableCell>{estudiante.Nombre}</TableCell>
+                  <TableCell>{estudiante.Apellido1}</TableCell>
+                  <TableCell>{estudiante.Apellido2}</TableCell>
                   <TableCell>{estudiante.correo}</TableCell>
-                  <TableCell>{estudiante.telefono}</TableCell>
+                  <TableCell>{estudiante.celular}</TableCell>
+                  <TableCell>{estudiante.carnet}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

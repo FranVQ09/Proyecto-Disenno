@@ -6,21 +6,53 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import axios from 'axios';
+import ClearIcon from '@mui/icons-material/Clear';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 function ConsultasProfesorCoordinador() {
-    const [data, setData] = useState([]);
+    const [profesores, setProfesores] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const añoActual = new Date().getFullYear();
+    const [idEquipo, setIdEquipo] = useState(0);
 
     useEffect(() => {
-        //Aqui se hace la logica para obtener los datos del equipo de la base de datos
         const fetchData = async () => {
-            const mockData = [
-                {id: 1, nombre: 'Juan Pérez', correo: 'juan@gmail.com', sede: 'Cartago', codigo: 'CA-001', anno: '2024', estado: 'Activo'},
-                {id: 2, nombre: 'Ana Sánchez', correo: 'ana@gmail.com', sede: 'San José', codigo: 'SJ-002', anno: '2024', estado: 'Activo'},
-            ];
-            setData(mockData);
+            try {
+                const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
+                    params: {
+                        anno: añoActual
+                    }
+                })
+                setIdEquipo(result.data[0].id);
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+                alert('Error fetching data');
+            }
         }
         fetchData();
-    }, []);
+    }, [añoActual]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!idEquipo) return;
+
+            try {
+                const response = await axios.get('http://18.223.33.212:3000/obtenerDatosEquipo', {
+                    params: {
+                        idEquipo: idEquipo
+                    }
+                });
+                setProfesores(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+                alert('Error fetching data');
+            }
+        }
+        fetchData();
+    }, [idEquipo]);
+
 
     return (
         <div
@@ -61,30 +93,30 @@ function ConsultasProfesorCoordinador() {
             <div style={{ width:"70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw' }}>
                 <Paper elevation={3} style={{ padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw" }}>
                     <h1 style={{ color: '#38340C', fontSize: '2.5vw', textAlign: 'center', marginBottom: '3vh' }}>Detalles del Equipo</h1>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Nombre</TableCell>
-                                <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Correo</TableCell>
-                                <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Sede</TableCell>
-                                <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Código</TableCell>
-                                <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Año</TableCell>
-                                <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Estado</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data.map(row => (
-                                <TableRow key={row.id} style={{ backgroundColor:"white" }}>
-                                    <TableCell>{row.nombre}</TableCell>
-                                    <TableCell>{row.correo}</TableCell>
-                                    <TableCell>{row.sede}</TableCell>
-                                    <TableCell>{row.codigo}</TableCell>
-                                    <TableCell>{row.anno}</TableCell>
-                                    <TableCell>{row.estado}</TableCell>
+                    {loading ? (
+                        <div style={{ textAlign: 'center', fontSize: '1.5vw', marginBottom: '2vh' }}>Cargando...</div>
+                    ) : (
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Código</TableCell>
+                                    <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Nombre</TableCell>
+                                    <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Coordinador</TableCell>
+                                    <TableCell style={{ backgroundColor:'#38340C', color:"white"}}>Año</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHead>
+                            <TableBody>
+                                {profesores.map(profesor => (
+                                    <TableRow key={profesor.id} style={{ backgroundColor:"white" }}>
+                                        <TableCell>{profesor.Codigo}</TableCell>
+                                        <TableCell>{profesor.Nombre}</TableCell>
+                                        <TableCell>{profesor.isCordinador ? <CheckCircleIcon style={{ color:"green"}}></CheckCircleIcon> : <ClearIcon style={{ color: "red"}}></ClearIcon>}</TableCell>
+                                        <TableCell>{añoActual}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </Paper>
             </div>
         </div>

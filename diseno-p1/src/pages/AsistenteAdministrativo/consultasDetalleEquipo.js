@@ -8,26 +8,51 @@ import TableCell from '@mui/material/TableCell';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ClearIcon from '@mui/icons-material/Clear';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
+
 
 function ConsultasDetalleEquipo() {
   const [año, setAño] = useState('');
   const [buscarEquipo, setBuscarEquipo] = useState(true);
   const [mostrarDetalles, setMostrarDetalles] = useState(false);
   const [datosEquipo, setDatosEquipo] = useState([]);
+  const [idEquipo, setIdEquipo] = useState(0);
+  const [coordinador, setCoordinador] = useState('');
+  const userId = sessionStorage.getItem('userId');
 
-
-  const handleSubmit = (event) => {
+  console.log("UserId: ", userId  )
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (año === '2024') {
-      const datosSimulados = [
-        { codigo: 'CA-001', nombre: 'Francisco Villanueva', apellido1: 'Apellido1', apellido2: 'Apellido2', coordinador: 'True' },
-        { codigo: 'SJ-001', nombre: 'José Gutiérrez', apellido1: 'Apellido1', apellido2: 'Apellido2', coordinador: 'False' },
-      ];
-      setBuscarEquipo(false);
-      setMostrarDetalles(true);
-      setDatosEquipo(datosSimulados);
-    } else {
-      alert('No se encontraron equipos con ese año');
+    try {
+      const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
+        params: {
+          anno: año
+        }
+      })
+      setIdEquipo(result.data[0].id);
+      console.log("IdEquipo: ", idEquipo);
+      if (idEquipo > 0) {
+        setMostrarDetalles(true);
+        setBuscarEquipo(false);
+      }
+
+      const response = await axios.get('http://18.223.33.212:3000/obtenerDatosEquipo', {
+        params: {
+          idEquipo: idEquipo
+        }
+      })
+
+      setDatosEquipo(response.data);
+      console.log(datosEquipo)
+    } catch (error) {
+      console.error(error);
+      alert('No se encontro el equipo para el año dado.');
       setAño('');
     }
   }
@@ -36,6 +61,51 @@ function ConsultasDetalleEquipo() {
     setBuscarEquipo(true);
     setMostrarDetalles(false);
     setAño('');
+  }
+
+  const handleEliminar = async (idBorrarProfesor) => {
+    const intUserId = parseInt(userId);
+    try {
+      const result = await axios.delete('http://18.223.33.212:3000/professors/darDeBajaProfeEq', {
+        data: {
+          idProfesor: idBorrarProfesor,
+          idEquipo: idEquipo,
+          idAsisAdminis: intUserId
+        }
+      })
+      const response = await axios.get('http://18.223.33.212:3000/obtenerDatosEquipo', {
+        params: {
+          idEquipo: idEquipo
+        }
+      })
+
+      setDatosEquipo(response.data);
+      alert('Profesor eliminado exitosamente');
+    } catch(error) {
+      console.error(error);
+      alert("No tiene los permisos para borrar este profesor");
+    }
+  }
+
+  const handleCoordinador = async (profesor) => {
+    console.log("Profesor: ", profesor);
+
+    try {
+      const userIdInt = parseInt(userId);
+
+      console.log("IdEquipo: ", typeof idEquipo);
+      console.log("Profesor: ",  profesor.id);
+      console.log("UserId: ",  userIdInt);
+
+      const result = await axios.put('http://18.223.33.212:3000/professors/definirCoordinador', {
+        idEquipo: idEquipo,
+        idProfe: profesor.id,
+        idAsisAdmin: userIdInt
+      })
+    } catch (error) {
+      console.error(error);
+      alert('Error asignando coordinador');
+    }
   }
 
   return (
@@ -86,6 +156,7 @@ function ConsultasDetalleEquipo() {
                 onChange={(event) => setAño(event.target.value)}
                 variant="outlined"
                 style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh" }}
+                required
             />
           </form>
         </div>
@@ -99,19 +170,31 @@ function ConsultasDetalleEquipo() {
                 <TableRow style={{ backgroundColor:"#38340C" }}>
                   <TableCell style={{ color:"#FFFF"}}>Código</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Nombre</TableCell>
-                  <TableCell style={{ color:"#FFFF"}}>Apellido 1</TableCell>
-                  <TableCell style={{ color:"#FFFF"}}>Apellido 2</TableCell>
                   <TableCell style={{ color:"#FFFF"}}>Coordinador</TableCell>
+                  <TableCell style={{ color:"#FFFF"}}>Marcar Coordinador</TableCell>
+                  <TableCell style={{ color:"#FFFF"}}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody style={{ backgroundColor:"#FFFF"}}>
                 {datosEquipo.map((profesor) => (
-                  <TableRow key={profesor.codigo}>
-                    <TableCell>{profesor.codigo}</TableCell>
-                    <TableCell>{profesor.nombre}</TableCell>
-                    <TableCell>{profesor.apellido1}</TableCell>
-                    <TableCell>{profesor.apellido2}</TableCell>
-                    <TableCell>{profesor.coordinador}</TableCell>
+                  <TableRow key={profesor.Codigo}>
+                    <TableCell>{profesor.Codigo}</TableCell>
+                    <TableCell>{profesor.Nombre}</TableCell>
+                    <TableCell>{profesor.isCordinador ? <CheckCircleIcon style={{ color:"green"}}></CheckCircleIcon> : <ClearIcon style={{ color: "red"}}></ClearIcon>}</TableCell>
+                    <TableCell>
+                      <PersonAddIcon
+                        onClick={() => handleCoordinador(profesor)}
+                        style={{ cursor: 'pointer' }}
+                      >
+
+                      </PersonAddIcon>
+                    </TableCell>
+                    <TableCell>
+                    <DeleteIcon 
+                      onClick={() => handleEliminar(profesor.id)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

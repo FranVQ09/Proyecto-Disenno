@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate en lugar de useHistory
@@ -14,31 +14,38 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://3.14.65.142:3000/iniciarSesion', {
+      const response = await axios.post(' http://18.223.33.212:3000/iniciarSesion', {
         correo: correo, 
         password: password
       });
+      
+      sessionStorage.setItem('userId', response.data.body[0].id);
+      sessionStorage.setItem('userSede', response.data.body[0].Sede);
+
+      const userId = sessionStorage.getItem('userId');
+
 
       if (response.data.body[0].Tipo === 1) {
-        const result = await axios.get('http://3.14.65.142:3000/professors/esCoordinador', {
-          params: {
+        const result = await axios.get(' http://18.223.33.212:3000/professors/esCoordinador', {
+          params:{
             idAnno: añoActual,
-            idProfesor: response.data.body[0].Id
+            idUsuario: response.data.body[0].id
           }
         });
 
-        console.log(result.data);
         if (result.data.Result === -1 || result.data.body[0].isCoordinador === -2 || result.data.body[0].isCoordinador === 0) { 
           navigate('/profesor');
         } else {
           navigate('/profesorCoordinador');
         }
 
-        } else if (response.data.body[0].Tipo === 3) {
+      } else if (response.data.body[0].Tipo === 3) {
           navigate('/asistente');
-        } else {
-          alert('Profesor no registrado');
-        }
+      } else if (response.data.body[0].Tipo === 2) {
+          navigate('/estudiante');
+      } else {
+          alert('Usuario no válido');
+      }
       setCorreo('');
       setPassword('');
       
@@ -61,7 +68,7 @@ function LoginPage() {
     try {
       // Actualiza el estado 'password' con el valor del campo de contraseña
       setPassword(newPassword);
-      const response = await axios.put('http://3.14.65.142:3000/cambiarPassword', {
+      const response = await axios.put('http://18.223.33.212:3000/cambiarPassword', {
         correo: correo,
         newPassword: newPassword
       });
@@ -164,7 +171,7 @@ function LoginPage() {
           style={{
             position: 'absolute',
             width:"30vw",
-            height:"27vh",
+            height:"35vh",
             top: '50vh', // Centra verticalmente
             left: '50vw', // Centra horizontalmente
             transform: 'translate(-50%, -50%)', // Centra el formulario

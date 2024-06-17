@@ -8,40 +8,133 @@ import TableCell from '@mui/material/TableCell';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 
 function ConsultasDetalleEquipo() {
   const [año, setAño] = useState('');
+  const [periodo, setPeriodo] = useState('');
   const [buscarEquipo, setBuscarEquipo] = useState(true);
   const [mostrarPlan, setMostrarPlan] = useState(false);
-  const [planSimulado, setPlanSimulado] = useState([]);
+  const [plan, setPlan] = useState([]);
+  const [idEquipo, setIdEquipo] = useState('');
+  const [idPlanTrabajo, setIdPlanTrabajo] = useState(0);
+  const [actividades, setActividades] = useState([]);
 
 
-
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (año === '2024') {
-      const datosSimulados = [
-        { nombre:"Actividad 1", tipo:"Orientadora", responsables:"Francisco Villanueva", fecha:"2024-10-10", hora:"10:00", lugar:"Aula 1", descripcion:"Actividad 1" },
-        { nombre:"Actividad 2", tipo:"Orientadora", responsables:"Francisco Villanueva", fecha:"2024-10-10", hora:"10:00", lugar:"Aula 1", descripcion:"Actividad 2" },
-        { nombre:"Actividad 3", tipo:"Orientadora", responsables:"Francisco Villanueva", fecha:"2024-10-10", hora:"10:00", lugar:"Aula 1", descripcion:"Actividad 3" },
-        { nombre:"Actividad 4", tipo:"Orientadora", responsables:"Francisco Villanueva", fecha:"2024-10-10", hora:"10:00", lugar:"Aula 1", descripcion:"Actividad 4" },
-        { nombre:"Actividad 5", tipo:"Orientadora", responsables:"Francisco Villanueva", fecha:"2024-10-10", hora:"10:00", lugar:"Aula 1", descripcion:"Actividad 5" },
-      ];
-      setPlanSimulado(datosSimulados);
-      setMostrarPlan(true);
+
+    try {
+      const añoInt = parseInt(año);
+      const result = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
+          params: {
+              anno: añoInt
+          }
+      })
+      setIdEquipo(result.data[0].id);
       setBuscarEquipo(false);
-    } else {
-      alert('No se encontraron equipos con ese año');
-      setAño('');
+      setMostrarPlan(true);
+
+    } catch (error) {
+        console.error('No hay un plan de actividades para ese año ', error);
+        alert('No hay un plan de actividades para ese año');
     }
+    
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            // Verificar si idEquipo es un número válido
+            if (!isNaN(parseInt(idEquipo))) {
+                const idEquipoInt = parseInt(idEquipo);
+                const periodoInt = parseInt(periodo);
+                const response = await axios.get('http://18.223.33.212:3000/obtenerPlanTrabajo', {
+                    params: {
+                        idEquipo: idEquipoInt
+                    }
+                });
+
+                if (response.data.length > 0) {
+                  if (periodoInt === response.data[0].periodo) {
+                      setIdPlanTrabajo(response.data[0].id);
+                  } else {
+                      setIdPlanTrabajo(response.data[1].id);
+                  }
+                } else {
+                    console.error('No se encontró un plan de trabajo para el equipo:', idEquipo);
+                    alert('No se encontró un plan de trabajo para el equipo para ese periodo');
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            alert('Error fetching data');
+        }
+    };
+    if (!isNaN(parseInt(idEquipo))) {
+        fetchData();
+    }
+  }, [idEquipo, periodo]);
+
+  useEffect(() => {
+    if (idPlanTrabajo !== 0) { 
+      const fetchData = async () => {
+        try {
+          const datos = await axios.get('http://18.223.33.212:3000/activities/spObtenerActivi', {
+            params: {
+              idPlanTrab: idPlanTrabajo
+            }
+          })
+          setActividades(datos.data);
+        } catch (error) {
+          console.error('Error fetching data: ', error);
+          alert('Error fetching data');
+        }
+      }
+      fetchData();
+    }
+  }, [idPlanTrabajo]);
+
+  useEffect(() => {
+    if (actividades.length > 0) {
+      const fetchData = async () => {
+        try {
+          const detallesPromises = actividades.map(async (actividad) => {
+            const detalles = await axios.get('http://18.223.33.212:3000/activities/obtenerDatosActividad', {
+              params: {
+                idActividad: actividad.id
+              }
+            });
+            return detalles.data;
+          });
+  
+          const detallesActividades = await Promise.all(detallesPromises);
+          setPlan(detallesActividades);
+          
+  
+        } catch (error) {
+          console.error('Error fetching data: ', error);
+          alert('Error fetching data');
+        }
+      }
+      fetchData();
+    }
+  }, [actividades]);
+
+  console.log(plan)
+
 
   const handleCancelar = () => {
     setBuscarEquipo(true);
     setMostrarPlan(false);
     setAño('');
+    setPeriodo('');
+    setIdEquipo('');
+    setIdPlanTrabajo(0);
+    setActividades([]);
+    setPlan([]);
+    
   }
 
 
@@ -83,7 +176,7 @@ function ConsultasDetalleEquipo() {
       {buscarEquipo && (
         <Paper elevation={3} style={{ width:"30vw", padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw" }}>
         <h1 style={{ color: '#38340C', fontSize: '2vw', textAlign: 'center', marginBottom: '3vh' }}>Detalles de Equipo</h1>
-        <h3 style={{ color: '#38340C', fontSize: '1vw', textAlign: 'center', marginBottom: '1vh' }}>Buscar Equipo por Año:</h3>
+        <h3 style={{ color: '#38340C', fontSize: '1vw', textAlign: 'center', marginBottom: '1vh' }}>Buscar Equipo por Año y Período:</h3>
         <div style={{ display:"flex", justifyContent:"center"}}>
           <form onSubmit={handleSubmit}>
             <TextField
@@ -92,39 +185,62 @@ function ConsultasDetalleEquipo() {
                 value={año}
                 onChange={(event) => setAño(event.target.value)}
                 variant="outlined"
+                required
                 style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh" }}
             />
+            <TextField
+                type="text"
+                label="Período"
+                value={periodo}
+                onChange={(event) => {
+                    const inputValue = event.target.value;
+                    if (inputValue === '1' || inputValue === '2') {
+                        setPeriodo(inputValue);
+                    } else{
+                        alert('El período debe ser 1 o 2');
+                        setPeriodo('');
+                    }
+                }}
+                variant="outlined"
+                required
+                style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh" }}
+            />
+            <Button type="submit" variant='contained' style={{ backgroundColor:"#38340C", marginTop:"1vh", marginLeft:"12vw"}}>Buscar</Button>
           </form>
         </div>
       </Paper>
       )}
       {mostrarPlan && (
-          <Paper elevation={3} style={{ width:"50vw", padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw", marginTop:"1vh" }}>
+          <Paper elevation={3} style={{ width:"70vw", padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw", marginTop:"1vh", maxWidth:"80vw", overflow:"auto" }}>
             <h1 style={{ color: '#38340C', fontSize: '2vw', textAlign: 'center', marginBottom: '3vh' }}>Detalles del Equipo</h1>
             <Table>
               <TableHead>
                 <TableRow style={{ backgroundColor:"#38340C" }}>
                   <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Nombre</TableCell>
                   <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Tipo</TableCell>
-                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Responsables</TableCell>
+                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Estado</TableCell>
                   <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Fecha</TableCell>
-                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Hora</TableCell>
-                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Lugar</TableCell>
-                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Descripción</TableCell>
+                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Semana</TableCell>
+                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Modalidad</TableCell>
+                  <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Enlace</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody style={{ backgroundColor:"#FFFF"}}>
-                {planSimulado.map((plan) => (
-                  <TableRow key={plan.codigo}>
-                    <TableCell>{plan.nombre}</TableCell>
-                    <TableCell>{plan.tipo}</TableCell>
-                    <TableCell>{plan.responsables}</TableCell>
-                    <TableCell>{plan.fecha}</TableCell>
-                    <TableCell>{plan.hora}</TableCell>
-                    <TableCell>{plan.lugar}</TableCell>
-                    <TableCell>{plan.descripcion}</TableCell>
-                  </TableRow>
-                ))}
+              {plan.map((arrayExterno, indexExterno) => (
+                <React.Fragment key={indexExterno}>
+                  {arrayExterno.map((actividad, indexInterno) => (
+                    <TableRow key={`${indexExterno}-${indexInterno}`}>
+                      <TableCell>{actividad.nombre[0]}</TableCell>
+                      <TableCell>{actividad.nombre[1]}</TableCell>
+                      <TableCell>{actividad.nombre[2]}</TableCell>
+                      <TableCell>{actividad.fechaRealizacion}</TableCell>
+                      <TableCell>{actividad.semana}</TableCell>
+                      <TableCell>{actividad[""]}</TableCell>
+                      <TableCell>{actividad.enlance}</TableCell>
+                    </TableRow>
+                  ))}
+                </React.Fragment>
+              ))}
               </TableBody>
             </Table>
             <Button onClick={handleCancelar} variant='contained' style={{ backgroundColor:"#38340C", marginTop:"1vh"}}>Regresar</Button>

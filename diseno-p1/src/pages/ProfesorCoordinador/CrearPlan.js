@@ -1,8 +1,55 @@
+import React, { useState, useEffect} from 'react';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
+import { Button } from '@mui/material';
 
 function CrearPlan() {
+    const userId = sessionStorage.getItem('userId');
+    const añoActual = new Date().getFullYear();
+    const [periodoLectivo, setPeriodoLectivo] = useState('');
+    const [idEquipo, setIdEquipo] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try{
+                const response = await axios.get('http://18.223.33.212:3000/obtenerEquipoAnno', {
+                    params: {
+                        anno: añoActual,
+                    }
+                })
+                setIdEquipo(response.data[0].id);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchData();
+    }, []);
+
+    console.log(idEquipo);
+
+    const handleCrear = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await axios.post('http://18.223.33.212:3000/registrarPlan', {
+                idEquipo: idEquipo,
+                periodo: parseInt(periodoLectivo),
+            })
+            alert('Plan creado exitosamente');
+            setPeriodoLectivo('');
+        } catch (error) {
+            console.error('Error al crear plan: ', error);
+            alert('Error al crear plan');
+        }
+    };
+
+    const handleCancelar = (e) => {
+        e.preventDefault();
+        setPeriodoLectivo('');
+    }
+
+
     return (
         <div
             style={{
@@ -39,18 +86,32 @@ function CrearPlan() {
                 <Link href="/visualizarPlan" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#38340C', marginTop: '2vh', marginLeft: "2.3vw", whiteSpace:"nowrap"}}>Visualizar Plan</Link>
                 <Link href="/profesorCoordinador" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"35vh", marginLeft:"6vw" }}>Salir</Link>
             </div>
-            <div style={{ width:"70vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw' }}>
-                <Paper elevation={3} style={{ padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw" }}>
-                    <h1 style={{ color: '#38340C', fontSize: '1.5vw', textAlign: 'left', marginBottom: '3vh' }}>Crear Plan</h1>
-                    <form>
+            <div style={{ width:"20vw", marginTop: '25vh', marginLeft: '40vw', marginRight: '20vw', justifyContent:'center' }}>
+                <Paper elevation={3} style={{ padding: '2vh', backgroundColor:"#EEE1B0", borderTopLeftRadius:"1vw", borderTopRightRadius:"1vw", justifyContent:"center"}}>
+                    <h1 style={{ color: '#38340C', fontSize: '1.5vw', textAlign: 'center', marginBottom: '3vh' }}>Crear Plan</h1>
+                    <form onSubmit={handleCrear}>
                         <TextField
                             label="Período lectivo"
+                            type='text'
                             variant="outlined"
-                            fullWidth
+                            width="50%"
                             margin="normal"
+                            value={periodoLectivo}
+                            required
+                            onChange={(e) => {
+                                const newValue = e.target.value;
+                                if (newValue === "" || newValue === '1' || newValue === '2') {
+                                setPeriodoLectivo(newValue);
+                                } else {
+                                    alert('El período lectivo debe ser 1 o 2');
+                                    setPeriodoLectivo('');
+                                }
+                            }}
+                            style={{ marginBottom: '3vh', marginLeft:"3vw" }}
                         />
                         <div style={{ textAlign: 'center', marginTop: '3vh' }}>
-                            <button type="submit" style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw' }}>Crear</button>
+                            <Button type="submit" style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw' }}>Crear</Button>
+                            <Button onClick={handleCancelar} style={{ padding: '1vh 2vw', backgroundColor: '#38340C', color: 'white', border: 'none', borderRadius: '0.5vw', cursor: 'pointer', fontSize: '0.8vw', marginLeft:"1vw" }}>Cancelar</Button>
                         </div>
                     </form>
                 </Paper>

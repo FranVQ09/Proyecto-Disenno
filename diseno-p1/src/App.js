@@ -1,23 +1,26 @@
 import './styles/App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-//Imports de las paginas
-//Import de Login Page y Register Page
+// Imports de las paginas
+// Import de Login Page y Register Page
 import Login from "./pages/Menu/loginPage";
 import Register from "./pages/Menu/registerPage";
 
-//Imports de las ventas de trabajo
+// Imports de las ventas de trabajo
 import Menu from "./pages/Menu/Menu";
 
-//Import de Asistnete Administrativo
+// Import de Asistnete Administrativo
 import AsistenteAdministrativo from "./pages/AsistenteAdministrativo/menuAsistente";
 import ConsultasDetalleEquipo from './pages/AsistenteAdministrativo/consultasDetalleEquipo';
 import ConsultasEstudiantes from './pages/AsistenteAdministrativo/consultasEstudiantes';
 import ConsultasPlanActividades from './pages/AsistenteAdministrativo/consultasPlanActividades';
 import GestionarEquipo from './pages/AsistenteAdministrativo/gestionarEquipo';
+import AgregarProfesor from './pages/AsistenteAdministrativo/agregarProfesor';
 import RegistrarProfesor from './pages/AsistenteAdministrativo/registrarProfesor';
 import InformesExcel from './pages/AsistenteAdministrativo/InformesExcel';
 import CargarInforme from './pages/AsistenteAdministrativo/CargarInforme';
+import ModificarInformacionProfesor from './pages/AsistenteAdministrativo/ModificarInformacionProfesor';
+import ModificarEstudianteAsistente from './pages/AsistenteAdministrativo/ModificarEstudianteAsistente';
 
 // Import Profesor Coordinador
 import MenuProfesorCoordinador from './pages/ProfesorCoordinador/MenuProfesor';
@@ -29,7 +32,7 @@ import CrearPlan from './pages/ProfesorCoordinador/CrearPlan';
 import ActualizarPlan from './pages/ProfesorCoordinador/ActualizarPlan';
 import VisualizarPlan from './pages/ProfesorCoordinador/VisualizarPlan';
 
-//Import Profesor
+// Import Profesor
 import MenuProfesor from './pages/Profesor/menuProfesor';
 import ConsultasProfesor from './pages/Profesor/consultasProfesor';
 import ConsultarEstudiantesProfesor from './pages/Profesor/consultarEstudiantesProfesor';
@@ -37,6 +40,12 @@ import ModificarProfesor from './pages/Profesor/modificarProfesor';
 import ModificarEstudiante from './pages/Profesor/modificarEstudiante';
 import PlanActividadesProfesor from './pages/Profesor/planActividaesProfesor';
 
+// Import estudiante
+import MenuEstudiante from './pages/Estudiante/MenuEstudiante';
+import VerPerfilEstudiante from './pages/Estudiante/VerPerfilEstudiante';
+import ModificarPerfilEstudiante from './pages/Estudiante/ModificarPerfilEstudiante';
+import VerActividades from './pages/Estudiante/VerActividades';
+import VerProximaActividad from './pages/Estudiante/VerProximaActividad';
 
 function App() {
   return (
@@ -52,6 +61,7 @@ function App() {
           <Route path="/consultasEstudiantes" element={<ConsultasEstudiantes />} />
           <Route path="/consultasPlanActividades" element={<ConsultasPlanActividades />} />
           <Route path="/gestionarEquipo" element={<GestionarEquipo />} />
+          <Route path="/agregarProfesor" element={<AgregarProfesor />} />
           <Route path="/registrarProfesor" element={<RegistrarProfesor />} />
           <Route path="/informesExcel" element={<InformesExcel />} />
           <Route path="/cargarInforme" element={<CargarInforme />} />
@@ -68,6 +78,13 @@ function App() {
           <Route path="/crearPlan" element={<CrearPlan />} />
           <Route path="/actualizarPlan" element={<ActualizarPlan />} />
           <Route path="/visualizarPlan" element={<VisualizarPlan />} />
+          <Route path="/modificarInformacionProfesor" element={<ModificarInformacionProfesor />} />
+          <Route path="/modificarEstudianteAsistente" element={<ModificarEstudianteAsistente />} />
+          <Route path="/estudiante" element={<MenuEstudiante />} />
+          <Route path="/verPerfilEstudiante" element={<VerPerfilEstudiante />}></Route>
+          <Route path="/modificarPerfilEstudiante" element={<ModificarPerfilEstudiante />}></Route>
+          <Route path="/verActividades" element={<VerActividades />}></Route>
+          <Route path="/verProximaActividad" element={<VerProximaActividad />}></Route>
         </Routes>
       </Router>
     </div>

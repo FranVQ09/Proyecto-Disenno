@@ -3,19 +3,34 @@ import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 function CargarInforme() {
     const [selectedFile, setSelectedFile] = useState(null);
+    const userSede = sessionStorage.getItem('userSede');
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
     };
 
-    const handleUpload = () => {
-        // Aquí puedes agregar la lógica para subir el archivo al servidor
-        // Puedes enviar 'selectedFile' al servidor usando fetch o axios
-        console.log("Archivo seleccionado:", selectedFile);
+    const handleUpload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('sede', userSede);
+            formData.append('archivo', selectedFile);
+
+            const data = await axios.post('http://18.223.33.212:3000/students/insertEstudiantes', formData)
+            alert("Archivo cargado con éxito");
+
+        } catch (error) {
+            console.log(error);
+            alert("Error al cargar el archivo");
+        }
     };
+
+    const handleCancelar = () => {
+        setSelectedFile(null);
+    }
 
     return (
         <div
@@ -65,7 +80,10 @@ function CargarInforme() {
                             <label htmlFor="file">
                                 <Button component="span" style={{ backgroundColor: '#bcbcbc', color: 'black', fontSize: '0.6vw', height:"3vh", marginBottom: '1vh', width:"9vw" }}>Seleccionar archivo</Button>
                             </label>
-                            <Button onClick={handleUpload} style={{ backgroundColor: '#38340C', color: 'white', fontSize: '0.8vw', padding: '1vh', borderRadius: '1vw', width:"8vw", marginBottom:"1vh", marginTop:"1vh" }}>Cargar</Button>
+                            <div>
+                                <Button onClick={handleUpload} style={{ backgroundColor: '#38340C', color: 'white', fontSize: '0.8vw', padding: '1vh', borderRadius: '1vw', width:"8vw", marginBottom:"1vh", marginTop:"1vh" }}>Cargar</Button>
+                                <Button onClick={handleCancelar} style={{ backgroundColor: '#38340C', color: 'white', fontSize: '0.8vw', padding: '1vh', borderRadius: '1vw', width:"8vw", marginBottom:"1vh", marginTop:"1vh", marginLeft:"1vw" }}>Cancelar</Button>
+                            </div>
                         </form>
                     </div>
                 </Paper>

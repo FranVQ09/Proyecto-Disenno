@@ -17,16 +17,6 @@ class Profesor extends Persistible {
     }
 
     almacenarBaseDatos(imagen) {
-        /*console.log("Tipo de nombre:", typeof this.nombre);
-        console.log("Tipo de ap1:", typeof this.ap1);
-        console.log("Tipo de ap2:", typeof this.ap2);
-        console.log("Tipo de correo:", typeof this.correo);
-        console.log("Tipo de password:", typeof this.password);
-        console.log("Tipo de numOfi:", typeof this.numOfi);
-        console.log("Tipo de celular:", typeof this.sede);
-        console.log("Tipo de sede:", typeof this.sede);
-        console.log("Tipo de exten:", typeof this.exten);
-        console.log("Tipo de imagen:", typeof this.imagen);*/
         const handleRegistrar = async () => {
             try {
                 const formData = new FormData();
@@ -38,12 +28,14 @@ class Profesor extends Persistible {
                 formData.append('numOfi', this.oficina);
                 formData.append('celular', this.celular);
                 formData.append('sede', this.sede);
-                formData.append('exten', this.extension);
-                formData.append('imagen', this.imagen);
-    
-                const response = await axios.post('http://3.14.65.142:3000/professors/registrarProfe', formData);
-    
+                formData.append('exten', this.extension)            
+                formData.append('imagen', this.imagen)
+                
+                
+                const response = await axios.post('http://18.223.33.212:3000/professors/registrarProfe', formData);
                 alert('Profesor registrado exitosamente');
+                   
+    
     
             } catch (error) {
                 console.error('Error al registrar profesor: ', error);

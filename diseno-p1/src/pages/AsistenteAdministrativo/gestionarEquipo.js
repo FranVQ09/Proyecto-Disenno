@@ -6,8 +6,7 @@ import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import axios from 'axios';
 
 
 
@@ -15,25 +14,20 @@ function GestionarEquipo() {
     const [ equipos, setEquipos ] = useState([])
     const [ crearEquipoForm, setCrearEquipoForm ] = useState(false)
     const [ año, setAño ] = useState('')
-    const [ profesores, setProfesores ] = useState([])
-    const [ selectedProfesor, setSelectedProfesor ] = useState('')
 
     useEffect(() => {
-        const equiposData = [
-            {
-            año: 2023,
-            integrantes: ['Jose', 'Fran', 'Julián', 'Cruz']},
-            {
-            año: 2024,
-            integrantes: ['Ana', 'Juan', 'Luis', 'María']},
-        ];
-        setEquipos(equiposData);
-    }, [])
-
-    useEffect(() => {
-        const profesoresData = ['Jose', 'Fran', 'Julián', 'Cruz', 'Ana', 'Juan', 'Luis', 'María'];
-        setProfesores(profesoresData);
-    }, [])
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://18.223.33.212:3000/obtTodoEquipos');
+                console.log(response.data);
+                setEquipos(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+    
+        fetchData();
+    }, []);
 
     const handleCrearEquipoForm = () => {
         setCrearEquipoForm(true);
@@ -41,20 +35,24 @@ function GestionarEquipo() {
 
     const handleCancelar = () => {
         setCrearEquipoForm(false);
-        setSelectedProfesor('');
         setAño('');
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log('Año:', año);
-        console.log('Profesor:', selectedProfesor);
 
-        alert('Equipo creado y se agrego al profesor seleccionado exitosamente!');
+        const result = await axios.post('http://18.223.33.212:3000/registrarEqui', {
+            anno: año
+        })
 
+        const response = await axios.get('http://18.223.33.212:3000/obtTodoEquipos');
+
+        setEquipos(response.data);
+
+        
         setAño('');
-        setSelectedProfesor('');
         setCrearEquipoForm(false);
+        alert('Equipo creado exitosamente!');
     };
 
   return (
@@ -88,7 +86,8 @@ function GestionarEquipo() {
                 <a style={{ color: 'white', fontWeight: 'bold', fontSize: '3vw', textDecoration: 'none', display: 'inline-block', backgroundColor: '#38340C', marginLeft: '1vw' }}>Gestionar</a>
                 <a style={{ color: 'white', fontWeight: 'bold', fontSize: '3vw', textDecoration: 'none', display: 'inline-block', backgroundColor: '#38340C', marginLeft: '1vw' }}>Equipo</a>
             </div>
-            <Link href="/consultasProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#E2CE1A', marginTop: '30vh', marginLeft: "2vw", borderRadius:'1vw'}}>Detalles de Equipo</Link>
+            <Link href="/consultasProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor:'#E2CE1A', marginTop: '25vh', marginLeft: "2vw", borderRadius:'1vw'}}>Detalles de Equipo</Link>
+            <Link href="/agregarProfesor" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"1vh", marginLeft:"2.5vw", borderRadius:'1vw'}}>Agregar Profesor</Link>
             <Link href="/asistente" style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5vw', textDecoration: 'none', padding: '1vh', display: 'inline-block', backgroundColor: "#38340C", marginTop:"35vh", marginLeft:"6vw" }}>Salir</Link>
         </div>
         <div style={{display:"flex", justifyContent:"center", width:"30vw", marginTop: '5vh', marginLeft: '40vw', marginRight: '20vw' }}>
@@ -99,14 +98,12 @@ function GestionarEquipo() {
                         <TableHead style={{ backgroundColor:"#38340C"}}>
                             <TableRow>
                                 <TableCell style={{ color: "#FFFF" }}>Equipo Guía</TableCell>
-                                <TableCell style={{ color: "#FFFF" }}>Integrantes</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {equipos.map((equipo, index) =>(
                                 <TableRow key={index}>
-                                    <TableCell>{equipo.año}</TableCell>
-                                    <TableCell>{equipo.integrantes.join(', ')}</TableCell>
+                                    <TableCell>{equipo.anno}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -130,18 +127,8 @@ function GestionarEquipo() {
                                     onChange={(event) => setAño(event.target.value)}
                                     variant="outlined"
                                     style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh" }}
+                                    required
                                 />
-                                <Select
-                                    label="Profesores"
-                                    value={selectedProfesor}
-                                    onChange={(event) => setSelectedProfesor(event.target.value)}
-                                    variant="outlined"
-                                    style={{ width: "15vw", marginBottom: "1vh", backgroundColor:"white", borderRadius:"0.5vh"}}
-                                    >
-                                    {profesores.map((profesor, index) => (
-                                        <MenuItem key={index} value={profesor}>{profesor}</MenuItem>
-                                    ))}
-                                </Select>
                                 <div style={{ display:"flex", justifyContent:"center"}}>
                                     <Button type="submit" variant="contained" style={{ backgroundColor:"#38340C" }}>Crear</Button>
                                     <Button variant="contained" onClick={handleCancelar} style={{ backgroundColor:"#38340C", marginLeft:"1vw" }}>Cancelar</Button>
